@@ -1,0 +1,16 @@
+{
+  "name": "Image Tools - Batch Browser-based Image Compression",
+  "short_name": "Image Tools",
+  "description": "Fast, efficient batch image compression right in your browser. Supports AVIF, JPEG, JPEG XL, PNG, and WebP formats.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#18181b",
+  "icons": [
+    { "src": "/icon-128x128.png", "sizes": "128x128", "type": "image/png" },
+    { "src": "/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

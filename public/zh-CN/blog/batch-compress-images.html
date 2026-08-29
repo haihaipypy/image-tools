@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>批量压缩图片的最佳实践与工具 - 图片工具</title>
+  <meta name="description" content="在浏览器中一次性压缩上百张图片。讲解批量图片压缩的最佳实践：命名、质量、队列处理与格式策略。">
+  <meta name="keywords" content="批量压缩图片, 批量图片压缩, 多图压缩, 批量图片优化, 批量webp">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://image-tools.example.com/zh-CN/blog/batch-compress-images.html" />
+  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/blog/batch-compress-images.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/zh-CN/blog/batch-compress-images.html" />
+  <link rel="alternate" hreflang="x-default" href="https://image-tools.example.com/blog/batch-compress-images.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://image-tools.example.com/zh-CN/blog/batch-compress-images.html" />
+  <meta property="og:title" content="批量压缩图片的最佳实践与工具" />
+  <meta property="og:description" content="在浏览器中一次性压缩上百张图片——命名、质量与队列处理。" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:locale:alternate" content="en" />
+    <meta property="og:image" content="https://image-tools.example.com/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://image-tools.example.com/meta.jpg" />
+<meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/blog/style.css" />
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a href="/zh-CN/">← 返回首页</a>
+      <span class="sep">/</span>
+      <a href="/zh-CN/blog/">博客</a>
+    </nav>
+
+    <header class="article-header">
+      <h1>批量压缩图片的最佳实践与工具</h1>
+      <div class="meta">更新于 2026 年 8 月 24 日 · 阅读约 6 分钟</div>
+    </header>
+
+    <article>
+      <p>压缩一张图很容易。可要在发布前压缩 800 张产品图时，多数工具就掉链子了——上传慢、单文件限制、或队列崩溃。本文教你如何在浏览器中高效<strong>批量压缩图片</strong>，以及让输出可预期的工作流。</p>
+
+      <h2>为什么浏览器端批量压缩更优</h2>
+      <p>批量处理上百个文件时，上传到服务器会消耗时间、带宽和隐私。像 图片工具 这类浏览器工具通过 WebAssembly 本地运行编解码器：</p>
+      <ul>
+        <li>无上传带宽——文件不离开你的设备。</li>
+        <li>除本机内存外无单文件限制。</li>
+        <li>私密：机密产品图保持机密。</li>
+      </ul>
+
+      <h2>批量工作流</h2>
+      <ol>
+        <li><strong>按输出分组。</strong>把源图分批，每批用同一种目标格式与质量——逐文件调参会拖慢你。</li>
+        <li><strong>设定格式。</strong>照片→WebP 或 AVIF；截图→PNG 或无损 WebP。</li>
+        <li><strong>一次性设质量。</strong>WebP/JPEG 用 75，AVIF 用 50 作为起点。</li>
+        <li><strong>拖入整个文件夹。</strong>图片工具 入队，最多并行处理 3 张，实时显示每张进度与体积缩减。</li>
+        <li>批次完成后<strong>下载全部</strong>。</li>
+      </ol>
+
+      <div class="callout">图片工具 默认最多并行处理 3 张图片，并为每张显示「原始 → 压缩后」体积，便于发现未达预期的文件。</div>
+
+      <h2>保持文件名与扩展名正确</h2>
+      <p>转换格式时扩展名必须匹配——以 <code>.jpg</code> 结尾的 WebP 文件会让浏览器和 CMS 困惑。图片工具 把下载命名为 <code>{原文件名}.{输出格式}</code>，所以 <code>hero.png</code> 变成 <code>hero.webp</code>。若要与原图并存，下载到独立文件夹即可。</p>
+
+      <h2>处理批量中的失败</h2>
+      <p>大批量中总有几张失败——源文件损坏、不支持的色彩空间或内存限制。图片工具 会给失败文件标记错误而非中断整个队列，你可以只重导出有问题的文件。</p>
+
+      <h2>什么时候该用脚本</h2>
+      <p>一次性批量用 UI 比写脚本快。对反复出现的自动化流水线（如每晚产品图优化），<code>cwebp</code> 或 <code>avifenc</code> 这类 CLI 更合适。但对 95% 的团队，浏览器批量工具已足够。</p>
+
+      <h2>小结</h2>
+      <p>批量压缩应当无趣：分组、定一种格式+质量、拖入文件夹、全部下载。图片工具 正是这么做的，浏览器端、免费。</p>
+    </article>
+
+    <section class="related">
+      <h2>相关阅读</h2>
+      <ul>
+        <li><a href="/zh-CN/blog/convert-images-to-webp.html">将图片转换为 WebP 的完整指南</a></li>
+        <li><a href="/zh-CN/blog/reduce-image-size-without-losing-quality.html">如何在画质不变的情况下减小图片体积</a></li>
+        <li><a href="/zh-CN/blog/browser-based-image-compression-privacy.html">浏览器端压缩的隐私与性能优势</a></li>
+      </ul>
+    </section>
+
+    <div class="cta">
+      <h2>立即压缩整个文件夹</h2>
+      <p>拖入上百张图片——图片工具 处理好队列。</p>
+      <a class="btn" href="/zh-CN/">打开 图片工具</a>
+    </div>
+
+    <footer class="site-footer">
+      <span>© 2026 · 免费在线图片处理｜由 </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a><span> 提供</span>
+    </footer>
+  </div>
+</body>
+</html>

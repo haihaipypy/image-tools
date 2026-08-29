@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>图片压缩如何提升网站加载速度 - 图片工具</title>
+  <meta name="description" content="图片占页面体积 60%。讲解图片压缩、响应式 srcset 与现代格式如何大幅缩短加载时间并改善 Core Web Vitals。">
+  <meta name="keywords" content="图片压缩提速, 网站图片加速, core web vitals, 页面体积, 响应式图片srcset">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://image-tools.example.com/zh-CN/blog/image-compression-website-speed.html" />
+  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/blog/image-compression-website-speed.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/zh-CN/blog/image-compression-website-speed.html" />
+  <link rel="alternate" hreflang="x-default" href="https://image-tools.example.com/blog/image-compression-website-speed.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://image-tools.example.com/zh-CN/blog/image-compression-website-speed.html" />
+  <meta property="og:title" content="图片压缩如何提升网站加载速度" />
+  <meta property="og:description" content="压缩、响应式 srcset 与现代格式如何缩短加载时间。" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:locale:alternate" content="en" />
+    <meta property="og:image" content="https://image-tools.example.com/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://image-tools.example.com/meta.jpg" />
+<meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/blog/style.css" />
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a href="/zh-CN/">← 返回首页</a>
+      <span class="sep">/</span>
+      <a href="/zh-CN/blog/">博客</a>
+    </nav>
+
+    <header class="article-header">
+      <h1>图片压缩如何提升网站加载速度</h1>
+      <div class="meta">更新于 2026 年 8 月 24 日 · 阅读约 6 分钟</div>
+    </header>
+
+    <article>
+      <p>一个典型网页上，图片约占传输字节的 60%。它是你能掌控的最大加载时间杠杆，也是 Google 排名所依据的 Core Web Vitals 的关键。本文说明图片压缩究竟如何转化为更快的网站，以及如何叠加各项收益。</p>
+
+      <h2>字节如何变成秒</h2>
+      <p>在 10 Mbps 链路上，一张 2 MB 的头图仅下载就要约 1.6 秒——浏览器还没开始绘制。把它压到 150 KB，下载降到约 0.12 秒。压缩不是微优化，它决定了 1 秒与 4 秒加载之分。</p>
+
+      <h2>三个杠杆</h2>
+      <ol>
+        <li><strong>压缩。</strong>把 JPEG 换成 AVIF/WebP（视觉质量相同），字节降 30–50%。传统格式用 MozJPEG/OxiPNG。见<a href="/zh-CN/blog/reduce-image-size-without-losing-quality.html">不损画质减小体积</a>。</li>
+        <li><strong>缩放。</strong>投放正确尺寸。手机不需要 4000 像素宽的照片。用 <code>srcset</code> 让每种设备各取所需。</li>
+        <li><strong>格式。</strong>现代格式（AVIF、WebP）在质量相同时比 JPEG/PNG 小 25–50%。</li>
+      </ol>
+
+      <div class="callout">顺序很重要：先缩放（要编码的像素更少），再选现代格式，再调质量。对一张巨图最后压缩仍会得到一张巨图。</div>
+
+      <h2>你能推动的 Core Web Vitals</h2>
+      <ul>
+        <li><strong>LCP（最大内容渲染）。</strong>通常是头图。最狠地压缩——150 KB 以下、优先 AVIF、预加载。</li>
+        <li><strong>CLS（累积布局偏移）。</strong>给图片设 <code>width</code>/<code>height</code>，防止加载时布局跳动。</li>
+        <li><strong>INP（交互到下次渲染）。</strong>主线程繁重的图片解码会阻塞点击。用 <code>decoding="async"</code> 与离线解码。</li>
+      </ul>
+
+      <h2>用 srcset 做响应式</h2>
+      <p>生成几个尺寸（如 480、800、1200、1600 像素），用 <code>srcset</code> 声明。浏览器按视口和 DPR 选合适的。手机拿小文件、桌面拿清晰文件。这常是压缩之外移动端最大的提速收益。</p>
+
+      <h2>别忘了缓存</h2>
+      <p>图片一旦压缩好就激进缓存：<code>Cache-Control: public, max-age=31536000, immutable</code>。回访用户零下载。配合 CDN，让每个地区的首位访客也快。</p>
+
+      <h2>懒加载</h2>
+      <p>给首屏外图片加 <code>loading="lazy"</code>，浏览器延迟拉取。绝不要懒加载 LCP 图片——改用预加载。</p>
+
+      <h2>综合实例</h2>
+      <p>一个产品页：头图 2.2 MB + 六张 800 KB 缩略图，共约 7 MB。压缩后（头图 140 KB AVIF，缩略图各 60 KB WebP）+ 懒加载：首屏约 500 KB，LCP 从 3.8s 降到 1.1s。这不是微调，是另一个页面。</p>
+
+      <h2>小结</h2>
+      <p>压缩、缩放、现代格式，再合理缓存与懒加载。图片工具 在浏览器中负责前三项——其余在你的 HTML。结果：更快的页面、更好的 Core Web Vitals、更高的搜索排名。</p>
+    </article>
+
+    <section class="related">
+      <h2>相关阅读</h2>
+      <ul>
+        <li><a href="/zh-CN/blog/image-optimization-for-seo.html">图片优化对 SEO 的影响</a></li>
+        <li><a href="/zh-CN/blog/reduce-image-size-without-losing-quality.html">如何在画质不变的情况下减小图片体积</a></li>
+        <li><a href="/zh-CN/blog/best-image-format-for-web.html">2026 网页图片最佳格式指南</a></li>
+      </ul>
+    </section>
+
+    <div class="cta">
+      <h2>让你的页面更快</h2>
+      <p>压成 AVIF/WebP，看着字节消失。</p>
+      <a class="btn" href="/zh-CN/">打开 图片工具</a>
+    </div>
+
+    <footer class="site-footer">
+      <span>© 2026 · 免费在线图片处理｜由 </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a><span> 提供</span>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>如何在线压缩 PNG 图片（保持画质） - 图片工具</title>
+  <meta name="description" content="教你如何在浏览器中在线压缩 PNG 图片且不损画质。对比无损 OxiPNG 与有损 PNG 优化，将 PNG 体积最高缩小 80%。">
+  <meta name="keywords" content="在线压缩png, png压缩, 减小png体积, 无损png, oxipng, png优化, png变小, 在线png压缩工具">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://image-tools.example.com/zh-CN/blog/compress-png-online.html" />
+  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/blog/compress-png-online.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/zh-CN/blog/compress-png-online.html" />
+  <link rel="alternate" hreflang="x-default" href="https://image-tools.example.com/blog/compress-png-online.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://image-tools.example.com/zh-CN/blog/compress-png-online.html" />
+  <meta property="og:title" content="如何在线压缩 PNG 图片（保持画质）" />
+  <meta property="og:description" content="在浏览器中将 PNG 体积最高缩小 80%。对比无损与有损 PNG 压缩并选择合适的设置。" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:locale:alternate" content="en" />
+    <meta property="og:image" content="https://image-tools.example.com/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://image-tools.example.com/meta.jpg" />
+<meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/blog/style.css" />
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a href="/zh-CN/">← 返回首页</a>
+      <span class="sep">/</span>
+      <a href="/zh-CN/blog/">博客</a>
+    </nav>
+
+    <header class="article-header">
+      <h1>如何在线压缩 PNG 图片（保持画质）</h1>
+      <div class="meta">更新于 2026 年 8 月 24 日 · 阅读约 5 分钟</div>
+    </header>
+
+    <article>
+      <p>PNG 是截图、图标以及任何带透明背景图片的首选格式。问题在于：PNG 文件通常比实际需要大得多。本文教你如何用 图片工具 <strong>在线压缩 PNG 图片</strong>，以及何时该用无损、何时该用有损。</p>
+
+      <h2>为什么 PNG 体积这么大</h2>
+      <p>PNG 是一种<em>无损</em>格式，使用 DEFLATE 压缩。它逐像素保留原始数据，对清晰的文字和透明背景很友好——但也因此无法丢弃任何视觉信息，所以存成 PNG 的照片往往比同样的 JPEG/WebP 大 5–10 倍。对于简单图形，体积膨胀还常因编码器效率低或调色板过大造成。</p>
+
+      <h2>无损压缩 vs 有损压缩</h2>
+      <p>让 PNG 变小有两种思路：</p>
+      <ul>
+        <li><strong>无损重压缩（OxiPNG）。</strong>重新编码 DEFLATE 流并优化元数据，像素与原图<em>逐字节一致</em>，体积可减 5–20%，视觉零损失。图片工具 的 PNG 输出即采用此方式。</li>
+        <li><strong>有损 PNG（色彩量化）。</strong>将颜色降为 256 色调色板，体积可减 60–80%，渐变处会有轻微色阶。适合扁平插画，不适合照片。</li>
+      </ul>
+      <p>多数场景建议先无损；若仍嫌大，优先考虑转成 WebP 或 AVIF，而不是对 PNG 本身做有损。</p>
+
+      <div class="callout">图片工具 的 PNG 压缩完全在浏览器中通过 WebAssembly 完成，你的图片不会被上传到任何服务器。</div>
+
+      <h2>用 图片工具 压缩 PNG 的步骤</h2>
+      <ol>
+        <li>在浏览器中打开 <a href="/zh-CN/">图片工具</a>。</li>
+        <li>把<strong>输出格式</strong>设为 <code>PNG</code>。</li>
+        <li>把 PNG 文件拖到上传区（支持批量）。</li>
+        <li>等待队列处理完成——每个文件会显示「原始 → 压缩后」体积及节省百分比。</li>
+        <li>点击单张的<strong>下载</strong>，或<strong>下载全部</strong>获取整批。</li>
+      </ol>
+
+      <h2>什么时候该换格式</h2>
+      <p>压缩 PNG 本身有上限。如果图片是照片，转成 <strong>WebP</strong> 或 <strong>AVIF</strong>（质量 75–80）通常能再小 3–5 倍且肉眼几乎看不出差异，二者都支持透明通道，不会丢失 PNG「无背景」的优势。完整对比见<a href="/zh-CN/blog/best-image-format-for-web.html">网页图片最佳格式指南</a>。</p>
+
+      <h2>让 PNG 尽可能小的小技巧</h2>
+      <ul>
+        <li>导出前减少颜色数量（用索引调色板而非 RGB）。</li>
+        <li>裁掉不可见的留白，只保留实际内容。</li>
+        <li>别把照片存成 PNG——直接用 JPEG/WebP。</li>
+        <li>发布前用 OxiPNG（或 图片工具）跑一遍；很多设计工具导出的 PNG 并未优化。</li>
+      </ul>
+
+      <h2>小结</h2>
+      <p>对截图和图标，OxiPNG 的无损压缩能免费减小体积且零质量损失；对照片则应转向现代格式。无论哪种，用 图片工具 在浏览器中完成都意味着快速、私密且免费。</p>
+    </article>
+
+    <section class="related">
+      <h2>相关阅读</h2>
+      <ul>
+        <li><a href="/zh-CN/blog/best-image-format-for-web.html">2026 网页图片最佳格式选择指南</a></li>
+        <li><a href="/zh-CN/blog/convert-images-to-webp.html">将图片转换为 WebP 的完整指南</a></li>
+        <li><a href="/zh-CN/blog/reduce-image-size-without-losing-quality.html">如何在画质不变的情况下减小图片体积</a></li>
+      </ul>
+    </section>
+
+    <div class="cta">
+      <h2>立即压缩你的 PNG</h2>
+      <p>拖拽、上传、下载——100% 在浏览器中完成。</p>
+      <a class="btn" href="/zh-CN/">打开 图片工具</a>
+    </div>
+
+    <footer class="site-footer">
+      <span>© 2026 · 免费在线图片处理｜由 </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a><span> 提供</span>
+    </footer>
+  </div>
+</body>
+</html>

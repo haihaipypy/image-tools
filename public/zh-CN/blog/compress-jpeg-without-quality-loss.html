@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JPEG 压缩不损画质的方法 - 图片工具</title>
+  <meta name="description" content="用 MozJPEG 缩小 JPEG。找到质量甜点：体积大幅下降却看不见画质劣化。实用的 JPEG 压缩指南。">
+  <meta name="keywords" content="jpeg压缩不损画质, jpg压缩, mozjpeg, 减小jpg体积, jpg优化">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://image-tools.example.com/zh-CN/blog/compress-jpeg-without-quality-loss.html" />
+  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/blog/compress-jpeg-without-quality-loss.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/zh-CN/blog/compress-jpeg-without-quality-loss.html" />
+  <link rel="alternate" hreflang="x-default" href="https://image-tools.example.com/blog/compress-jpeg-without-quality-loss.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://image-tools.example.com/zh-CN/blog/compress-jpeg-without-quality-loss.html" />
+  <meta property="og:title" content="JPEG 压缩不损画质的方法" />
+  <meta property="og:description" content="用 MozJPEG 缩小 JPEG，找到质量甜点。" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:locale:alternate" content="en" />
+    <meta property="og:image" content="https://image-tools.example.com/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://image-tools.example.com/meta.jpg" />
+<meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/blog/style.css" />
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a href="/zh-CN/">← 返回首页</a>
+      <span class="sep">/</span>
+      <a href="/zh-CN/blog/">博客</a>
+    </nav>
+
+    <header class="article-header">
+      <h1>JPEG 压缩不损画质的方法</h1>
+      <div class="meta">更新于 2026 年 8 月 24 日 · 阅读约 5 分钟</div>
+    </header>
+
+    <article>
+      <p>JPEG 仍是使用最广的照片格式，而许多直接来自相机或设计工具的 JPEG，体积比实际需要大 2–5 倍。好消息：用 MozJPEG 和合适质量，能减 50–70% 字节且无可见画质损失。具体做法如下。</p>
+
+      <h2>为什么 MozJPEG 优于标准 JPEG</h2>
+      <p>标准 JPEG 编码器（libjpeg）已数十年历史。<strong>MozJPEG</strong> 是现代化编码器，通过优化量化表和渐进扫描，在相同质量下产出更小、更好看的文件。图片工具 用 MozJPEG，你默认就拿到更好的编码器。</p>
+
+      <h2>质量甜点</h2>
+      <p>JPEG 质量范围 1–100，但刻度不线性——存在断崖：</p>
+      <ul>
+        <li><strong>90–100</strong>：与源几乎无可感差异，但文件仍大，通常浪费。</li>
+        <li><strong>75–85</strong>：几乎所有照片视觉干净，最佳平衡。</li>
+        <li><strong>60–70</strong>：细看有轻微伪影，适合缩略图。</li>
+        <li><strong>低于 50</strong>：块状与色阶伪影明显。</li>
+      </ul>
+      <p>多数照片 <strong>质量 75</strong> 是甜点——也是 图片工具 默认值。仅当文件仍嫌大时降到 70。</p>
+
+      <div class="callout">在 图片工具 中把输出格式设为 JPEG 并拖动质量滑块——预览与字节数实时更新，可在可见伪影临界点之上停下。</div>
+
+      <h2>先缩放再编码</h2>
+      <p>把 6000×4000 的 JPEG 以质量 75 重新编码，因为像素多，文件仍巨大。先缩放到你需要的最大显示尺寸——收益倍增。</p>
+
+      <h2>别反复压缩</h2>
+      <p>JPEG 有损，每次重编码伪影会累积（代际损失）。从源图按目标质量压一次即可。若必须再压，保留原图从头再来，而非反复保存已压缩的文件。</p>
+
+      <h2>JPEG 不是合适输出时</h2>
+      <p>若想更小且现代浏览器支持没问题，把输出切到 <strong>WebP</strong> 或 <strong>AVIF</strong>——二者在视觉质量相同时都优于 JPEG。见<a href="/zh-CN/blog/convert-images-to-webp.html">转 WebP 指南</a>。</p>
+
+      <h2>小结</h2>
+      <p>用 MozJPEG 以质量 75 压缩 JPEG，先缩放、从源压一次，体积减半却无可见损失；想更上一层就转 WebP/AVIF。</p>
+    </article>
+
+    <section class="related">
+      <h2>相关阅读</h2>
+      <ul>
+        <li><a href="/zh-CN/blog/reduce-image-size-without-losing-quality.html">如何在画质不变的情况下减小图片体积</a></li>
+        <li><a href="/zh-CN/blog/convert-images-to-webp.html">将图片转换为 WebP 的完整指南</a></li>
+        <li><a href="/zh-CN/blog/best-image-format-for-web.html">2026 网页图片最佳格式指南</a></li>
+      </ul>
+    </section>
+
+    <div class="cta">
+      <h2>立即压缩你的 JPEG</h2>
+      <p>MozJPEG、质量滑块、实时预览。</p>
+      <a class="btn" href="/zh-CN/">打开 图片工具</a>
+    </div>
+
+    <footer class="site-footer">
+      <span>© 2026 · 免费在线图片处理｜由 </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a><span> 提供</span>
+    </footer>
+  </div>
+</body>
+</html>

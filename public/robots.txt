@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# 显式允许抓取静态资源
+Allow: /assets/
+Allow: /icon.svg
+Allow: /icon-128x128.png
+Allow: /icon-512x512.png
+Allow: /meta.jpg
+Allow: /site.webmanifest
+Allow: /sitemap.xml
+
+Sitemap: https://image-tools.example.com/sitemap.xml
