@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Image, Trash2 } from 'lucide-react';
+import { Image, Trash2, BookOpen } from 'lucide-react';
 import { CompressionOptions } from './components/CompressionOptions';
 import { DropZone } from './components/DropZone';
 import { ImageList } from './components/ImageList';
@@ -7,7 +7,7 @@ import { DownloadAll } from './components/DownloadAll';
 import { LanguageSwitcher } from './components/LanguageSwitcher';
 import { useImageQueue } from './hooks/useImageQueue';
 import { DEFAULT_QUALITY_SETTINGS } from './utils/formatDefaults';
-import { useTranslation } from './i18n';
+import { useTranslation, languagePrefix } from './i18n';
 import type { ImageFile, OutputType, CompressionOptions as CompressionOptionsType } from './types';
 
 export function App() {
@@ -74,6 +74,8 @@ export function App() {
   }, [images]);
 
   const completedImages = images.filter(img => img.status === 'complete').length;
+  // 博客入口按当前语言走对应前缀：中文 /blog/，英文 /en/blog/
+  const blogHref = `${languagePrefix(lang)}/blog/`;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -119,7 +121,33 @@ export function App() {
             </button>
           )}
 
+          <a
+            href={blogHref}
+            className="flex items-center gap-4 p-5 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-blue-400 hover:shadow-md transition-all group"
+          >
+            <BookOpen className="w-8 h-8 text-blue-500 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-gray-900">{t.blogCardTitle}</p>
+              <p className="text-sm text-gray-500">{t.blogCardDesc}</p>
+            </div>
+            <span className="text-sm font-medium text-blue-500 group-hover:translate-x-0.5 transition-transform whitespace-nowrap">
+              {t.blogCardCta} →
+            </span>
+          </a>
         </div>
+
+        <footer className="mt-12 pt-6 border-t border-gray-200 text-center text-sm text-gray-400">
+          <span>{t.footerBefore}</span>
+          <a
+            href="https://image-tools.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:text-blue-600 hover:underline"
+          >
+            {t.footerLink}
+          </a>
+          <span>{t.footerAfter}</span>
+        </footer>
       </div>
     </div>
   );

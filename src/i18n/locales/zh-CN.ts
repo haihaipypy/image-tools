@@ -34,4 +34,14 @@ export const zhCN: Translation = {
   // 语言切换（显示目标语言名称）
   switchTo: 'English',
   switchToAria: '切换到英文',
+
+  // 页脚（外链）
+  footerBefore: '© 2026 · 免费在线图片处理｜由 ',
+  footerLink: 'Image Tools',
+  footerAfter: ' 提供',
+
+  // 博客入口卡片（按当前语言指向 /blog/ 或 /en/blog/）
+  blogCardTitle: '图片压缩指南',
+  blogCardDesc: '关于图片压缩与转换的实用技巧 —— AVIF、WebP、JPEG、PNG、JPEG XL。',
+  blogCardCta: '阅读博客',
 };

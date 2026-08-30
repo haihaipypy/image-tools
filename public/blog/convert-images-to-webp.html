@@ -1,22 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Complete Guide to Converting Images to WebP - Image Tools</title>
-  <meta name="description" content="Convert JPEG, PNG, and AVIF to WebP locally in your browser. Understand quality, alpha transparency, and why WebP is a safe default.">
-  <meta name="keywords" content="convert images to webp, jpg to webp, png to webp, webp converter, convert to webp">
+  <title>将图片转换为 WebP 格式的完整指南 - 图片工具</title>
+  <meta name="description" content="在浏览器本地将 JPEG、PNG、AVIF 转换为 WebP。理解质量、透明通道与为什么 WebP 是稳妥的默认格式。">
+  <meta name="keywords" content="转换为webp, jpg转webp, png转webp, webp转换, 图片转webp">
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://image-tools.example.com/blog/convert-images-to-webp.html" />
-  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/blog/convert-images-to-webp.html" />
-  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/zh-CN/blog/convert-images-to-webp.html" />
+  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/en/blog/convert-images-to-webp.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/blog/convert-images-to-webp.html" />
   <link rel="alternate" hreflang="x-default" href="https://image-tools.example.com/blog/convert-images-to-webp.html" />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://image-tools.example.com/blog/convert-images-to-webp.html" />
-  <meta property="og:title" content="The Complete Guide to Converting Images to WebP" />
-  <meta property="og:description" content="Convert JPEG, PNG, and AVIF to WebP locally — quality, alpha, and safe defaults." />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:locale:alternate" content="zh_CN" />
+  <meta property="og:title" content="将图片转换为 WebP 格式的完整指南" />
+  <meta property="og:description" content="在本地把 JPEG、PNG、AVIF 转 WebP——质量、透明通道与稳妥默认值。" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:locale:alternate" content="en" />
     <meta property="og:image" content="https://image-tools.example.com/meta.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://image-tools.example.com/meta.jpg" />
@@ -27,69 +27,69 @@
 <body>
   <div class="container">
     <nav class="nav">
-      <a href="/">← Home</a>
+      <a href="/">← 返回首页</a>
       <span class="sep">/</span>
-      <a href="/blog/">Blog</a>
+      <a href="/blog/">博客</a>
     </nav>
 
     <header class="article-header">
-      <h1>The Complete Guide to Converting Images to WebP</h1>
-      <div class="meta">Updated August 24, 2026 · 6 min read</div>
+      <h1>将图片转换为 WebP 格式的完整指南</h1>
+      <div class="meta">更新于 2026 年 8 月 24 日 · 阅读约 6 分钟</div>
     </header>
 
     <article>
-      <p>WebP is the safest "modern format" default in 2026: universally supported, supports lossy, lossless, alpha, and animation, and typically beats JPEG and PNG by 25–35%. This guide shows how to <strong>convert images to WebP</strong> in your browser, with the right settings for each source type.</p>
+      <p>WebP 是 2026 年最稳妥的「现代格式」默认选择：通用支持、支持有损、无损、alpha 透明与动画，通常比 JPEG/PNG 小 25–35%。本文教你在浏览器中<strong>将图片转换为 WebP</strong>，并为每种源图给出正确设置。</p>
 
-      <h2>Why WebP</h2>
+      <h2>为什么选 WebP</h2>
       <ul>
-        <li>Supported by all major browsers — no special fallbacks needed for most audiences.</li>
-        <li>Lossy mode beats JPEG at equal visual quality.</li>
-        <li>Lossless mode beats PNG, with alpha support.</li>
-        <li>Supports animation, replacing GIF.</li>
+        <li>所有主流浏览器支持——多数场景无需特殊兜底。</li>
+        <li>有损模式在视觉质量相同时胜过 JPEG。</li>
+        <li>无损模式胜过 PNG，且支持 alpha。</li>
+        <li>支持动画，可取代 GIF。</li>
       </ul>
 
-      <h2>Source → WebP: which mode?</h2>
-      <h3>JPEG → WebP (lossy)</h3>
-      <p>Use lossy WebP at quality 75. You'll get a 25–35% smaller file with the same visual quality. This is the most common conversion and the biggest easy win.</p>
-      <h3>PNG (screenshot) → WebP</h3>
-      <p>For screenshots with text, use lossless WebP or lossy at quality 90+. You keep sharpness and shrink 40–60% versus PNG.</p>
-      <h3>PNG (photo) → WebP (lossy)</h3>
-      <p>If someone saved a photo as PNG (huge mistake), convert to lossy WebP at 75 — the file drops by 80–90% with no visible change.</p>
+      <h2>源 → WebP：该用哪种模式</h2>
+      <h3>JPEG → WebP（有损）</h3>
+      <p>用质量 75 的有损 WebP，体积小 25–35%，视觉质量相同。这是最常见的转换，也是最大的轻松收益。</p>
+      <h3>PNG（截图）→ WebP</h3>
+      <p>含文字的截图用无损 WebP 或有损 90+。保持锐利的同时比 PNG 小 40–60%。</p>
+      <h3>PNG（照片）→ WebP（有损）</h3>
+      <p>若有人把照片存成了 PNG（大错），转成有损 WebP 质量 75，体积减 80–90% 且看不出变化。</p>
       <h3>AVIF → WebP</h3>
-      <p>Rarely needed, but useful if a target platform lacks AVIF support. Expect a ~20–30% size increase going AVIF → WebP.</p>
+      <p>很少需要，仅在目标平台不支持 AVIF 时有用。AVIF→WebP 体积约增 20–30%。</p>
 
-      <div class="callout">In Image Tools, set Output Format to WebP and adjust the quality slider. Batch-drag a whole folder to convert everything at once.</div>
+      <div class="callout">在 图片工具 中把输出格式设为 WebP 并调整质量滑块。整文件夹拖入即可批量转换。</div>
 
-      <h2>Don't forget transparency</h2>
-      <p>WebP's alpha channel is well-supported. A PNG icon with a transparent background converts cleanly to WebP — the alpha is preserved and the file is much smaller. Just avoid setting quality too low (under 60) on transparency edges, where banding can appear.</p>
+      <h2>别忘了透明通道</h2>
+      <p>WebP 的 alpha 通道支持良好。带透明背景的 PNG 图标可干净地转成 WebP——alpha 保留且体积小得多。只是别把质量设太低（低于 60），否则透明边缘可能出现色阶。</p>
 
-      <h2>Serving WebP</h2>
-      <p>If your server supports content negotiation, you can serve WebP transparently with the same <code>.jpg</code>/<code>.png</code> URL. Otherwise use the <code>&lt;picture&gt;</code> element so the browser picks WebP and falls back to JPEG.</p>
+      <h2>投放 WebP</h2>
+      <p>若服务器支持内容协商，可用同一 <code>.jpg</code>/<code>.png</code> URL 透明投放 WebP。否则用 <code>&lt;picture&gt;</code> 元素让浏览器选 WebP、回退 JPEG。</p>
 
-      <h2>What WebP isn't best at</h2>
-      <p>For the absolute smallest photographic files, <strong>AVIF</strong> wins. For HDR and 10-bit+ color, AVIF wins. But for a single, simple, universally-supported modern format, WebP is the right default — see our <a href="/blog/avif-vs-webp.html">AVIF vs WebP</a> deep dive.</p>
+      <h2>WebP 不擅长的场景</h2>
+      <p>要绝对最小的照片体积，<strong>AVIF</strong> 更胜；要 HDR 与 10-bit+ 色深，AVIF 更胜。但作为单一、简单、通用支持的现代格式，WebP 是正确默认——详见我们的 <a href="/blog/avif-vs-webp.html">AVIF 与 WebP 对比</a>。</p>
 
-      <h2>Summary</h2>
-      <p>Converting to WebP is the lowest-effort, highest-reliability image optimization you can do. Set quality 75 for photos, lossless for screenshots, batch the folder, done.</p>
+      <h2>小结</h2>
+      <p>转 WebP 是投入最小、可靠性最高的图片优化。照片质量 75、截图无损、批量整文件夹，结束。</p>
     </article>
 
     <section class="related">
-      <h2>Related reading</h2>
+      <h2>相关阅读</h2>
       <ul>
-        <li><a href="/blog/avif-vs-webp.html">AVIF vs WebP</a></li>
-        <li><a href="/blog/best-image-format-for-web.html">Best Image Format for the Web</a></li>
-        <li><a href="/blog/batch-compress-images.html">Batch Compress Images</a></li>
+        <li><a href="/blog/avif-vs-webp.html">AVIF 与 WebP 格式对比</a></li>
+        <li><a href="/blog/best-image-format-for-web.html">2026 网页图片最佳格式指南</a></li>
+        <li><a href="/blog/batch-compress-images.html">批量压缩图片的最佳实践</a></li>
       </ul>
     </section>
 
     <div class="cta">
-      <h2>Convert your images to WebP</h2>
-      <p>One format, every source — in your browser.</p>
-      <a class="btn" href="/">Open Image Tools</a>
+      <h2>把你的图片转成 WebP</h2>
+      <p>一种格式，任意源图——浏览器中完成。</p>
+      <a class="btn" href="/">打开 图片工具</a>
     </div>
 
     <footer class="site-footer">
-      <span>© 2026 · Free Online Image Tools | Powered by </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a>
+      <span>© 2026 · 免费在线图片处理｜由 </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a><span> 提供</span>
     </footer>
   </div>
 </body>

@@ -24,3 +24,12 @@ dist-ssr
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# WorkBuddy project data
+.workbuddy/
+
+# Vite temp files
+vite.config.ts.timestamp-*.mjs
+
+# Local verification screenshots
+home-*.png

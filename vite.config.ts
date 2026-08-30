@@ -13,29 +13,39 @@ const sharedOutput = {
 
 export default defineConfig({
   // 多页应用模式：禁用 SPA history fallback，
-  // 让 /zh-CN/ 直接命中 zh-CN/index.html，/  命中 index.html，
-  // 两份独立 HTML 拥有各自的 SEO meta。
+  // 让 / 命中 index.html（中文，默认语言），/en/ 命中 en/index.html，
+  // /zh-CN/ 命中 zh-CN/index.html（旧路径兼容），
+  // 三份独立 HTML 拥有各自的 SEO meta。
   appType: 'mpa',
   plugins: [
     react(),
     {
-      // 开发期把 /zh-CN（无尾斜杠）规范重定向到 /zh-CN/，
-      // 保证 dev 下中文版 URL 与生产一致。
-      name: 'zh-cn-trailing-slash-redirect',
+      // 开发期把 /en、/zh-CN（无尾斜杠）规范重定向到带尾斜杠的形式，
+      // 保证 dev 下的 URL 与生产一致。
+      name: 'locale-trailing-slash-redirect',
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
           const url = req.url || '';
-          if (url === '/zh-CN' || url.startsWith('/zh-CN?') || url.startsWith('/zh-CN#')) {
-            const tail = url.slice('/zh-CN'.length);
-            res.writeHead(301, { Location: `/zh-CN/${tail}` });
-            res.end();
-            return;
+          for (const prefix of ['/en', '/zh-CN']) {
+            if (
+              url === prefix ||
+              url.startsWith(`${prefix}?`) ||
+              url.startsWith(`${prefix}#`)
+            ) {
+              const tail = url.slice(prefix.length);
+              res.writeHead(301, { Location: `${prefix}/${tail}` });
+              res.end();
+              return;
+            }
           }
           // dev 模式下 Vite 默认不处理目录请求的 index.html，
-          // 这里把 /blog/ 与 /zh-CN/blog/ 内部改写为对应 index.html。
+          // 这里把各语言目录内部改写为对应 index.html。
           // 生产部署由静态 host 的目录 index 规则处理。
           const dirIndexRewrite: Record<string, string> = {
             '/blog/': '/blog/index.html',
+            '/en/': '/en/index.html',
+            '/en/blog/': '/en/blog/index.html',
+            '/zh-CN/': '/zh-CN/index.html',
             '/zh-CN/blog/': '/zh-CN/blog/index.html',
           };
           if (dirIndexRewrite[url]) {
@@ -58,9 +68,11 @@ export default defineConfig({
   build: {
     target: 'esnext',
     rollupOptions: {
-      // 两个 HTML 入口；Vite 会复用同一份 chunk，浏览器只需下载一次。
+      // 三个 HTML 入口（中文根路径 / 英文 /en/ 旧中文 /zh-CN/）；
+      // Vite 会复用同一份 chunk，浏览器只需下载一次。
       input: {
         main: resolve(projectRoot, 'index.html'),
+        'en/index': resolve(projectRoot, 'en/index.html'),
         'zh-CN/index': resolve(projectRoot, 'zh-CN/index.html'),
       },
       output: sharedOutput,

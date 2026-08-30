@@ -1,22 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Image Optimization for SEO: Best Practices That Work - Image Tools</title>
-  <meta name="description" content="How image size, format, alt text, filenames, and lazy loading affect Google ranking and Core Web Vitals in 2026. Practical image SEO checklist.">
-  <meta name="keywords" content="image optimization seo, image seo, alt text seo, core web vitals images, image seo best practices">
+  <title>图片优化对 SEO 的影响与最佳实践 - 图片工具</title>
+  <meta name="description" content="图片体积、格式、alt 文本、文件名与懒加载如何影响 Google 排名与 Core Web Vitals。实用的图片 SEO 检查清单。">
+  <meta name="keywords" content="图片优化seo, 图片seo, alt文本seo, core web vitals图片, 图片seo最佳实践">
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://image-tools.example.com/blog/image-optimization-for-seo.html" />
-  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/blog/image-optimization-for-seo.html" />
-  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/zh-CN/blog/image-optimization-for-seo.html" />
+  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/en/blog/image-optimization-for-seo.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/blog/image-optimization-for-seo.html" />
   <link rel="alternate" hreflang="x-default" href="https://image-tools.example.com/blog/image-optimization-for-seo.html" />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://image-tools.example.com/blog/image-optimization-for-seo.html" />
-  <meta property="og:title" content="Image Optimization for SEO: Best Practices That Work" />
-  <meta property="og:description" content="How image size, format, alt text, and lazy loading affect Google ranking and Core Web Vitals." />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:locale:alternate" content="zh_CN" />
+  <meta property="og:title" content="图片优化对 SEO 的影响与最佳实践" />
+  <meta property="og:description" content="图片体积、格式、alt 文本与懒加载如何影响 Google 排名与 Core Web Vitals。" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:locale:alternate" content="en" />
     <meta property="og:image" content="https://image-tools.example.com/meta.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://image-tools.example.com/meta.jpg" />
@@ -27,76 +27,76 @@
 <body>
   <div class="container">
     <nav class="nav">
-      <a href="/">← Home</a>
+      <a href="/">← 返回首页</a>
       <span class="sep">/</span>
-      <a href="/blog/">Blog</a>
+      <a href="/blog/">博客</a>
     </nav>
 
     <header class="article-header">
-      <h1>Image Optimization for SEO: Best Practices That Work</h1>
-      <div class="meta">Updated August 24, 2026 · 7 min read</div>
+      <h1>图片优化对 SEO 的影响与最佳实践</h1>
+      <div class="meta">更新于 2026 年 8 月 24 日 · 阅读约 7 分钟</div>
     </header>
 
     <article>
-      <p>Images are central to SEO in two ways: they drive <strong>image search traffic</strong> on their own, and they directly affect <strong>Core Web Vitals</strong> (LCP, CLS) that feed Google's ranking. Bad images can drag an otherwise great page down. Here's the practical checklist that actually moves the needle in 2026.</p>
+      <p>图片对 SEO 有两条路径：它本身能带来<strong>图片搜索流量</strong>，又直接影响影响 Google 排名的 <strong>Core Web Vitals</strong>（LCP、CLS）。糟糕的图片会拖累一个本该优秀的页面。以下是 2026 年真正见效的实操清单。</p>
 
-      <h2>1. Shrink files (the LCP lever)</h2>
-      <p>The Largest Contentful Paint is very often a hero image. If that image is 2 MB, your LCP is doomed. Compress the hero to under 150 KB (ideally under 100 KB) using AVIF or WebP. Use Image Tools to get there — see <a href="/blog/reduce-image-size-without-losing-quality.html">reduce image size without losing quality</a>.</p>
+      <h2>1. 压缩文件（LCP 杠杆）</h2>
+      <p>最大内容渲染（LCP）往往就是一张头图。如果它 2 MB，LCP 无药可救。用 AVIF 或 WebP 把头图压到 150 KB 以下（理想 100 KB 以下）。用 图片工具 达成——见<a href="/blog/reduce-image-size-without-losing-quality.html">不损画质减小体积</a>。</p>
 
-      <h2>2. Use modern formats</h2>
-      <p>Serve <strong>AVIF</strong> (or WebP) with a JPEG fallback via the <code>&lt;picture&gt;</code> element. Modern formats cut bytes 30–50% versus JPEG at equal quality, directly improving LCP.</p>
+      <h2>2. 用现代格式</h2>
+      <p>投放 <strong>AVIF</strong>（或 WebP），并用 <code>&lt;picture&gt;</code> 元素以 JPEG 兜底。现代格式在视觉质量相同时比 JPEG 小 30–50%，直接改善 LCP。</p>
 
-      <h2>3. Set width and height (the CLS lever)</h2>
-      <p>Always specify <code>width</code> and <code>height</code> on <code>&lt;img&gt;</code>. The browser reserves space before the image loads, preventing Cumulative Layout Shift. CLS is a Core Web Vital — layout jumps hurt ranking and UX.</p>
+      <h2>3. 设宽高（CLS 杠杆）</h2>
+      <p>务必给 <code>&lt;img&gt;</code> 设 <code>width</code> 和 <code>height</code>。浏览器在图片加载前就预留空间，避免累积布局偏移（CLS）。CLS 是 Core Web Vital——布局跳动既伤排名又伤体验。</p>
 
-      <h2>4. Lazy-load below the fold</h2>
-      <p>Add <code>loading="lazy"</code> and <code>decoding="async"</code> to images below the first viewport. This delays their fetch, speeding up initial render. But <strong>do not</strong> lazy-load the LCP image — that delays it.</p>
+      <h2>4. 首屏外懒加载</h2>
+      <p>给首屏外图片加 <code>loading="lazy"</code> 和 <code>decoding="async"</code>，延迟拉取，加快首屏渲染。但<strong>不要</strong>懒加载 LCP 图片——那会拖慢它。</p>
 
-      <div class="callout">Responsive <code>srcset</code> lets mobile devices download a small version and desktops a large one — huge for mobile LCP.</div>
+      <div class="callout">响应式 <code>srcset</code> 让手机下载小版本、桌面下载大版本——对移动端 LCP 极有帮助。</div>
 
-      <h2>5. Write real alt text</h2>
-      <p><code>alt</code> text is the single biggest image SEO signal: it's how Google understands the image and how screen readers describe it. Write descriptive, keyword-natural text — not stuffed keywords, not "image123". For purely decorative images, use empty <code>alt=""</code>.</p>
+      <h2>5. 写真正的 alt 文本</h2>
+      <p><code>alt</code> 文本是最大的图片 SEO 信号：Google 据此理解图片，屏幕阅读器据此描述。写描述性、关键词自然的文字——别堆词、别写「image123」。纯装饰图用空 <code>alt=""</code>。</p>
 
-      <h2>6. Use descriptive filenames</h2>
-      <p><code>red-running-shoes-nike.jpg</code> beats <code>IMG_4823.jpg</code>. Filenames are a minor but real ranking signal in image search. Compress first, rename, then upload.</p>
+      <h2>6. 用描述性文件名</h2>
+      <p><code>红色跑步鞋-耐克.jpg</code> 胜过 <code>IMG_4823.jpg</code>。文件名是图片搜索中真实但次要的排名信号。先压缩、改名、再上传。</p>
 
-      <h2>7. Add structured data where relevant</h2>
-      <p>For product images, recipes, and articles, JSON-LD with <code>image</code> properties helps Google rich results. Make sure the referenced image URL is the compressed, final one.</p>
+      <h2>7. 必要时加结构化数据</h2>
+      <p>对产品图、菜谱、文章，带 <code>image</code> 属性的 JSON-LD 有助于富结果。确保引用的是压缩后的最终图片 URL。</p>
 
-      <h2>8. Use a content delivery network (CDN)</h2>
-      <p>A CDN caches compressed images close to users, cutting TTFB and download time. Combine with the right <code>Cache-Control</code> headers (long max-age, immutable) so returning visitors pay nothing.</p>
+      <h2>8. 用 CDN</h2>
+      <p>CDN 把压缩后的图片缓存到离用户更近，降低 TTFB 和下载时间。配合正确的 <code>Cache-Control</code>（长 max-age、immutable），回访用户零成本。</p>
 
-      <h2>The 2026 image SEO checklist</h2>
+      <h2>2026 图片 SEO 清单</h2>
       <ul>
-        <li>Hero image under 150 KB, AVIF/WebP</li>
-        <li><code>width</code>/<code>height</code> on every <code>&lt;img&gt;</code></li>
-        <li>Lazy-load below the fold, not the LCP</li>
-        <li>Descriptive <code>alt</code> and filename on every meaningful image</li>
-        <li>Responsive <code>srcset</code> for mobile/desktop</li>
-        <li>Long cache headers + CDN</li>
+        <li>头图 150 KB 以下，AVIF/WebP</li>
+        <li>每个 <code>&lt;img&gt;</code> 都设 <code>width</code>/<code>height</code></li>
+        <li>首屏外懒加载，LCP 不懒加载</li>
+        <li>每张有意义的图都写描述性 <code>alt</code> 和文件名</li>
+        <li>移动/桌面用响应式 <code>srcset</code></li>
+        <li>长缓存头 + CDN</li>
       </ul>
 
-      <h2>Summary</h2>
-      <p>Image SEO is mostly mechanical: compress, set dimensions, write real alt text, lazy-load sensibly. Image Tools handles the compression half — the rest is on your markup.</p>
+      <h2>小结</h2>
+      <p>图片 SEO 多数是机械活：压缩、设尺寸、写真正的 alt、合理懒加载。图片工具 负责压缩那一半——其余在你的标记上。</p>
     </article>
 
     <section class="related">
-      <h2>Related reading</h2>
+      <h2>相关阅读</h2>
       <ul>
-        <li><a href="/blog/image-compression-website-speed.html">How Image Compression Speeds Up Your Website</a></li>
-        <li><a href="/blog/best-image-format-for-web.html">Best Image Format for the Web</a></li>
-        <li><a href="/blog/reduce-image-size-without-losing-quality.html">Reduce Image Size Without Losing Quality</a></li>
+        <li><a href="/blog/image-compression-website-speed.html">图片压缩如何提升网站加载速度</a></li>
+        <li><a href="/blog/best-image-format-for-web.html">2026 网页图片最佳格式指南</a></li>
+        <li><a href="/blog/reduce-image-size-without-losing-quality.html">如何在画质不变的情况下减小图片体积</a></li>
       </ul>
     </section>
 
     <div class="cta">
-      <h2>Get your images SEO-ready</h2>
-      <p>Compress to AVIF/WebP in seconds — in the browser.</p>
-      <a class="btn" href="/">Open Image Tools</a>
+      <h2>让你的图片对 SEO 友好</h2>
+      <p>几秒内压成 AVIF/WebP——浏览器中完成。</p>
+      <a class="btn" href="/">打开 图片工具</a>
     </div>
 
     <footer class="site-footer">
-      <span>© 2026 · Free Online Image Tools | Powered by </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a>
+      <span>© 2026 · 免费在线图片处理｜由 </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a><span> 提供</span>
     </footer>
   </div>
 </body>

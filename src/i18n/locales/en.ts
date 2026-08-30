@@ -32,6 +32,16 @@ export const en = {
   // 语言切换（显示目标语言名称）
   switchTo: '中文',
   switchToAria: 'Switch to Chinese',
+
+  // 页脚（外链）
+  footerBefore: '© 2026 · Free Online Image Tools | Powered by ',
+  footerLink: 'Image Tools',
+  footerAfter: '',
+
+  // 博客入口卡片（按当前语言指向 /blog/ 或 /en/blog/）
+  blogCardTitle: 'Image Compression Guides',
+  blogCardDesc: 'Practical tips on compressing and converting images — AVIF, WebP, JPEG, PNG, and JPEG XL.',
+  blogCardCta: 'Read the blog',
 };
 
 export type Translation = typeof en;

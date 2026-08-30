@@ -1,22 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Best Image Format for the Web in 2026: A Complete Guide - Image Tools</title>
-  <meta name="description" content="JPEG, PNG, WebP, AVIF or JXL? A 2026 guide to picking the best web image format for photos, screenshots, icons, and transparent graphics.">
-  <meta name="keywords" content="best image format, web image format, jpeg png webp avif jxl, image format guide, choose image format">
+  <title>2026 网页图片最佳格式选择完全指南 - 图片工具</title>
+  <meta name="description" content="JPEG、PNG、WebP、AVIF 还是 JXL？2026 年网页图片格式选择指南，为照片、截图、图标与透明图推荐最合适的格式。">
+  <meta name="keywords" content="网页图片格式, 图片格式选择, jpeg png webp avif jxl, 图片格式指南, 最佳图片格式">
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://image-tools.example.com/blog/best-image-format-for-web.html" />
-  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/blog/best-image-format-for-web.html" />
-  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/zh-CN/blog/best-image-format-for-web.html" />
+  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/en/blog/best-image-format-for-web.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/blog/best-image-format-for-web.html" />
   <link rel="alternate" hreflang="x-default" href="https://image-tools.example.com/blog/best-image-format-for-web.html" />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://image-tools.example.com/blog/best-image-format-for-web.html" />
-  <meta property="og:title" content="Best Image Format for the Web in 2026: A Complete Guide" />
-  <meta property="og:description" content="JPEG, PNG, WebP, AVIF or JXL? Pick the right format for every kind of image." />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:locale:alternate" content="zh_CN" />
+  <meta property="og:title" content="2026 网页图片最佳格式选择完全指南" />
+  <meta property="og:description" content="JPEG、PNG、WebP、AVIF 还是 JXL？为每类图片选对格式。" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:locale:alternate" content="en" />
     <meta property="og:image" content="https://image-tools.example.com/meta.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://image-tools.example.com/meta.jpg" />
@@ -27,75 +27,75 @@
 <body>
   <div class="container">
     <nav class="nav">
-      <a href="/">← Home</a>
+      <a href="/">← 返回首页</a>
       <span class="sep">/</span>
-      <a href="/blog/">Blog</a>
+      <a href="/blog/">博客</a>
     </nav>
 
     <header class="article-header">
-      <h1>Best Image Format for the Web in 2026: A Complete Guide</h1>
-      <div class="meta">Updated August 24, 2026 · 7 min read</div>
+      <h1>2026 网页图片最佳格式选择完全指南</h1>
+      <div class="meta">更新于 2026 年 8 月 24 日 · 阅读约 7 分钟</div>
     </header>
 
     <article>
-      <p>Choosing the right image format is the single biggest lever for web performance. Pick wrong and a 90 KB photo becomes a 600 KB PNG. This guide covers JPEG, PNG, WebP, AVIF, and JPEG XL — and tells you exactly which to use when.</p>
+      <p>选对图片格式是网页性能最大的杠杆。选错，一张 90 KB 的照片会变成 600 KB 的 PNG。本文覆盖 JPEG、PNG、WebP、AVIF、JPEG XL，并告诉你各自该在何时使用。</p>
 
-      <h2>The five formats at a glance</h2>
+      <h2>五种格式速览</h2>
       <ul>
-        <li><strong>JPEG</strong> — Lossy, no transparency, universal. Best for photographs where compatibility beats size.</li>
-        <li><strong>PNG</strong> — Lossless, alpha transparency. Best for screenshots, icons, and graphics needing crisp edges.</li>
-        <li><strong>WebP</strong> — Lossy or lossless, alpha, animation. The best all-rounder in 2026.</li>
-        <li><strong>AVIF</strong> — Lossy, alpha, HDR, smallest files. Best for hero photos when you can cache the encode.</li>
-        <li><strong>JPEG XL (JXL)</strong> — Lossy or lossless, can reconstruct original JPEGs losslessly. The forward-looking choice.</li>
+        <li><strong>JPEG</strong>——有损、无透明、通用。适合兼容性优于体积的照片。</li>
+        <li><strong>PNG</strong>——无损、支持 alpha 透明。适合截图、图标和需要锐利边缘的图形。</li>
+        <li><strong>WebP</strong>——有损或无损、支持透明与动画。2026 年最均衡的全能选手。</li>
+        <li><strong>AVIF</strong>——有损、透明、HDR、体积最小。适合能缓存编码结果的头图照片。</li>
+        <li><strong>JPEG XL (JXL)</strong>——有损或无损、可无损重建原始 JPEG。面向未来的选择。</li>
       </ul>
 
-      <h2>Match the format to the content</h2>
-      <h3>Photographs</h3>
-      <p>Use <strong>AVIF</strong> first (smallest), <strong>WebP</strong> as a universal fallback, and a <strong>JPEG</strong> as the final fallback. A <code>&lt;picture&gt;</code> tag with all three covers every browser.</p>
-      <h3>Screenshots with text</h3>
-      <p>Text stays crisp with <strong>PNG</strong>, but a high-quality <strong>WebP</strong> (q 90+) is nearly as sharp at half the size. Avoid JPEG — it smears text.</p>
-      <h3>Icons &amp; UI graphics with transparency</h3>
-      <p><strong>PNG</strong> is reliable; <strong>WebP</strong> lossless with alpha is a great modern alternative. For tiny icons, prefer SVG altogether.</p>
-      <h3>Animations</h3>
-      <p>Prefer <strong>WebP</strong> or <strong>AVIF</strong> animations over GIF, which is wildly inefficient.</p>
+      <h2>按内容匹配格式</h2>
+      <h3>照片</h3>
+      <p>首选 <strong>AVIF</strong>（最小），以 <strong>WebP</strong> 作通用兜底，最后用 <strong>JPEG</strong> 兜底。用 <code>&lt;picture&gt;</code> 标签同时声明三种即可覆盖所有浏览器。</p>
+      <h3>含文字的截图</h3>
+      <p>文字用 <strong>PNG</strong> 最清晰，但高质量 <strong>WebP</strong>（q 90+）几乎同样锐利、体积减半。避免 JPEG——它会糊掉文字。</p>
+      <h3>带透明的图标 / UI 图形</h3>
+      <p><strong>PNG</strong> 可靠；带 alpha 的无损 <strong>WebP</strong> 是很好的现代替代。极小图标优先用 SVG。</p>
+      <h3>动画</h3>
+      <p>用 <strong>WebP</strong> 或 <strong>AVIF</strong> 动画取代效率极低的 GIF。</p>
 
-      <div class="callout">Image Tools converts to all five formats in the browser — drop the same source image and export each to compare side by side.</div>
+      <div class="callout">图片工具 在浏览器中即可转换这五种格式——把同一源图拖入，导出每种格式即可对比。</div>
 
-      <h2>Quality settings that just work</h2>
-      <p>For lossy formats, these are safe defaults that look good and stay small:</p>
+      <h2>立即可用的质量设置</h2>
+      <p>有损格式的安全默认值（好看又小）：</p>
       <ul>
-        <li><strong>AVIF</strong>: quality 50 — visually clean, aggressively small.</li>
-        <li><strong>WebP</strong>: quality 75 — the sweet spot for most photos.</li>
-        <li><strong>JPEG</strong>: quality 75 — indistinguishable from source for most photos.</li>
-        <li><strong>JXL</strong>: quality 75.</li>
-        <li><strong>PNG</strong>: lossless — use OxiPNG optimization.</li>
+        <li><strong>AVIF</strong>：质量 50——视觉干净、激进变小。</li>
+        <li><strong>WebP</strong>：质量 75——多数照片的甜点。</li>
+        <li><strong>JPEG</strong>：质量 75——多数照片与源图无异。</li>
+        <li><strong>JXL</strong>：质量 75。</li>
+        <li><strong>PNG</strong>：无损——使用 OxiPNG 优化。</li>
       </ul>
-      <p>These are exactly Image Tools's built-in defaults, so you can start there and nudge the slider if needed.</p>
+      <p>这正是 图片工具 的内置默认值，可从默认开始，按需微调滑块。</p>
 
-      <h2>Serving strategy</h2>
-      <p>Use the <code>&lt;picture&gt;</code> element with multiple <code>&lt;source&gt;</code> tags so the browser picks the best format it supports. Always set <code>width</code> and <code>height</code> to prevent layout shift, and add <code>loading="lazy"</code> for below-the-fold images.</p>
+      <h2>投放策略</h2>
+      <p>用 <code>&lt;picture&gt;</code> 元素配多个 <code>&lt;source&gt;</code>，让浏览器自选支持的最佳格式。务必设 <code>width</code> 和 <code>height</code> 防止布局偏移，并给首屏外图片加 <code>loading="lazy"</code>。</p>
 
-      <h2>Summary</h2>
-      <p>There's no single "best format" — match the format to the content. Photos → AVIF/WebP. Screenshots → PNG or lossless WebP. Icons → SVG first, PNG/lossless WebP second. Need to act on all of this now? Convert your images in Image Tools.</p>
+      <h2>小结</h2>
+      <p>没有唯一的「最佳格式」——按内容选格式：照片→AVIF/WebP；截图→PNG 或无损 WebP；图标→先 SVG，再 PNG/无损 WebP。想立刻动手？用 图片工具 转换你的图片。</p>
     </article>
 
     <section class="related">
-      <h2>Related reading</h2>
+      <h2>相关阅读</h2>
       <ul>
-        <li><a href="/blog/avif-vs-webp.html">AVIF vs WebP: Which Is Better?</a></li>
-        <li><a href="/blog/convert-images-to-webp.html">Convert Images to WebP</a></li>
-        <li><a href="/blog/image-optimization-for-seo.html">Image Optimization for SEO</a></li>
+        <li><a href="/blog/avif-vs-webp.html">AVIF 与 WebP 该选哪个？</a></li>
+        <li><a href="/blog/convert-images-to-webp.html">将图片转换为 WebP 的完整指南</a></li>
+        <li><a href="/blog/image-optimization-for-seo.html">图片优化对 SEO 的影响</a></li>
       </ul>
     </section>
 
     <div class="cta">
-      <h2>Try every format on your images</h2>
-      <p>One upload, five output formats — compare and pick.</p>
-      <a class="btn" href="/">Open Image Tools</a>
+      <h2>在你的图片上试遍每种格式</h2>
+      <p>一次上传，五种输出——对比后选最佳。</p>
+      <a class="btn" href="/">打开 图片工具</a>
     </div>
 
     <footer class="site-footer">
-      <span>© 2026 · Free Online Image Tools | Powered by </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a>
+      <span>© 2026 · 免费在线图片处理｜由 </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a><span> 提供</span>
     </footer>
   </div>
 </body>

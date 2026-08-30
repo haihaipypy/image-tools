@@ -1,22 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>How Image Compression Speeds Up Your Website - Image Tools</title>
-  <meta name="description" content="Images are 60% of page weight. Learn how image compression, responsive srcset, and modern formats cut load time and improve Core Web Vitals.">
-  <meta name="keywords" content="image compression website speed, faster website images, core web vitals, page weight, srcset responsive images">
+  <title>图片压缩如何提升网站加载速度 - 图片工具</title>
+  <meta name="description" content="图片占页面体积 60%。讲解图片压缩、响应式 srcset 与现代格式如何大幅缩短加载时间并改善 Core Web Vitals。">
+  <meta name="keywords" content="图片压缩提速, 网站图片加速, core web vitals, 页面体积, 响应式图片srcset">
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://image-tools.example.com/blog/image-compression-website-speed.html" />
-  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/blog/image-compression-website-speed.html" />
-  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/zh-CN/blog/image-compression-website-speed.html" />
+  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/en/blog/image-compression-website-speed.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/blog/image-compression-website-speed.html" />
   <link rel="alternate" hreflang="x-default" href="https://image-tools.example.com/blog/image-compression-website-speed.html" />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://image-tools.example.com/blog/image-compression-website-speed.html" />
-  <meta property="og:title" content="How Image Compression Speeds Up Your Website" />
-  <meta property="og:description" content="How compression, responsive srcset, and modern formats cut load time." />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:locale:alternate" content="zh_CN" />
+  <meta property="og:title" content="图片压缩如何提升网站加载速度" />
+  <meta property="og:description" content="压缩、响应式 srcset 与现代格式如何缩短加载时间。" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:locale:alternate" content="en" />
     <meta property="og:image" content="https://image-tools.example.com/meta.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://image-tools.example.com/meta.jpg" />
@@ -27,71 +27,71 @@
 <body>
   <div class="container">
     <nav class="nav">
-      <a href="/">← Home</a>
+      <a href="/">← 返回首页</a>
       <span class="sep">/</span>
-      <a href="/blog/">Blog</a>
+      <a href="/blog/">博客</a>
     </nav>
 
     <header class="article-header">
-      <h1>How Image Compression Speeds Up Your Website</h1>
-      <div class="meta">Updated August 24, 2026 · 6 min read</div>
+      <h1>图片压缩如何提升网站加载速度</h1>
+      <div class="meta">更新于 2026 年 8 月 24 日 · 阅读约 6 分钟</div>
     </header>
 
     <article>
-      <p>On a typical web page, images account for roughly 60% of total transferred bytes. They are the single biggest lever you have over load time — and over the Core Web Vitals that Google uses to rank your site. This guide shows exactly how image compression translates into a faster website, and how to stack the wins.</p>
+      <p>一个典型网页上，图片约占传输字节的 60%。它是你能掌控的最大加载时间杠杆，也是 Google 排名所依据的 Core Web Vitals 的关键。本文说明图片压缩究竟如何转化为更快的网站，以及如何叠加各项收益。</p>
 
-      <h2>Why bytes turn into seconds</h2>
-      <p>On a 10 Mbps connection, a 2 MB hero image takes ~1.6 seconds just to download — before the browser can even paint it. Cut it to 150 KB and download drops to ~0.12 seconds. Compression isn't a micro-optimization; it's the difference between a 1-second and a 4-second load.</p>
+      <h2>字节如何变成秒</h2>
+      <p>在 10 Mbps 链路上，一张 2 MB 的头图仅下载就要约 1.6 秒——浏览器还没开始绘制。把它压到 150 KB，下载降到约 0.12 秒。压缩不是微优化，它决定了 1 秒与 4 秒加载之分。</p>
 
-      <h2>The three levers</h2>
+      <h2>三个杠杆</h2>
       <ol>
-        <li><strong>Compress.</strong> Switch JPEG→AVIF/WebP at equal visual quality and drop 30–50% of bytes. Use MozJPEG/OxiPNG for legacy formats. See our <a href="/blog/reduce-image-size-without-losing-quality.html">reduce image size without losing quality</a> guide.</li>
-        <li><strong>Resize.</strong> Serve the right dimensions. A phone doesn't need a 4000-px-wide photo. Use <code>srcset</code> to let each device pick an appropriate size.</li>
-        <li><strong>Format.</strong> Modern formats (AVIF, WebP) out-compress JPEG/PNG by 25–50% at the same quality.</li>
+        <li><strong>压缩。</strong>把 JPEG 换成 AVIF/WebP（视觉质量相同），字节降 30–50%。传统格式用 MozJPEG/OxiPNG。见<a href="/blog/reduce-image-size-without-losing-quality.html">不损画质减小体积</a>。</li>
+        <li><strong>缩放。</strong>投放正确尺寸。手机不需要 4000 像素宽的照片。用 <code>srcset</code> 让每种设备各取所需。</li>
+        <li><strong>格式。</strong>现代格式（AVIF、WebP）在质量相同时比 JPEG/PNG 小 25–50%。</li>
       </ol>
 
-      <div class="callout">Order matters: resize first (fewer pixels to encode), then pick a modern format, then tune quality. Doing compression last on a giant image still leaves a giant file.</div>
+      <div class="callout">顺序很重要：先缩放（要编码的像素更少），再选现代格式，再调质量。对一张巨图最后压缩仍会得到一张巨图。</div>
 
-      <h2>Core Web Vitals you can move</h2>
+      <h2>你能推动的 Core Web Vitals</h2>
       <ul>
-        <li><strong>LCP (Largest Contentful Paint).</strong> Usually the hero image. Compress it hardest — under 150 KB, AVIF preferred, preloaded.</li>
-        <li><strong>CLS (Cumulative Layout Shift).</strong> Set <code>width</code>/<code>height</code> on images to prevent layout jumps while they load.</li>
-        <li><strong>INP (Interaction to Next Paint).</strong> Heavy main-thread image decoding blocks clicks. Use <code>decoding="async"</code> and off-thread decoding.</li>
+        <li><strong>LCP（最大内容渲染）。</strong>通常是头图。最狠地压缩——150 KB 以下、优先 AVIF、预加载。</li>
+        <li><strong>CLS（累积布局偏移）。</strong>给图片设 <code>width</code>/<code>height</code>，防止加载时布局跳动。</li>
+        <li><strong>INP（交互到下次渲染）。</strong>主线程繁重的图片解码会阻塞点击。用 <code>decoding="async"</code> 与离线解码。</li>
       </ul>
 
-      <h2>Responsive images with srcset</h2>
-      <p>Generate a few sizes (e.g. 480, 800, 1200, 1600 px) and declare them in <code>srcset</code>. The browser picks the right one per viewport and DPR. Mobile users get the small file; desktops get the sharp one. This is often the biggest mobile speed win after compression itself.</p>
+      <h2>用 srcset 做响应式</h2>
+      <p>生成几个尺寸（如 480、800、1200、1600 像素），用 <code>srcset</code> 声明。浏览器按视口和 DPR 选合适的。手机拿小文件、桌面拿清晰文件。这常是压缩之外移动端最大的提速收益。</p>
 
-      <h2>Don't forget caching</h2>
-      <p>Once an image is compressed, cache it aggressively: <code>Cache-Control: public, max-age=31536000, immutable</code>. Returning visitors download nothing. Combine with a CDN so the first visitor in each region is also fast.</p>
+      <h2>别忘了缓存</h2>
+      <p>图片一旦压缩好就激进缓存：<code>Cache-Control: public, max-age=31536000, immutable</code>。回访用户零下载。配合 CDN，让每个地区的首位访客也快。</p>
 
-      <h2>Lazy loading</h2>
-      <p>Add <code>loading="lazy"</code> to below-the-fold images so the browser defers their fetch. Never lazy-load the LCP image — preload it instead.</p>
+      <h2>懒加载</h2>
+      <p>给首屏外图片加 <code>loading="lazy"</code>，浏览器延迟拉取。绝不要懒加载 LCP 图片——改用预加载。</p>
 
-      <h2>Putting it together — a measured example</h2>
-      <p>A product page with a 2.2 MB hero and six 800 KB thumbnails: ~7 MB total. After compression (hero 140 KB AVIF, thumbnails 60 KB WebP each) and lazy-loading: ~500 KB initial, LCP drops from 3.8s to 1.1s. That's not a tweak — it's a different page.</p>
+      <h2>综合实例</h2>
+      <p>一个产品页：头图 2.2 MB + 六张 800 KB 缩略图，共约 7 MB。压缩后（头图 140 KB AVIF，缩略图各 60 KB WebP）+ 懒加载：首屏约 500 KB，LCP 从 3.8s 降到 1.1s。这不是微调，是另一个页面。</p>
 
-      <h2>Summary</h2>
-      <p>Compress, resize, modern format, then cache and lazy-load sensibly. Image Tools handles the first three in your browser — the rest is your HTML. The result: faster pages, better Core Web Vitals, and higher search rankings.</p>
+      <h2>小结</h2>
+      <p>压缩、缩放、现代格式，再合理缓存与懒加载。图片工具 在浏览器中负责前三项——其余在你的 HTML。结果：更快的页面、更好的 Core Web Vitals、更高的搜索排名。</p>
     </article>
 
     <section class="related">
-      <h2>Related reading</h2>
+      <h2>相关阅读</h2>
       <ul>
-        <li><a href="/blog/image-optimization-for-seo.html">Image Optimization for SEO</a></li>
-        <li><a href="/blog/reduce-image-size-without-losing-quality.html">Reduce Image Size Without Losing Quality</a></li>
-        <li><a href="/blog/best-image-format-for-web.html">Best Image Format for the Web</a></li>
+        <li><a href="/blog/image-optimization-for-seo.html">图片优化对 SEO 的影响</a></li>
+        <li><a href="/blog/reduce-image-size-without-losing-quality.html">如何在画质不变的情况下减小图片体积</a></li>
+        <li><a href="/blog/best-image-format-for-web.html">2026 网页图片最佳格式指南</a></li>
       </ul>
     </section>
 
     <div class="cta">
-      <h2>Make your pages faster</h2>
-      <p>Compress to AVIF/WebP and watch bytes vanish.</p>
-      <a class="btn" href="/">Open Image Tools</a>
+      <h2>让你的页面更快</h2>
+      <p>压成 AVIF/WebP，看着字节消失。</p>
+      <a class="btn" href="/">打开 图片工具</a>
     </div>
 
     <footer class="site-footer">
-      <span>© 2026 · Free Online Image Tools | Powered by </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a>
+      <span>© 2026 · 免费在线图片处理｜由 </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a><span> 提供</span>
     </footer>
   </div>
 </body>

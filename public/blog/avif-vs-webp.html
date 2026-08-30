@@ -1,22 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AVIF vs WebP: Which Image Format Is Better for the Web? - Image Tools</title>
-  <meta name="description" content="A 2026 comparison of AVIF and WebP image formats: compression ratio, browser support, encoding speed, alpha transparency, and when to pick each one.">
-  <meta name="keywords" content="avif vs webp, avif webp comparison, best image format, avif compression, webp compression, modern image formats">
+  <title>AVIF 与 WebP 格式对比：网页图片该选哪个？ - 图片工具</title>
+  <meta name="description" content="2026 年 AVIF 与 WebP 全面对比：压缩率、浏览器支持、编码速度、透明通道与适用场景，帮你选出最合适的网页图片格式。">
+  <meta name="keywords" content="avif对比webp, avif和webp, 图片格式对比, avif压缩, webp压缩, 现代图片格式, 网页图片格式">
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://image-tools.example.com/blog/avif-vs-webp.html" />
-  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/blog/avif-vs-webp.html" />
-  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/zh-CN/blog/avif-vs-webp.html" />
+  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/en/blog/avif-vs-webp.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/blog/avif-vs-webp.html" />
   <link rel="alternate" hreflang="x-default" href="https://image-tools.example.com/blog/avif-vs-webp.html" />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://image-tools.example.com/blog/avif-vs-webp.html" />
-  <meta property="og:title" content="AVIF vs WebP: Which Image Format Is Better for the Web?" />
-  <meta property="og:description" content="Compression ratio, browser support, encoding speed, and when to choose AVIF or WebP." />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:locale:alternate" content="zh_CN" />
+  <meta property="og:title" content="AVIF 与 WebP 格式对比：网页图片该选哪个？" />
+  <meta property="og:description" content="压缩率、浏览器支持、编码速度与何时选 AVIF 或 WebP。" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:locale:alternate" content="en" />
     <meta property="og:image" content="https://image-tools.example.com/meta.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://image-tools.example.com/meta.jpg" />
@@ -27,72 +27,72 @@
 <body>
   <div class="container">
     <nav class="nav">
-      <a href="/">← Home</a>
+      <a href="/">← 返回首页</a>
       <span class="sep">/</span>
-      <a href="/blog/">Blog</a>
+      <a href="/blog/">博客</a>
     </nav>
 
     <header class="article-header">
-      <h1>AVIF vs WebP: Which Image Format Is Better for the Web?</h1>
-      <div class="meta">Updated August 24, 2026 · 6 min read</div>
+      <h1>AVIF 与 WebP 格式对比：网页图片该选哪个？</h1>
+      <div class="meta">更新于 2026 年 8 月 24 日 · 阅读约 6 分钟</div>
     </header>
 
     <article>
-      <p>AVIF and WebP are the two modern image formats vying to replace JPEG and PNG on the web. Both support transparency, animation, and far better compression than legacy formats — but they make different trade-offs. This guide breaks down <strong>AVIF vs WebP</strong> across compression, browser support, encoding speed, and real-world usage so you can choose the right one.</p>
+      <p>AVIF 和 WebP 是两种正在取代 JPEG 与 PNG 的现代图片格式。两者都支持透明、动画，压缩率远超传统格式——但取舍不同。本文从压缩率、浏览器支持、编码速度和实际使用角度拆解 <strong>AVIF 与 WebP</strong>，帮你选出合适的那一个。</p>
 
-      <h2>Compression ratio</h2>
-      <p>At equal visual quality, <strong>AVIF</strong> (based on the AV1 video codec) typically produces files 20–30% smaller than <strong>WebP</strong> (based on VP8), and up to 50% smaller than JPEG. AVIF is especially strong on photographs and complex textures. WebP is still a big win over JPEG (25–35% smaller) but AVIF generally edges it out on raw size.</p>
+      <h2>压缩率</h2>
+      <p>在视觉质量相同时，<strong>AVIF</strong>（基于 AV1 视频编码）通常比 <strong>WebP</strong>（基于 VP8）小 20–30%，比 JPEG 小可达 50%。AVIF 对照片和复杂纹理尤为出色。WebP 相比 JPEG 仍有 25–35% 的优势，但纯粹比体积，AVIF 通常略胜。</p>
 
-      <h2>Browser support in 2026</h2>
+      <h2>2026 年浏览器支持</h2>
       <ul>
-        <li><strong>WebP</strong> is supported by virtually every browser in use — Chrome, Firefox, Safari, Edge, and all modern mobile browsers. It's the safe default.</li>
-        <li><strong>AVIF</strong> is supported by Chrome, Firefox, Safari (14+), and Edge. Coverage is now over 95% of users, so AVIF is production-ready, but edge cases remain (older Safari, some in-app browsers).</li>
+        <li><strong>WebP</strong> 几乎被所有在用浏览器支持——Chrome、Firefox、Safari、Edge 及各主流移动浏览器。它是稳妥的默认选择。</li>
+        <li><strong>AVIF</strong> 被 Chrome、Firefox、Safari（14+）、Edge 支持，覆盖率已超 95%，可投入生产，但仍有边缘场景（旧版 Safari、部分应用内浏览器）。</li>
       </ul>
-      <p>Serve both with a <code>&lt;picture&gt;</code> element and a JPEG/PNG fallback to cover everyone.</p>
+      <p>最佳做法：用 <code>&lt;picture&gt;</code> 元素同时提供 AVIF、WebP 和 JPEG/PNG 兜底，覆盖所有用户。</p>
 
-      <h2>Encoding speed</h2>
-      <p>AVIF's main downside is encoding cost: high-effort AVIF encoding is meaningfully slower than WebP. On a typical laptop, a 4 MP photo might encode in ~50 ms as WebP but 300–800 ms as AVIF at high effort. For a single hero image that's fine; for thousands of images in a batch pipeline it adds up. Image Tools exposes AVIF's <em>effort</em> setting so you can trade a little ratio for much faster encoding.</p>
+      <h2>编码速度</h2>
+      <p>AVIF 的主要短板是编码成本：高 effort 的 AVIF 编码明显慢于 WebP。普通笔记本上，一张 400 万像素照片用 WebP 编码约 50 ms，而 AVIF 高 effort 可能要 300–800 ms。单张头图无所谓，但批量处理上千张时差异会累积。图片工具 暴露了 AVIF 的 <em>effort</em> 参数，可用一点压缩率换大幅提速。</p>
 
-      <div class="callout">In Image Tools, set Output Format to AVIF for the smallest files, or WebP when you need the best speed/size balance.</div>
+      <div class="callout">在 图片工具 中：要最小体积选 AVIF，要速度与体积平衡选 WebP。</div>
 
-      <h2>Transparency, animation, and color depth</h2>
-      <p>Both formats support alpha transparency and animation. AVIF additionally supports 10-bit and 12-bit color, HDR, and film grain synthesis, which matters for photography and HDR content but rarely for typical web graphics.</p>
+      <h2>透明、动画与色深</h2>
+      <p>两者都支持 alpha 透明与动画。AVIF 还支持 10/12-bit 色深、HDR 与胶片颗粒合成，对摄影和 HDR 内容重要，对一般网页图形则很少用得上。</p>
 
-      <h2>When to choose AVIF</h2>
+      <h2>什么时候选 AVIF</h2>
       <ul>
-        <li>Photography and hero images where every kilobyte matters.</li>
-        <li>Critical above-the-fold images on high-traffic sites.</li>
-        <li>When you can cache the encoded output (so encode cost is paid once).</li>
-      </ul>
-
-      <h2>When to choose WebP</h2>
-      <ul>
-        <li>As a universal default — best compatibility with the smallest reasonable size.</li>
-        <li>Batch jobs where encoding speed matters.</li>
-        <li>When you need one format that works everywhere without a fallback.</li>
+        <li>摄影与头图，每 KB 都要省。</li>
+        <li>高流量网站首屏关键图。</li>
+        <li>可缓存编码结果（编码成本只付一次）。</li>
       </ul>
 
-      <h2>Verdict</h2>
-      <p>There's no single winner. <strong>AVIF wins on size, WebP wins on speed and ubiquity.</strong> The pragmatic 2026 approach: encode AVIF for hero/photographic images, WebP for everything else, and let the <code>&lt;picture&gt;</code> tag handle fallbacks. Test with Image Tools to see the actual numbers for your images.</p>
+      <h2>什么时候选 WebP</h2>
+      <ul>
+        <li>作为通用默认——兼容性最佳、体积合理。</li>
+        <li>在意编码速度的批量任务。</li>
+        <li>希望单一格式无需兜底即可到处可用。</li>
+      </ul>
+
+      <h2>结论</h2>
+      <p>没有唯一赢家：<strong>AVIF 赢在体积，WebP 赢在速度与普及度。</strong>务实的 2026 方案是：头图与摄影用 AVIF，其余用 WebP，再由 <code>&lt;picture&gt;</code> 处理兜底。用 图片工具 在你的真实图片上跑一遍，看具体数字。</p>
     </article>
 
     <section class="related">
-      <h2>Related reading</h2>
+      <h2>相关阅读</h2>
       <ul>
-        <li><a href="/blog/best-image-format-for-web.html">Best Image Format for the Web in 2026</a></li>
-        <li><a href="/blog/convert-images-to-webp.html">The Complete Guide to Converting Images to WebP</a></li>
-        <li><a href="/blog/image-compression-website-speed.html">How Image Compression Speeds Up Your Website</a></li>
+        <li><a href="/blog/best-image-format-for-web.html">2026 网页图片最佳格式选择指南</a></li>
+        <li><a href="/blog/convert-images-to-webp.html">将图片转换为 WebP 的完整指南</a></li>
+        <li><a href="/blog/image-compression-website-speed.html">图片压缩如何提升网站加载速度</a></li>
       </ul>
     </section>
 
     <div class="cta">
-      <h2>Compare AVIF and WebP on your own images</h2>
-      <p>Encode both in Image Tools and see which is smaller — instantly.</p>
-      <a class="btn" href="/">Open Image Tools</a>
+      <h2>用你自己的图片对比 AVIF 与 WebP</h2>
+      <p>在 图片工具 中同时编码两种格式，立刻看到谁更小。</p>
+      <a class="btn" href="/">打开 图片工具</a>
     </div>
 
     <footer class="site-footer">
-      <span>© 2026 · Free Online Image Tools | Powered by </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a>
+      <span>© 2026 · 免费在线图片处理｜由 </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a><span> 提供</span>
     </footer>
   </div>
 </body>

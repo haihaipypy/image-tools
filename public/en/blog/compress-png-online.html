@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Compress PNG Images Online Without Losing Quality - Image Tools</title>
+  <meta name="description" content="Learn how to compress PNG images online without losing quality. Compare lossless OxiPNG and lossy PNG optimization, and shrink PNG files up to 80% in your browser.">
+  <meta name="keywords" content="compress png online, png compression, reduce png size, lossless png, oxipng, shrink png, png optimizer">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://image-tools.example.com/en/blog/compress-png-online.html" />
+  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/en/blog/compress-png-online.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/blog/compress-png-online.html" />
+  <link rel="alternate" hreflang="x-default" href="https://image-tools.example.com/blog/compress-png-online.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://image-tools.example.com/en/blog/compress-png-online.html" />
+  <meta property="og:title" content="How to Compress PNG Images Online Without Losing Quality" />
+  <meta property="og:description" content="Shrink PNG files up to 80% in your browser. Compare lossless and lossy PNG compression and pick the right settings." />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="zh_CN" />
+    <meta property="og:image" content="https://image-tools.example.com/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://image-tools.example.com/meta.jpg" />
+<meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/blog/style.css" />
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a href="/en/">← Home</a>
+      <span class="sep">/</span>
+      <a href="/en/blog/">Blog</a>
+    </nav>
+
+    <header class="article-header">
+      <h1>How to Compress PNG Images Online Without Losing Quality</h1>
+      <div class="meta">Updated August 24, 2026 · 5 min read</div>
+    </header>
+
+    <article>
+      <p>PNG is the go-to format for screenshots, icons, and anything with a transparent background. The catch? PNG files are often far larger than they need to be. In this guide you'll learn how to <strong>compress PNG images online</strong> using Image Tools, and when lossless versus lossy compression is the right call.</p>
+
+      <h2>Why PNG files are so large</h2>
+      <p>PNG is a <em>lossless</em> format that uses DEFLATE compression. It preserves every pixel exactly, which is great for sharp text and transparency — but it cannot discard any visual data, so photos saved as PNG can be 5–10× larger than the same image as JPEG or WebP. For simple graphics, the file is also often bloated by an inefficient encoder or an unnecessarily large color palette.</p>
+
+      <h2>Lossless vs. lossy PNG compression</h2>
+      <p>There are two ways to make a PNG smaller:</p>
+      <ul>
+        <li><strong>Lossless re-compression (OxiPNG).</strong> Re-encodes the DEFLATE stream and optimizes metadata. Pixels are <em>byte-for-byte identical</em> to the original. Expect 5–20% smaller files with zero visual change. This is what Image Tools uses for the PNG output format.</li>
+        <li><strong>Lossy PNG (quantization).</strong> Reduces the color palette to 256 colors. Files can shrink 60–80%, with mild banding on gradients. Good for flat illustrations, risky for photos.</li>
+      </ul>
+      <p>For most workflows, start with lossless — if the result is still too big, consider converting to WebP or AVIF instead of going lossy on the PNG itself.</p>
+
+      <div class="callout">Image Tools runs PNG compression entirely in your browser using WebAssembly. Your images are never uploaded to a server.</div>
+
+      <h2>Compressing a PNG in Image Tools, step by step</h2>
+      <ol>
+        <li>Open <a href="/en/">Image Tools</a> in your browser.</li>
+        <li>Set <strong>Output Format</strong> to <code>PNG</code>.</li>
+        <li>Drag your PNG files onto the drop zone (batch is supported).</li>
+        <li>Wait for the queue to finish — each file shows the original → compressed size and the percentage saved.</li>
+        <li>Click <strong>Download</strong> on a single file, or <strong>Download All</strong> for the whole batch.</li>
+      </ol>
+
+      <h2>When you should switch formats instead</h2>
+      <p>Compressing the PNG itself has limits. If your image is a photograph, converting to <strong>WebP</strong> or <strong>AVIF</strong> at quality 75–80 will usually be 3–5× smaller with no visible difference. Both formats also support alpha transparency, so you don't lose the "no background" benefit of PNG. See our <a href="/en/blog/best-image-format-for-web.html">guide to choosing the best web image format</a> for a full comparison.</p>
+
+      <h2>Tips for the smallest possible PNG</h2>
+      <ul>
+        <li>Reduce the number of colors before exporting (indexed palette instead of RGB).</li>
+        <li>Trim invisible padding and crop to the actual content.</li>
+        <li>Avoid saving photographs as PNG in the first place — use JPEG/WebP.</li>
+        <li>Run files through OxiPNG (or Image Tools) once before publishing; many design tools emit un-optimized PNGs.</li>
+      </ul>
+
+      <h2>Summary</h2>
+      <p>For screenshots and icons, lossless PNG compression with OxiPNG gives you a free size cut with no quality loss. For photos, move to a modern format. Either way, doing it in the browser with Image Tools means it's fast, private, and free.</p>
+    </article>
+
+    <section class="related">
+      <h2>Related reading</h2>
+      <ul>
+        <li><a href="/en/blog/best-image-format-for-web.html">Best Image Format for the Web in 2026</a></li>
+        <li><a href="/en/blog/convert-images-to-webp.html">The Complete Guide to Converting Images to WebP</a></li>
+        <li><a href="/en/blog/reduce-image-size-without-losing-quality.html">Reduce Image File Size Without Losing Quality</a></li>
+      </ul>
+    </section>
+
+    <div class="cta">
+      <h2>Compress your PNGs now</h2>
+      <p>Drag, drop, download — 100% in your browser.</p>
+      <a class="btn" href="/en/">Open Image Tools</a>
+    </div>
+
+    <footer class="site-footer">
+      <span>© 2026 · Free Online Image Tools | Powered by </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a>
+    </footer>
+  </div>
+</body>
+</html>

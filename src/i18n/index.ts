@@ -5,9 +5,12 @@ import { zhCN } from './locales/zh-CN';
 export type Language = 'en' | 'zh-CN';
 
 export const LOCALES: { code: Language; label: string }[] = [
-  { code: 'en', label: 'English' },
   { code: 'zh-CN', label: '中文' },
+  { code: 'en', label: 'English' },
 ];
+
+/** URL 中英文版的路径前缀，如 '/en'；中文版为根路径，无前缀 */
+const EN_PREFIX = '/en';
 
 const TRANSLATIONS: Record<Language, Translation> = {
   en,
@@ -18,17 +21,18 @@ const TRANSLATIONS: Record<Language, Translation> = {
 export const SITE_ORIGIN = 'https://image-tools.example.com';
 
 /**
- * 根据浏览器路径判断当前语言：
- *   /zh-CN  或 /zh-CN/... → 中文
- *   其余（如 /、/foo）       → 英文
+ * 根据浏览器路径判断当前语言（中文为默认）：
+ *   /en  或 /en/...      → 英文
+ *   其余（/、/zh-CN/...、/blog/...）→ 中文
  */
 export function getLanguageFromPath(pathname: string): Language {
-  return pathname.replace(/\/+$/, '').startsWith('/zh-CN') ? 'zh-CN' : 'en';
+  const path = pathname.replace(/\/+$/, '');
+  return path === EN_PREFIX || path.startsWith(EN_PREFIX + '/') ? 'en' : 'zh-CN';
 }
 
-/** 返回当前语言对应的 URL 路径前缀，如 '/zh-CN' 或 '' */
+/** 返回当前语言对应的 URL 路径前缀：英文为 '/en'，中文（根路径）为 '' */
 export function languagePrefix(lang: Language): string {
-  return lang === 'en' ? '' : '/zh-CN';
+  return lang === 'en' ? EN_PREFIX : '';
 }
 
 /** 当前语言的另一语言，用于切换 */
@@ -59,7 +63,10 @@ export function switchLanguage(target: Language): void {
 
   // 保留其余路径与 query/hash，仅替换语言前缀
   const { pathname, search, hash } = window.location;
-  const rest = pathname.replace(/^\/zh-CN(\/|$)/, '$1'); // 去掉中文前缀
-  const targetPath = (target === 'en' ? '' : '/zh-CN') + rest;
+  // 先剥掉已有的语言前缀（英文 /en 或旧版中文 /zh-CN），得到语言无关的路径
+  const rest = pathname
+    .replace(/^\/en(\/|$)/, '$1')
+    .replace(/^\/zh-CN(\/|$)/, '$1');
+  const targetPath = languagePrefix(target) + rest;
   window.location.href = targetPath + search + hash;
 }

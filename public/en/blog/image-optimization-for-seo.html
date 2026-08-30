@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Optimization for SEO: Best Practices That Work - Image Tools</title>
+  <meta name="description" content="How image size, format, alt text, filenames, and lazy loading affect Google ranking and Core Web Vitals in 2026. Practical image SEO checklist.">
+  <meta name="keywords" content="image optimization seo, image seo, alt text seo, core web vitals images, image seo best practices">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://image-tools.example.com/en/blog/image-optimization-for-seo.html" />
+  <link rel="alternate" hreflang="en" href="https://image-tools.example.com/en/blog/image-optimization-for-seo.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://image-tools.example.com/blog/image-optimization-for-seo.html" />
+  <link rel="alternate" hreflang="x-default" href="https://image-tools.example.com/blog/image-optimization-for-seo.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://image-tools.example.com/en/blog/image-optimization-for-seo.html" />
+  <meta property="og:title" content="Image Optimization for SEO: Best Practices That Work" />
+  <meta property="og:description" content="How image size, format, alt text, and lazy loading affect Google ranking and Core Web Vitals." />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="zh_CN" />
+    <meta property="og:image" content="https://image-tools.example.com/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://image-tools.example.com/meta.jpg" />
+<meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/blog/style.css" />
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a href="/en/">← Home</a>
+      <span class="sep">/</span>
+      <a href="/en/blog/">Blog</a>
+    </nav>
+
+    <header class="article-header">
+      <h1>Image Optimization for SEO: Best Practices That Work</h1>
+      <div class="meta">Updated August 24, 2026 · 7 min read</div>
+    </header>
+
+    <article>
+      <p>Images are central to SEO in two ways: they drive <strong>image search traffic</strong> on their own, and they directly affect <strong>Core Web Vitals</strong> (LCP, CLS) that feed Google's ranking. Bad images can drag an otherwise great page down. Here's the practical checklist that actually moves the needle in 2026.</p>
+
+      <h2>1. Shrink files (the LCP lever)</h2>
+      <p>The Largest Contentful Paint is very often a hero image. If that image is 2 MB, your LCP is doomed. Compress the hero to under 150 KB (ideally under 100 KB) using AVIF or WebP. Use Image Tools to get there — see <a href="/en/blog/reduce-image-size-without-losing-quality.html">reduce image size without losing quality</a>.</p>
+
+      <h2>2. Use modern formats</h2>
+      <p>Serve <strong>AVIF</strong> (or WebP) with a JPEG fallback via the <code>&lt;picture&gt;</code> element. Modern formats cut bytes 30–50% versus JPEG at equal quality, directly improving LCP.</p>
+
+      <h2>3. Set width and height (the CLS lever)</h2>
+      <p>Always specify <code>width</code> and <code>height</code> on <code>&lt;img&gt;</code>. The browser reserves space before the image loads, preventing Cumulative Layout Shift. CLS is a Core Web Vital — layout jumps hurt ranking and UX.</p>
+
+      <h2>4. Lazy-load below the fold</h2>
+      <p>Add <code>loading="lazy"</code> and <code>decoding="async"</code> to images below the first viewport. This delays their fetch, speeding up initial render. But <strong>do not</strong> lazy-load the LCP image — that delays it.</p>
+
+      <div class="callout">Responsive <code>srcset</code> lets mobile devices download a small version and desktops a large one — huge for mobile LCP.</div>
+
+      <h2>5. Write real alt text</h2>
+      <p><code>alt</code> text is the single biggest image SEO signal: it's how Google understands the image and how screen readers describe it. Write descriptive, keyword-natural text — not stuffed keywords, not "image123". For purely decorative images, use empty <code>alt=""</code>.</p>
+
+      <h2>6. Use descriptive filenames</h2>
+      <p><code>red-running-shoes-nike.jpg</code> beats <code>IMG_4823.jpg</code>. Filenames are a minor but real ranking signal in image search. Compress first, rename, then upload.</p>
+
+      <h2>7. Add structured data where relevant</h2>
+      <p>For product images, recipes, and articles, JSON-LD with <code>image</code> properties helps Google rich results. Make sure the referenced image URL is the compressed, final one.</p>
+
+      <h2>8. Use a content delivery network (CDN)</h2>
+      <p>A CDN caches compressed images close to users, cutting TTFB and download time. Combine with the right <code>Cache-Control</code> headers (long max-age, immutable) so returning visitors pay nothing.</p>
+
+      <h2>The 2026 image SEO checklist</h2>
+      <ul>
+        <li>Hero image under 150 KB, AVIF/WebP</li>
+        <li><code>width</code>/<code>height</code> on every <code>&lt;img&gt;</code></li>
+        <li>Lazy-load below the fold, not the LCP</li>
+        <li>Descriptive <code>alt</code> and filename on every meaningful image</li>
+        <li>Responsive <code>srcset</code> for mobile/desktop</li>
+        <li>Long cache headers + CDN</li>
+      </ul>
+
+      <h2>Summary</h2>
+      <p>Image SEO is mostly mechanical: compress, set dimensions, write real alt text, lazy-load sensibly. Image Tools handles the compression half — the rest is on your markup.</p>
+    </article>
+
+    <section class="related">
+      <h2>Related reading</h2>
+      <ul>
+        <li><a href="/en/blog/image-compression-website-speed.html">How Image Compression Speeds Up Your Website</a></li>
+        <li><a href="/en/blog/best-image-format-for-web.html">Best Image Format for the Web</a></li>
+        <li><a href="/en/blog/reduce-image-size-without-losing-quality.html">Reduce Image Size Without Losing Quality</a></li>
+      </ul>
+    </section>
+
+    <div class="cta">
+      <h2>Get your images SEO-ready</h2>
+      <p>Compress to AVIF/WebP in seconds — in the browser.</p>
+      <a class="btn" href="/en/">Open Image Tools</a>
+    </div>
+
+    <footer class="site-footer">
+      <span>© 2026 · Free Online Image Tools | Powered by </span><a href="https://image-tools.com" target="_blank" rel="noopener noreferrer">Image Tools</a>
+    </footer>
+  </div>
+</body>
+</html>
