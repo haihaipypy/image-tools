@@ -35,7 +35,7 @@ export const en = {
 
   // 页脚（外链）
   footerBefore: '© 2026 · Free Online Image Tools | Powered by ',
-  footerLink: '无辣',
+  footerLink: 'Image Tools',
   footerAfter: '',
 
   // 博客入口卡片（按当前语言指向 /blog/ 或 /en/blog/）
