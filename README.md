@@ -2,9 +2,11 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-A modern, browser-based image compression tool that leverages WebAssembly for high-performance image optimization. Squish supports multiple formats and provides an intuitive interface for compressing your images without compromising quality.
+[English](./README.md) | [简体中文](./README_zh.md)
 
-![](./public/meta.jpg)
+A modern, browser-based image compression tool that leverages WebAssembly for high-performance image optimization. Image Tools supports multiple formats and provides an intuitive interface for compressing your images without compromising quality.
+
+![](./public/screenshot-zh.png)
 
 ## ✨ Features
 
@@ -27,7 +29,7 @@ A modern, browser-based image compression tool that leverages WebAssembly for hi
 
 ## 🛠️ Technology
 
-Squish is built with modern web technologies:
+Image Tools is built with modern web technologies:
 
 - React + TypeScript for the UI
 - Vite for blazing fast development
@@ -46,7 +48,7 @@ Squish is built with modern web technologies:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/image-tools.git
+git clone https://github.com/haihaipypy/image-tools.git
 cd image-tools
 ```
 

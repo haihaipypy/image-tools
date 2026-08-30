@@ -37,7 +37,7 @@ export const zhCN: Translation = {
 
   // 页脚（外链）
   footerBefore: '© 2026 · 免费在线图片处理｜由 ',
-  footerLink: 'Image Tools',
+  footerLink: '无辣',
   footerAfter: ' 提供',
 
   // 博客入口卡片（按当前语言指向 /blog/ 或 /en/blog/）
