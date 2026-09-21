@@ -10,4 +10,4 @@ Allow: /meta.jpg
 Allow: /site.webmanifest
 Allow: /sitemap.xml
 
-Sitemap: https://image-tools.example.com/sitemap.xml
+Sitemap: https://img.1day.vip/sitemap.xml

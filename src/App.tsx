@@ -1,148 +1,123 @@
-import React, { useState, useCallback } from 'react';
-import { Image, Trash2, BookOpen } from 'lucide-react';
-import { CompressionOptions } from './components/CompressionOptions';
-import { DropZone } from './components/DropZone';
-import { ImageList } from './components/ImageList';
-import { DownloadAll } from './components/DownloadAll';
-import { LanguageSwitcher } from './components/LanguageSwitcher';
-import { useImageQueue } from './hooks/useImageQueue';
-import { DEFAULT_QUALITY_SETTINGS } from './utils/formatDefaults';
-import { useTranslation, languagePrefix } from './i18n';
-import type { ImageFile, OutputType, CompressionOptions as CompressionOptionsType } from './types';
+import { useCallback, useEffect, useState } from 'react'
+import { BookOpen, Image as ImageIcon, Sparkles } from 'lucide-react'
+import { CompressWorkbench } from './components/compress/CompressWorkbench'
+import { LanguageSwitcher } from './components/LanguageSwitcher'
+import { UpscaleWorkbench } from './components/upscale/UpscaleWorkbench'
+import { languagePrefix, useTranslation } from './i18n'
+
+type Tool = 'compress' | 'upscale'
+
+/**
+ * hash 优先（站内切换标签时写它），路径兜底（/upscale/ 这类独立入口进来时用）。
+ */
+function resolveTool(): Tool {
+  const hash = window.location.hash.slice(1)
+  if (hash === 'upscale' || hash === 'compress') return hash
+  return /\/upscale\/?$/.test(window.location.pathname) ? 'upscale' : 'compress'
+}
 
 export function App() {
-  const { lang, t } = useTranslation();
-  const [images, setImages] = useState<ImageFile[]>([]);
-  const [outputType, setOutputType] = useState<OutputType>('webp');
-  const [options, setOptions] = useState<CompressionOptionsType>({
-    quality: DEFAULT_QUALITY_SETTINGS.webp,
-  });
+  const { lang, t } = useTranslation()
+  const [tool, setTool] = useState<Tool>(resolveTool)
 
-  const { addToQueue } = useImageQueue(options, outputType, setImages);
+  useEffect(() => {
+    const onHashChange = () => setTool(resolveTool())
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
 
-  const handleOutputTypeChange = useCallback((type: OutputType) => {
-    setOutputType(type);
-    if (type !== 'png') {
-      setOptions({ quality: DEFAULT_QUALITY_SETTINGS[type] });
-    }
-  }, []);
+  const switchTool = useCallback(
+    (next: Tool) => {
+      setTool(next)
+      // 顺手把路径改成语义化的那个，但不整页跳转 —— 两个工具共用同一份 bundle，
+      // 切换应当是瞬时的。history.replaceState 不进历史栈，避免退格键要走两步。
+      const prefix = languagePrefix(lang)
+      window.history.replaceState(null, '', next === 'upscale' ? `${prefix}/upscale/` : `${prefix}/`)
+    },
+    [lang],
+  )
 
-  const handleFilesDrop = useCallback((newImages: ImageFile[]) => {
-    // First add all images to state
-    setImages((prev) => [...prev, ...newImages]);
+  const blogHref = `${languagePrefix(lang)}/blog/`
 
-    // Use requestAnimationFrame to wait for render to complete
-    requestAnimationFrame(() => {
-      // Then add to queue after UI has updated
-      newImages.forEach(image => addToQueue(image.id));
-    });
-  }, [addToQueue]);
-
-  const handleRemoveImage = useCallback((id: string) => {
-    setImages((prev) => {
-      const image = prev.find(img => img.id === id);
-      if (image?.preview) {
-        URL.revokeObjectURL(image.preview);
-      }
-      return prev.filter(img => img.id !== id);
-    });
-  }, []);
-
-  const handleClearAll = useCallback(() => {
-    images.forEach(image => {
-      if (image.preview) {
-        URL.revokeObjectURL(image.preview);
-      }
-    });
-    setImages([]);
-  }, [images]);
-
-  const handleDownloadAll = useCallback(async () => {
-    const completedImages = images.filter((img) => img.status === "complete");
-
-    for (const image of completedImages) {
-      if (image.blob && image.outputType) {
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(image.blob);
-        link.download = `${image.file.name.split(".")[0]}.${image.outputType}`;
-        link.click();
-        URL.revokeObjectURL(link.href);
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-  }, [images]);
-
-  const completedImages = images.filter(img => img.status === 'complete').length;
-  // 博客入口按当前语言走对应前缀：中文 /blog/，英文 /en/blog/
-  const blogHref = `${languagePrefix(lang)}/blog/`;
+  const tabs = [
+    { id: 'compress' as const, label: t.compressTool, desc: t.compressToolDesc, Icon: ImageIcon },
+    { id: 'upscale' as const, label: t.upscaleTool, desc: t.upscaleToolDesc, Icon: Sparkles },
+  ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="flex justify-end mb-4">
+    <div className="min-h-dvh bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+      <header className="sticky top-0 z-10 border-b border-neutral-200 bg-white/85 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/85">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-3 sm:px-6">
+          <div className="flex items-center gap-2.5">
+            <div className="flex size-9 items-center justify-center rounded-xl bg-blue-600 text-white">
+              <ImageIcon className="size-5" />
+            </div>
+            <div className="leading-tight">
+              <p className="text-sm font-medium">{t.brand}</p>
+              <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
+                {t.compressToolDesc} · {t.upscaleToolDesc}
+              </p>
+            </div>
+          </div>
+
+          <nav
+            aria-label={t.toolNavAria}
+            className="order-last flex w-full items-center gap-1 rounded-full bg-neutral-100 p-1 sm:order-none sm:w-auto dark:bg-neutral-900"
+          >
+            {tabs.map(({ id, label, desc, Icon }) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => switchTool(id)}
+                title={desc}
+                aria-current={tool === id ? 'page' : undefined}
+                className={[
+                  'inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition sm:flex-none',
+                  tool === id
+                    ? 'bg-white text-blue-700 shadow-sm dark:bg-neutral-800 dark:text-blue-300'
+                    : 'text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100',
+                ].join(' ')}
+              >
+                <Icon className="size-4" />
+                {label}
+              </button>
+            ))}
+          </nav>
+
           <LanguageSwitcher />
         </div>
+      </header>
 
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Image className="w-8 h-8 text-blue-500" />
-            <h1 className="text-3xl font-bold text-gray-900">{t.brand}</h1>
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        {tool === 'compress' ? <CompressWorkbench /> : <UpscaleWorkbench />}
+      </main>
+
+      <div className="mx-auto max-w-6xl space-y-6 px-4 pb-10 sm:px-6">
+        <p className="mx-auto max-w-3xl text-center text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
+          {t.tagline}
+        </p>
+
+        <a
+          href={blogHref}
+          className="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-5 transition-all hover:border-blue-400 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-blue-700"
+        >
+          <BookOpen className="size-7 flex-shrink-0 text-blue-600" />
+          <div className="min-w-0 flex-1">
+            <p className="font-medium">{t.blogCardTitle}</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">{t.blogCardDesc}</p>
           </div>
-          <p className="text-gray-600">{t.tagline}</p>
-        </div>
+          <span className="text-sm font-medium whitespace-nowrap text-blue-600 transition-transform group-hover:translate-x-0.5">
+            {t.blogCardCta} →
+          </span>
+        </a>
 
-        <div className="space-y-6">
-          <CompressionOptions
-            options={options}
-            outputType={outputType}
-            onOptionsChange={setOptions}
-            onOutputTypeChange={handleOutputTypeChange}
-          />
-
-          <DropZone onFilesDrop={handleFilesDrop} />
-
-          {completedImages > 0 && (
-            <DownloadAll onDownloadAll={handleDownloadAll} count={completedImages} />
-          )}
-
-          <ImageList
-            images={images}
-            onRemove={handleRemoveImage}
-          />
-
-          {images.length > 0 && (
-            <button
-              onClick={handleClearAll}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-            >
-              <Trash2 className="w-5 h-5" />
-              {t.clearAll}
-            </button>
-          )}
-
-          <a
-            href={blogHref}
-            className="flex items-center gap-4 p-5 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-blue-400 hover:shadow-md transition-all group"
-          >
-            <BookOpen className="w-8 h-8 text-blue-500 flex-shrink-0" />
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-gray-900">{t.blogCardTitle}</p>
-              <p className="text-sm text-gray-500">{t.blogCardDesc}</p>
-            </div>
-            <span className="text-sm font-medium text-blue-500 group-hover:translate-x-0.5 transition-transform whitespace-nowrap">
-              {t.blogCardCta} →
-            </span>
-          </a>
-        </div>
-
-        <footer className="mt-12 pt-6 border-t border-gray-200 text-center text-sm text-gray-400">
+        <footer className="border-t border-neutral-200 pt-6 text-center text-sm text-neutral-400 dark:border-neutral-800 dark:text-neutral-600">
           <span>{t.footerBefore}</span>
           <a
             href="https://blog.1day.vip/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 hover:text-blue-600 hover:underline"
+            className="text-blue-600 hover:underline dark:text-blue-400"
           >
             {t.footerLink}
           </a>
@@ -150,5 +125,5 @@ export function App() {
         </footer>
       </div>
     </div>
-  );
+  )
 }

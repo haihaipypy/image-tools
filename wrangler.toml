@@ -1,0 +1,11 @@
+# Cloudflare Pages 配置。
+#
+# 站内没有任何服务端代码：压缩走浏览器端的 WASM 编解码器，
+# 放大走浏览器端的 ONNX Runtime（WebGPU / WASM），因此只发布静态资源，
+# 在 Cloudflare 上这部分不计费。
+#
+# 跨域隔离所需的 COOP / COEP 响应头由 public/_headers 声明，构建后
+# 会随 dist/ 一起上传 —— Pages 原生支持该文件。
+name = "image-tools"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-09-21"

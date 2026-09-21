@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback, type ChangeEvent, type DragEvent } from 'react';
 import { Upload } from 'lucide-react';
 import type { ImageFile } from '../types';
 import { useTranslation } from '../i18n';
@@ -7,42 +7,38 @@ interface DropZoneProps {
   onFilesDrop: (files: ImageFile[]) => void;
 }
 
+const isSupported = (file: File) =>
+  file.type.startsWith('image/') || file.name.toLowerCase().endsWith('jxl');
+
 export function DropZone({ onFilesDrop }: DropZoneProps) {
   const { t } = useTranslation();
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  const toImages = (files: File[]): ImageFile[] =>
+    files.map(file => ({
+      id: crypto.randomUUID(),
+      file,
+      status: 'pending' as const,
+      originalSize: file.size,
+    }));
+
+  const handleDrop = useCallback((e: DragEvent) => {
     e.preventDefault();
-    const files = Array.from(e.dataTransfer.files)
-      .filter(file => file.type.startsWith('image/') || file.name.toLowerCase().endsWith('jxl'))
-      .map(file => ({
-        id: crypto.randomUUID(),
-        file,
-        status: 'pending' as const,
-        originalSize: file.size,
-      }));
-    onFilesDrop(files);
+    onFilesDrop(toImages(Array.from(e.dataTransfer.files).filter(isSupported)));
   }, [onFilesDrop]);
 
-  const handleDragOver = useCallback((e: React.DragEvent) => {
+  const handleDragOver = useCallback((e: DragEvent) => {
     e.preventDefault();
   }, []);
 
-  const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || [])
-      .filter(file => file.type.startsWith('image/') || file.name.toLowerCase().endsWith('jxl'))
-      .map(file => ({
-        id: crypto.randomUUID(),
-        file,
-        status: 'pending' as const,
-        originalSize: file.size,
-      }));
-    onFilesDrop(files);
+  const handleFileInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []).filter(isSupported);
+    onFilesDrop(toImages(files));
     e.target.value = '';
   }, [onFilesDrop]);
 
   return (
     <div
-      className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-blue-500 transition-colors"
+      className="rounded-2xl border-2 border-dashed border-neutral-300 bg-white p-12 text-center transition-colors hover:border-blue-500 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-blue-600"
       onDrop={handleDrop}
       onDragOver={handleDragOver}
     >
@@ -56,14 +52,14 @@ export function DropZone({ onFilesDrop }: DropZoneProps) {
       />
       <label
         htmlFor="fileInput"
-        className="cursor-pointer flex flex-col items-center gap-4"
+        className="flex cursor-pointer flex-col items-center gap-4"
       >
-        <Upload className="w-12 h-12 text-gray-400" />
+        <Upload className="h-12 w-12 text-neutral-400" />
         <div>
-          <p className="text-lg font-medium text-gray-700">
+          <p className="text-lg font-medium text-neutral-700 dark:text-neutral-200">
             {t.dropTitle}
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
             {t.dropSubtitle}
           </p>
         </div>

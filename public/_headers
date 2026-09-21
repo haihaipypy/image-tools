@@ -1,0 +1,20 @@
+# Cloudflare reads this file and applies the headers to matching routes.
+#
+# Cross-origin isolation is what unlocks multi-threaded WASM inference
+# (SharedArrayBuffer, shared via crossOriginIsolated). Without it, browsers
+# without WebGPU fall back to single-threaded WASM, which is several times
+# slower.
+#
+# `require-corp` means every subresource must be same-origin or carry an
+# explicit CORP header. This app only loads its own assets, so that is fine —
+# but if you later add a third-party font or CDN script, revisit this.
+
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+
+/models/*
+  Cache-Control: public, max-age=604800
+
+/ort/*
+  Cache-Control: public, max-age=604800

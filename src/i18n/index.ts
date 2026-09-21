@@ -18,7 +18,7 @@ const TRANSLATIONS: Record<Language, Translation> = {
 };
 
 // 站点根 URL（用于 canonical/hreflang，可按实际部署域名调整）
-export const SITE_ORIGIN = 'https://image-tools.example.com';
+export const SITE_ORIGIN = 'https://img.1day.vip';
 
 /**
  * 根据浏览器路径判断当前语言（中文为默认）：

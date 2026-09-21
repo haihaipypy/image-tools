@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <title>AI 图片放大 - 浏览器本地超分辨率，最高 4 倍 | 图片工具</title>
+    <meta name="description" content="免费的浏览器端 AI 图片放大工具：用 Real-ESRGAN 超分辨率模型把 PNG、JPEG、WebP、AVIF 图片放大到 2 倍、3 倍或 4 倍，补回细节、减少模糊，而不是简单拉伸像素。全程在本机推理，图片不上传服务器；支持 WebGPU 加速，没有 WebGPU 时自动回退 WASM。附带 WebP、AVIF、JPEG、PNG 压缩与格式转换。" />
+    <meta name="keywords" content="图片放大,AI图片放大,图片无损放大,图片变清晰,图片清晰化,超分辨率,图片增强,放大图片不模糊,4倍放大,在线图片放大,免费图片放大,浏览器图片放大,real-esrgan,webgpu,图片放大工具,照片放大,小图变大图,提高图片分辨率" />
+    <meta name="author" content="Image Tools" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <link rel="canonical" href="https://img.1day.vip/upscale/" />
+    <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/upscale/" />
+    <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/upscale/" />
+    <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/upscale/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="图片工具" />
+    <meta property="og:title" content="AI 图片放大 - 浏览器本地超分辨率，最高 4 倍" />
+    <meta property="og:description" content="用 AI 超分辨率把图片放大到 4 倍，补回细节而不是拉伸像素。全程在浏览器本地推理，图片不上传，支持 WebGPU 加速。" />
+    <meta property="og:url" content="https://img.1day.vip/upscale/" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AI 图片放大 - 浏览器本地超分辨率，最高 4 倍" />
+    <meta name="twitter:description" content="免费在线 AI 图片放大：Real-ESRGAN 超分辨率放大到 4 倍，浏览器本地推理，图片不上传，支持 WebGPU 加速。" />
+    <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "AI 图片放大",
+        "alternateName": "AI Image Upscaler",
+        "url": "https://img.1day.vip/upscale/",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any (Web Browser)",
+        "description": "免费的浏览器端 AI 图片放大工具，基于 Real-ESRGAN 超分辨率，把图片放大到最高 4 倍并补回细节，全程本地推理、无需上传。",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
+        "featureList": [
+          "AI 超分辨率放大（2 倍 / 3 倍 / 4 倍）",
+          "Real-ESRGAN 通用照片模型",
+          "浏览器本地推理（无需上传）",
+          "WebGPU 加速，WASM 自动回退",
+          "放大前后对比滑块",
+          "PNG 无损导出"
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <noscript>AI 图片放大是一款免费的在线超分辨率工具，需要启用 JavaScript。请在浏览器中启用 JavaScript 后放大图片。</noscript>
+  </body>
+</html>

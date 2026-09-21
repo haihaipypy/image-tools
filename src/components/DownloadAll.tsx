@@ -1,4 +1,3 @@
-import React from 'react';
 import { Download } from 'lucide-react';
 import { useTranslation } from '../i18n';
 
@@ -13,9 +12,9 @@ export function DownloadAll({ onDownloadAll, count }: DownloadAllProps) {
   return (
     <button
       onClick={onDownloadAll}
-      className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+      className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
     >
-      <Download className="w-5 h-5" />
+      <Download className="h-5 w-5" />
       {t.downloadAllCount(count)}
     </button>
   );
