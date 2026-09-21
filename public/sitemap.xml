@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  图片工具 sitemap
+  中文版为根路径（/、/upscale/、/blog/），英文版在 /en/ 下，两者各自一条 <loc> 并互指 hreflang。
+  /zh-CN/** 是早期路径，canonical 已指向非 zh-CN 版本，故不列入 sitemap（避免重复内容）。
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-  <!-- 首页 -->
+  <!-- 首页 · 图片压缩 + AI 放大 -->
   <url>
     <loc>https://img.1day.vip/</loc>
-    <lastmod>2026-08-24</lastmod>
+    <lastmod>2026-09-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/"/>
-  </url>
-  <url>
-    <loc>https://img.1day.vip/zh-CN/</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/"/>
   </url>
 
-  <!-- AI 放大工具页 -->
+  <url>
+    <loc>https://img.1day.vip/en/</loc>
+    <lastmod>2026-09-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/"/>
+  </url>
+
+  <!-- AI 放大工具 -->
   <url>
     <loc>https://img.1day.vip/upscale/</loc>
     <lastmod>2026-09-21</lastmod>
@@ -33,175 +39,195 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/upscale/"/>
   </url>
 
-  <!-- 博客列表页 -->
+  <url>
+    <loc>https://img.1day.vip/en/upscale/</loc>
+    <lastmod>2026-09-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/upscale/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/upscale/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/upscale/"/>
+  </url>
+
+  <!-- 博客列表 -->
   <url>
     <loc>https://img.1day.vip/blog/</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/"/>
-  </url>
-  <url>
-    <loc>https://img.1day.vip/zh-CN/blog/</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/"/>
   </url>
 
-  <!-- 博客文章（中英各 10 篇） -->
   <url>
-    <loc>https://img.1day.vip/blog/compress-png-online.html</loc>
+    <loc>https://img.1day.vip/en/blog/</loc>
     <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/compress-png-online.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/compress-png-online.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/compress-png-online.html"/>
-  </url>
-  <url>
-    <loc>https://img.1day.vip/zh-CN/blog/compress-png-online.html</loc>
-    <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/compress-png-online.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/compress-png-online.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/compress-png-online.html"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/"/>
   </url>
 
   <url>
     <loc>https://img.1day.vip/blog/avif-vs-webp.html</loc>
     <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/avif-vs-webp.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/avif-vs-webp.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/avif-vs-webp.html"/>
-  </url>
-  <url>
-    <loc>https://img.1day.vip/zh-CN/blog/avif-vs-webp.html</loc>
-    <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/avif-vs-webp.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/avif-vs-webp.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/avif-vs-webp.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/avif-vs-webp.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/avif-vs-webp.html"/>
   </url>
 
   <url>
-    <loc>https://img.1day.vip/blog/best-image-format-for-web.html</loc>
+    <loc>https://img.1day.vip/en/blog/avif-vs-webp.html</loc>
     <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/best-image-format-for-web.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/best-image-format-for-web.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/best-image-format-for-web.html"/>
-  </url>
-  <url>
-    <loc>https://img.1day.vip/zh-CN/blog/best-image-format-for-web.html</loc>
-    <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/best-image-format-for-web.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/best-image-format-for-web.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/best-image-format-for-web.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/avif-vs-webp.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/avif-vs-webp.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/avif-vs-webp.html"/>
   </url>
 
   <url>
     <loc>https://img.1day.vip/blog/batch-compress-images.html</loc>
     <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/batch-compress-images.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/batch-compress-images.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/batch-compress-images.html"/>
-  </url>
-  <url>
-    <loc>https://img.1day.vip/zh-CN/blog/batch-compress-images.html</loc>
-    <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/batch-compress-images.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/batch-compress-images.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/batch-compress-images.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/batch-compress-images.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/batch-compress-images.html"/>
   </url>
 
   <url>
-    <loc>https://img.1day.vip/blog/reduce-image-size-without-losing-quality.html</loc>
+    <loc>https://img.1day.vip/en/blog/batch-compress-images.html</loc>
     <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/reduce-image-size-without-losing-quality.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/reduce-image-size-without-losing-quality.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/reduce-image-size-without-losing-quality.html"/>
-  </url>
-  <url>
-    <loc>https://img.1day.vip/zh-CN/blog/reduce-image-size-without-losing-quality.html</loc>
-    <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/reduce-image-size-without-losing-quality.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/reduce-image-size-without-losing-quality.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/reduce-image-size-without-losing-quality.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/batch-compress-images.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/batch-compress-images.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/batch-compress-images.html"/>
   </url>
 
   <url>
-    <loc>https://img.1day.vip/blog/convert-images-to-webp.html</loc>
+    <loc>https://img.1day.vip/blog/best-image-format-for-web.html</loc>
     <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/convert-images-to-webp.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/convert-images-to-webp.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/convert-images-to-webp.html"/>
-  </url>
-  <url>
-    <loc>https://img.1day.vip/zh-CN/blog/convert-images-to-webp.html</loc>
-    <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/convert-images-to-webp.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/convert-images-to-webp.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/convert-images-to-webp.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/best-image-format-for-web.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/best-image-format-for-web.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/best-image-format-for-web.html"/>
   </url>
 
   <url>
-    <loc>https://img.1day.vip/blog/compress-jpeg-without-quality-loss.html</loc>
+    <loc>https://img.1day.vip/en/blog/best-image-format-for-web.html</loc>
     <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/compress-jpeg-without-quality-loss.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/compress-jpeg-without-quality-loss.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/compress-jpeg-without-quality-loss.html"/>
-  </url>
-  <url>
-    <loc>https://img.1day.vip/zh-CN/blog/compress-jpeg-without-quality-loss.html</loc>
-    <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/compress-jpeg-without-quality-loss.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/compress-jpeg-without-quality-loss.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/compress-jpeg-without-quality-loss.html"/>
-  </url>
-
-  <url>
-    <loc>https://img.1day.vip/blog/image-optimization-for-seo.html</loc>
-    <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/image-optimization-for-seo.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/image-optimization-for-seo.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/image-optimization-for-seo.html"/>
-  </url>
-  <url>
-    <loc>https://img.1day.vip/zh-CN/blog/image-optimization-for-seo.html</loc>
-    <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/image-optimization-for-seo.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/image-optimization-for-seo.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/image-optimization-for-seo.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/best-image-format-for-web.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/best-image-format-for-web.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/best-image-format-for-web.html"/>
   </url>
 
   <url>
     <loc>https://img.1day.vip/blog/browser-based-image-compression-privacy.html</loc>
     <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/browser-based-image-compression-privacy.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/browser-based-image-compression-privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/browser-based-image-compression-privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/browser-based-image-compression-privacy.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/browser-based-image-compression-privacy.html"/>
   </url>
+
   <url>
-    <loc>https://img.1day.vip/zh-CN/blog/browser-based-image-compression-privacy.html</loc>
+    <loc>https://img.1day.vip/en/blog/browser-based-image-compression-privacy.html</loc>
     <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/browser-based-image-compression-privacy.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/browser-based-image-compression-privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/browser-based-image-compression-privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/browser-based-image-compression-privacy.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/browser-based-image-compression-privacy.html"/>
+  </url>
+
+  <url>
+    <loc>https://img.1day.vip/blog/compress-jpeg-without-quality-loss.html</loc>
+    <lastmod>2026-08-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/compress-jpeg-without-quality-loss.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/compress-jpeg-without-quality-loss.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/compress-jpeg-without-quality-loss.html"/>
+  </url>
+
+  <url>
+    <loc>https://img.1day.vip/en/blog/compress-jpeg-without-quality-loss.html</loc>
+    <lastmod>2026-08-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/compress-jpeg-without-quality-loss.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/compress-jpeg-without-quality-loss.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/compress-jpeg-without-quality-loss.html"/>
+  </url>
+
+  <url>
+    <loc>https://img.1day.vip/blog/compress-png-online.html</loc>
+    <lastmod>2026-08-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/compress-png-online.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/compress-png-online.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/compress-png-online.html"/>
+  </url>
+
+  <url>
+    <loc>https://img.1day.vip/en/blog/compress-png-online.html</loc>
+    <lastmod>2026-08-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/compress-png-online.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/compress-png-online.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/compress-png-online.html"/>
+  </url>
+
+  <url>
+    <loc>https://img.1day.vip/blog/convert-images-to-webp.html</loc>
+    <lastmod>2026-08-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/convert-images-to-webp.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/convert-images-to-webp.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/convert-images-to-webp.html"/>
+  </url>
+
+  <url>
+    <loc>https://img.1day.vip/en/blog/convert-images-to-webp.html</loc>
+    <lastmod>2026-08-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/convert-images-to-webp.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/convert-images-to-webp.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/convert-images-to-webp.html"/>
   </url>
 
   <url>
     <loc>https://img.1day.vip/blog/image-compression-website-speed.html</loc>
     <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/image-compression-website-speed.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/image-compression-website-speed.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/image-compression-website-speed.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/image-compression-website-speed.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/image-compression-website-speed.html"/>
   </url>
+
   <url>
-    <loc>https://img.1day.vip/zh-CN/blog/image-compression-website-speed.html</loc>
+    <loc>https://img.1day.vip/en/blog/image-compression-website-speed.html</loc>
     <lastmod>2026-08-24</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/blog/image-compression-website-speed.html"/>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/zh-CN/blog/image-compression-website-speed.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/image-compression-website-speed.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/image-compression-website-speed.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/image-compression-website-speed.html"/>
+  </url>
+
+  <url>
+    <loc>https://img.1day.vip/blog/image-optimization-for-seo.html</loc>
+    <lastmod>2026-08-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/image-optimization-for-seo.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/image-optimization-for-seo.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/image-optimization-for-seo.html"/>
+  </url>
+
+  <url>
+    <loc>https://img.1day.vip/en/blog/image-optimization-for-seo.html</loc>
+    <lastmod>2026-08-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/image-optimization-for-seo.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/image-optimization-for-seo.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/image-optimization-for-seo.html"/>
+  </url>
+
+  <url>
+    <loc>https://img.1day.vip/blog/reduce-image-size-without-losing-quality.html</loc>
+    <lastmod>2026-08-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/reduce-image-size-without-losing-quality.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/reduce-image-size-without-losing-quality.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/reduce-image-size-without-losing-quality.html"/>
+  </url>
+
+  <url>
+    <loc>https://img.1day.vip/en/blog/reduce-image-size-without-losing-quality.html</loc>
+    <lastmod>2026-08-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/blog/reduce-image-size-without-losing-quality.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/blog/reduce-image-size-without-losing-quality.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/blog/reduce-image-size-without-losing-quality.html"/>
   </url>
 
 </urlset>
