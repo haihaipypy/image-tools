@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { BookOpen, Image as ImageIcon, Scissors, Sparkles } from 'lucide-react'
+import { BookOpen, BookText, Image as ImageIcon, Scissors, Sparkles } from 'lucide-react'
 import { CompressWorkbench } from './components/compress/CompressWorkbench'
 import { CutoutWorkbench } from './components/cutout/CutoutWorkbench'
+import { GithubIcon } from './components/GithubIcon'
 import { LanguageSwitcher } from './components/LanguageSwitcher'
 import { UpscaleWorkbench } from './components/upscale/UpscaleWorkbench'
 import { languagePrefix, useTranslation } from './i18n'
@@ -15,6 +16,9 @@ const PATHS: Record<Tool, string> = {
 }
 
 const TOOLS = Object.keys(PATHS) as Tool[]
+
+/** 源码仓库，页头的 GitHub 图标与文档站的页脚共用 */
+const GITHUB_URL = 'https://github.com/haihaipypy/image-tools'
 
 /**
  * hash 优先（站内切换标签时写它），路径兜底（/upscale/ 这类独立入口进来时用）。
@@ -49,6 +53,7 @@ export function App() {
   )
 
   const blogHref = `${languagePrefix(lang)}/blog/`
+  const docsHref = `${languagePrefix(lang)}/docs/`
 
   const tabs = [
     { id: 'compress' as const, label: t.compressTool, desc: t.compressToolDesc, Icon: ImageIcon },
@@ -96,7 +101,29 @@ export function App() {
             ))}
           </nav>
 
-          <LanguageSwitcher />
+          <div className="flex items-center gap-1.5">
+            <a
+              href={docsHref}
+              title={t.docsLinkAria}
+              aria-label={t.docsLinkAria}
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-neutral-600 transition hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
+            >
+              <BookText className="size-4" />
+              <span className="hidden sm:inline">{t.docsLink}</span>
+            </a>
+            <a
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={t.githubLinkAria}
+              aria-label={t.githubLinkAria}
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-neutral-600 transition hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
+            >
+              <GithubIcon className="size-4" />
+              <span className="hidden sm:inline">GitHub</span>
+            </a>
+            <LanguageSwitcher />
+          </div>
         </div>
       </header>
 
@@ -126,6 +153,34 @@ export function App() {
         </a>
 
         <footer className="border-t border-neutral-200 pt-6 text-center text-sm text-neutral-400 dark:border-neutral-800 dark:text-neutral-600">
+          <div className="mb-4 flex items-center justify-center gap-2">
+            <a
+              href={docsHref}
+              title={t.docsLinkAria}
+              aria-label={t.docsLinkAria}
+              className="inline-flex size-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-500 transition hover:border-blue-400 hover:text-blue-600 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-blue-700 dark:hover:text-blue-400"
+            >
+              <BookText className="size-4" />
+            </a>
+            <a
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={t.githubLinkAria}
+              aria-label={t.githubLinkAria}
+              className="inline-flex size-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-500 transition hover:border-blue-400 hover:text-blue-600 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-blue-700 dark:hover:text-blue-400"
+            >
+              <GithubIcon className="size-4" />
+            </a>
+            <a
+              href={blogHref}
+              title={t.blogCardTitle}
+              aria-label={t.blogCardTitle}
+              className="inline-flex size-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-500 transition hover:border-blue-400 hover:text-blue-600 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-blue-700 dark:hover:text-blue-400"
+            >
+              <BookOpen className="size-4" />
+            </a>
+          </div>
           <span>{t.footerBefore}</span>
           <a
             href="https://blog.1day.vip/"

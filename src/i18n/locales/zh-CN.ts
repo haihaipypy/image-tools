@@ -55,6 +55,11 @@ export const zhCN: Translation = {
     '关于图片压缩、格式转换与放大的实用技巧 —— AVIF、WebP、JPEG、PNG、JPEG XL 与 AI 超分辨率。',
   blogCardCta: '阅读博客',
 
+  // 顶部导航的图标链接（文档站与 GitHub 仓库）
+  docsLink: '文档',
+  docsLinkAria: '查看使用文档',
+  githubLinkAria: '在 GitHub 上查看源码',
+
   // ── AI 放大 ──────────────────────────────────────────────
   // 拖拽区
   upscaleDropTitle: '把图片拖进来，或点击选择',

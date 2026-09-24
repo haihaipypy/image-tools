@@ -228,6 +228,64 @@ hr {
 .pager a { color: var(--text-muted); }
 .pager a:hover { color: var(--brand); }
 
+/* ── 页脚图标行：首页 / GitHub / 博客 / 另一种语言 ── */
+.foot-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+.foot-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--text-muted);
+  transition: border-color 0.12s, color 0.12s, background 0.12s;
+}
+.foot-links a:hover {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  color: var(--brand);
+  text-decoration: none;
+}
+.foot-links svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+/* 侧栏底部的图标行（窄屏时侧栏变顶部条，这里跟着换行） */
+.sidebar .side-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.sidebar .side-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  transition: border-color 0.12s, color 0.12s;
+}
+.sidebar .side-links a:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+  text-decoration: none;
+}
+.sidebar .side-links svg {
+  width: 15px;
+  height: 15px;
+}
+
 .topbar {
   display: none;
 }
