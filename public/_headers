@@ -28,14 +28,21 @@
 /ort/*
   Cache-Control: public, max-age=604800
 
-# The docs site is hand-written static HTML with one shared stylesheet. The HTML
-# changes whenever the docs are edited, so it gets a short TTL; the stylesheet is
-# effectively frozen and can be cached for longer.
+# The docs site is hand-written static HTML with one shared stylesheet.
+#
+# HTML and CSS MUST share the same short TTL. They ship together and are edited
+# together, so if the stylesheet outlives the markup you get a window where new
+# HTML meets old CSS — that mismatch is not cosmetic: any class the new markup
+# relies on for sizing (e.g. the sidebar icon row) simply has no rule, and the
+# SVGs balloon to their default 300x150 and get clipped by the sidebar.
+#
+# Do NOT raise the CSS TTL to "save bandwidth" unless the filename is
+# content-hashed — it is not, and it is edited alongside the HTML.
 /docs/*.html
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=3600, must-revalidate
 
 /en/docs/*.html
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=3600, must-revalidate
 
 /docs/*.css
-  Cache-Control: public, max-age=604800
+  Cache-Control: public, max-age=3600, must-revalidate
