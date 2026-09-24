@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usage - Image Tools Docs</title>
+  <meta name="description" content="How to use all three Image Tools: compression and format conversion, AI upscaling, and AI background removal, with settings advice and common questions.">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://img.1day.vip/en/docs/usage.html" />
+  <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/usage.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/docs/usage.html" />
+  <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/docs/usage.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://img.1day.vip/en/docs/usage.html" />
+  <meta property="og:title" content="Usage - Image Tools Docs" />
+  <meta property="og:description" content="How to use each tool and which settings matter.">
+  <meta property="og:locale" content="en" />
+  <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/docs/style.css" />
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="/en/">Image Tools <span>Docs</span></a>
+    <div class="group">
+      <p>Getting started</p>
+      <ul>
+        <li><a href="/en/docs/">Introduction</a></li>
+        <li><a href="/en/docs/usage.html" aria-current="page">Usage</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>Under the hood</p>
+      <ul>
+        <li><a href="/en/docs/how-it-works.html">In-browser inference</a></li>
+        <li><a href="/en/docs/models.html">Models</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>Deployment</p>
+      <ul>
+        <li><a href="/en/docs/deployment.html">Deploying</a></li>
+        <li><a href="/en/docs/customize.html">Customizing</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>More</p>
+      <ul>
+        <li><a href="/en/docs/license.html">License</a></li>
+        <li><a href="/docs/">中文</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>Usage</h1>
+    <p class="lead">All three tools follow the same shape: drop an image, adjust a couple of settings, download the result.</p>
+
+    <h2>Compression and format conversion</h2>
+
+    <p>Path: <code>/</code></p>
+
+    <p>
+      Drop in one or many images, pick an output format and quality, then download.
+      This is pure encoding — no AI involved — so it is fast and unaffected by your hardware.
+    </p>
+
+    <h3>Choosing a format</h3>
+
+    <table>
+      <thead>
+        <tr><th>Format</th><th>Best for</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>WebP</strong></td>
+          <td>The safe default</td>
+          <td>Excellent compatibility and much better compression than JPEG. If unsure, use this.</td>
+        </tr>
+        <tr>
+          <td><strong>AVIF</strong></td>
+          <td>Smallest possible files</td>
+          <td>Best compression at a given quality, but slower to encode and unsupported in older browsers.</td>
+        </tr>
+        <tr>
+          <td><strong>JPEG</strong></td>
+          <td>Maximum compatibility</td>
+          <td>Opens everywhere. A safe choice for photographic images.</td>
+        </tr>
+        <tr>
+          <td><strong>PNG</strong></td>
+          <td>Transparency or lossless</td>
+          <td>Large files. If you only need transparency, prefer WebP.</td>
+        </tr>
+        <tr>
+          <td><strong>JPEG XL</strong></td>
+          <td>Experimental</td>
+          <td>Promising, but browser support is still limited.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      <strong>Higher quality is not always better.</strong> Dropping quality from 100 to 80 for a photo
+      is usually imperceptible while cutting file size by more than half. Start there.
+    </div>
+
+    <h2>AI upscaling</h2>
+
+    <p>Path: <code>/upscale/</code></p>
+
+    <p>
+      Enlarges images 4× with Real-ESRGAN. It <strong>reconstructs</strong> detail rather than
+      interpolating pixels, which is why old photos and low-resolution assets come out noticeably sharper.
+    </p>
+
+    <h3>What it is and isn't good at</h3>
+
+    <ul>
+      <li><strong>Good:</strong> low-resolution but otherwise sharp images, assets that need enlarging, mild compression artefacts.</li>
+      <li><strong>Not good:</strong> out-of-focus or badly blurred photos. Super-resolution rebuilds detail; it does not undo blur.
+        A blurry photo stays blurry, just bigger.</li>
+    </ul>
+
+    <div class="note warn">
+      <strong>Hard limit: 64 megapixels of output.</strong> At 4× that means roughly 2000×2000 input.
+      Larger images need cropping or downscaling first. This exists to keep a browser tab from running out of memory.
+    </div>
+
+    <h2>AI background removal</h2>
+
+    <p>Path: <code>/cutout/</code></p>
+
+    <p>
+      Drop in an image, hit "Remove background", and get a transparent PNG. You can also switch to a
+      white, red or blue backdrop — recolouring is an instant recomposite and does not re-run the model.
+    </p>
+
+    <h3>The first run downloads a model</h3>
+
+    <p>
+      The model weights (about 94 MB) are downloaded on first use, with a progress bar showing the
+      percentage. <strong>They are cached by the browser afterwards, so later runs start instantly.</strong>
+      A different browser or a cleared cache means downloading again.
+    </p>
+
+    <h3>Reading the result</h3>
+
+    <ul>
+      <li><strong>Compare</strong> — drag the divider to compare the original with the cutout.</li>
+      <li><strong>Result</strong> — the cutout alone; transparent areas show as a checkerboard.</li>
+      <li><strong>Original</strong> — just the source image.</li>
+      <li><strong>Hold space</strong> — temporarily reveal the original to check the edges.</li>
+    </ul>
+
+    <h3>Edges look too soft</h3>
+
+    <p>
+      The "Edge" setting has two modes: <em>Sharp</em> narrows the semi-transparent transition band for a
+      cleaner look; <em>Soft</em> keeps the natural feathering, which suits hair and fur.
+    </p>
+
+    <h3>Nothing gets selected</h3>
+
+    <p>BiRefNet looks for the <strong>most salient subject</strong> in the frame. That means:</p>
+
+    <ul>
+      <li><strong>Multiple objects</strong> — only the most prominent one is kept.</li>
+      <li><strong>Pure landscapes with no clear foreground</strong> — may be judged "no subject" and reported
+        as such, rather than handing you a nearly fully transparent image.</li>
+      <li><strong>A very small subject, or one that blends into the background</strong> — results degrade.
+        A subject that fills a decent share of the frame and contrasts with the background works best.</li>
+    </ul>
+
+    <p>In these cases, picking a different photo usually helps more than adjusting settings.</p>
+
+    <h2>Common questions</h2>
+
+    <h3>Why is the first run so slow?</h3>
+
+    <p>
+      Upscaling and background removal both download a model and initialise the inference engine first.
+      That happens once; afterwards it comes from cache. See
+      <a href="/en/docs/how-it-works.html">In-browser inference</a>.
+    </p>
+
+    <h3>Why is it much slower without WebGPU?</h3>
+
+    <p>
+      With WebGPU, inference runs on the GPU. Without it, the work falls back to the CPU, where being
+      several times slower is expected. Desktop Chrome and Edge have the best WebGPU support; recent
+      Safari versions work too.
+    </p>
+
+    <h3>How long does a hundred images take?</h3>
+
+    <p>
+      Compression accepts hundreds of images at once through a batch queue. Upscaling and background
+      removal are one image at a time — they are heavy computation and you want to check each result anyway.
+    </p>
+
+    <div class="pager">
+      <a href="/en/docs/">← Introduction</a>
+      <a href="/en/docs/how-it-works.html">In-browser inference →</a>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

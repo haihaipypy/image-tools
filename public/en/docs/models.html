@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Models - Image Tools Docs</title>
+  <meta name="description" content="The AI models behind Image Tools: sources, licenses, sizes and selection rules for the Real-ESRGAN upscaler and the BiRefNet cutout models.">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://img.1day.vip/en/docs/models.html" />
+  <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/models.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/docs/models.html" />
+  <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/docs/models.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://img.1day.vip/en/docs/models.html" />
+  <meta property="og:title" content="Models - Image Tools Docs" />
+  <meta property="og:description" content="Sources, licenses and selection rules for the Real-ESRGAN and BiRefNet models.">
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/docs/style.css" />
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="/en/">Image Tools <span>Docs</span></a>
+    <div class="group">
+      <p>Getting started</p>
+      <ul>
+        <li><a href="/en/docs/">Introduction</a></li>
+        <li><a href="/en/docs/usage.html">Usage</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>Under the hood</p>
+      <ul>
+        <li><a href="/en/docs/how-it-works.html">In-browser inference</a></li>
+        <li><a href="/en/docs/models.html" aria-current="page">Models</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>Deployment</p>
+      <ul>
+        <li><a href="/en/docs/deployment.html">Deploying</a></li>
+        <li><a href="/en/docs/customize.html">Customizing</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>More</p>
+      <ul>
+        <li><a href="/en/docs/license.html">License</a></li>
+        <li><a href="/docs/">中文</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>Models</h1>
+    <p class="lead">The site runs two open-source models. Both use permissive MIT / BSD-style licenses and may be used commercially.</p>
+
+    <h2>Upscaling: Real-ESRGAN</h2>
+
+    <p>
+      The upscaler is <strong>Real-ESRGAN General x4v3</strong>, a 4× super-resolution model.
+      <a href="https://github.com/xinntao/Real-ESRGAN">Real-ESRGAN</a> was proposed by Xintao Wang et al. It targets
+      degraded images from the real world — compression artifacts, mild blur, noise — rather than super-resolution
+      under ideal conditions only.
+    </p>
+
+    <table>
+      <thead><tr><th>Item</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Model size</td><td>4.9 MB</td></tr>
+        <tr><td>Scale factor</td><td>4×</td></tr>
+        <tr><td>Input size</td><td>Fixed 128×128; larger images are split into tiles</td></tr>
+        <tr><td>License</td><td>BSD-3-Clause (model weights)</td></tr>
+        <tr><td>ONNX export</td><td><a href="https://huggingface.co/qualcomm/Real-ESRGAN-General-x4v3">Qualcomm AI Hub</a></td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      Because the input is a fixed 128×128, larger images are cut into 128-pixel tiles, inferred one by one, then
+      stitched back together. The seams need some overlap and blending, otherwise a grid pattern shows up — this is
+      the standard approach in super-resolution apps.
+    </p>
+
+    <h2>Cutout: BiRefNet</h2>
+
+    <p>
+      The cutout model is <strong>BiRefNet</strong> (Bilateral Reference Network), a dichotomous image segmentation
+      model. <a href="https://github.com/ZhengPeng7/BiRefNet">BiRefNet</a> was proposed by Peng Zheng et al. It does
+      well across several saliency and matting datasets, particularly on high-frequency edges such as hair and fur.
+    </p>
+
+    <h3>Choosing between the two versions</h3>
+
+    <p>
+      The UI offers two options, but <strong>this is not a difference in quality — it is a difference in
+      compatibility</strong>:
+    </p>
+
+    <table>
+      <thead>
+        <tr><th>Version</th><th>When to use it</th><th>Size</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>BiRefNet Lite</strong><br><span style="color:var(--text-faint)">Default</span></td>
+          <td><strong>Use this one normally.</strong> It handles hair, fur and other fine detail well — good enough for almost any photo.</td>
+          <td>94 MB (fp16)</td>
+        </tr>
+        <tr>
+          <td><strong>BiRefNet Full</strong><br><span style="color:var(--text-faint)">Fallback</span></td>
+          <td><strong>Only used when your device has no WebGPU.</strong> Results are essentially the same as Lite, but the file is far larger and much slower.</td>
+          <td>452 MB</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      <strong>In most cases you don't need to choose manually.</strong> The app picks the right version based on
+      device capabilities. You only need to switch by hand if you know exactly what you're doing — for example,
+      forcing a specific version on a machine without WebGPU.
+    </div>
+
+    <h3>Technical details</h3>
+
+    <table>
+      <thead><tr><th>Item</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Input size</td><td>Fixed 512×512, whole image in one pass (no tiling)</td></tr>
+        <tr><td>Input tensor name</td><td><code>input_image</code></td></tr>
+        <tr><td>Output tensor name</td><td><code>output_image</code></td></tr>
+        <tr><td>Output form</td><td>Unactivated logits; sigmoid is applied to get a 0–1 alpha</td></tr>
+        <tr><td>Preprocessing</td><td>Direct resize to 512×512 (no letterbox), ImageNet mean/std normalization</td></tr>
+        <tr><td>License</td><td>MIT</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      <strong>The mask resolution caps at 512×512.</strong> When the source image is larger, edge accuracy is limited
+      by the mask resolution rather than by the model's capability. A note under the result panel explains this.
+    </p>
+
+    <div class="note warn">
+      <strong>The output tensor name was a gotcha.</strong> BiRefNet has multiple ONNX exports, and different
+      exporters name the output differently. Testing confirmed both revisions here use <code>output_image</code>
+      (not the more common <code>logits</code>). The code is defensive: if the registry name doesn't match, it falls
+      back to the sole output or infers it from the shape.
+    </div>
+
+    <h2>Where the weights come from</h2>
+
+    <table>
+      <thead><tr><th>Model</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Real-ESRGAN x4v3</td>
+          <td>Committed under <code>public/models/</code> and deployed with the site</td>
+        </tr>
+        <tr>
+          <td>BiRefNet Lite</td>
+          <td><a href="https://huggingface.co/studioludens/birefnet-lite-512">studioludens/birefnet-lite-512</a> on HuggingFace</td>
+        </tr>
+        <tr>
+          <td>BiRefNet Full</td>
+          <td><a href="https://huggingface.co/naddy24/birefnet-512-webgpu">naddy24/birefnet-512-webgpu</a> on HuggingFace</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      HuggingFace paths are mutable, so the code <strong>pins an exact commit revision</strong> — the model that
+      works today is still the same model tomorrow. Upgrading a model means changing that revision constant.
+    </p>
+
+    <div class="pager">
+      <a href="/en/docs/how-it-works.html">← In-browser inference</a>
+      <a href="/en/docs/deployment.html">Deploying →</a>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

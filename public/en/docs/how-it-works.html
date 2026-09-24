@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>In-browser inference - Image Tools Docs</title>
+  <meta name="description" content="How Image Tools runs AI models in the browser: how ONNX Runtime Web picks between WebGPU and WASM, what cross-origin isolation does, and why the first load costs what it does.">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://img.1day.vip/en/docs/how-it-works.html" />
+  <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/how-it-works.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/docs/how-it-works.html" />
+  <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/docs/how-it-works.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://img.1day.vip/en/docs/how-it-works.html" />
+  <meta property="og:title" content="In-browser inference - Image Tools Docs" />
+  <meta property="og:description" content="Backend selection, cross-origin isolation, and the cost of a first load.">
+  <meta property="og:locale" content="en" />
+  <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/docs/style.css" />
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="/en/">Image Tools <span>Docs</span></a>
+    <div class="group">
+      <p>Getting started</p>
+      <ul>
+        <li><a href="/en/docs/">Introduction</a></li>
+        <li><a href="/en/docs/usage.html">Usage</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>Under the hood</p>
+      <ul>
+        <li><a href="/en/docs/how-it-works.html" aria-current="page">In-browser inference</a></li>
+        <li><a href="/en/docs/models.html">Models</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>Deployment</p>
+      <ul>
+        <li><a href="/en/docs/deployment.html">Deploying</a></li>
+        <li><a href="/en/docs/customize.html">Customizing</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>More</p>
+      <ul>
+        <li><a href="/en/docs/license.html">License</a></li>
+        <li><a href="/docs/">中文</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>In-browser inference</h1>
+    <p class="lead">
+      Upscaling and background removal run on your own GPU or CPU. This page explains how the backend
+      gets chosen, why cross-origin isolation is required, and where the first-load cost comes from.
+    </p>
+
+    <h2>The runtime</h2>
+
+    <p>
+      Both tools share a single copy of <strong>ONNX Runtime Web</strong> (1.30.0); the models are standard
+      ONNX graphs. The runtime files (about 25.5 MB) are deployed with the site under <code>/ort/</code>
+      rather than loaded from a CDN — no third-party dependency, and no exposure to CDN availability.
+    </p>
+
+    <h2>How the backend is chosen</h2>
+
+    <p>The page probes device capabilities on load, then tries backends in this order:</p>
+
+    <table>
+      <thead>
+        <tr><th>Backend</th><th>Condition</th><th>Speed</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>WebGPU</strong></td>
+          <td>Browser and GPU driver both support it</td>
+          <td>Fastest. Runs on the GPU using fp16 weights.</td>
+        </tr>
+        <tr>
+          <td><strong>WASM (multi-threaded)</strong></td>
+          <td>No WebGPU, but the page is cross-origin isolated</td>
+          <td>Moderate. CPU-bound, parallelised across up to 4 threads.</td>
+        </tr>
+        <tr>
+          <td><strong>WASM (single-threaded)</strong></td>
+          <td>Neither of the above</td>
+          <td>Slowest. Still works, just takes longer.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      If WebGPU fails to initialise it <strong>falls back automatically</strong> to WASM rather than failing
+      outright. The UI always shows which backend is actually in use.
+    </p>
+
+    <div class="note warn">
+      <strong>A fallback triggers a second download.</strong> Background removal ships fp16 weights
+      (for WebGPU) and fp32 weights (for WASM) as two separate files, so dropping from WebGPU to WASM
+      means downloading the other one. There is no way around this.
+    </div>
+
+    <h2>Cross-origin isolation</h2>
+
+    <p>
+      Browsers do not hand out <code>SharedArrayBuffer</code> by default, and without it WASM cannot run
+      multi-threaded. The way to unlock it is to make the page "cross-origin isolated" via two response headers:
+    </p>
+
+    <pre><code>Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Embedder-Policy: require-corp</code></pre>
+
+    <p>
+      <strong>This is a performance switch, not a nice-to-have.</strong> Without them, every machine lacking
+      WebGPU drops to single-threaded WASM and runs several times slower.
+    </p>
+
+    <p>
+      The headers live in <code>public/_headers</code> (a Cloudflare Pages format). Other hosts need their
+      own equivalent — see <a href="/en/docs/deployment.html">Deploying</a>.
+    </p>
+
+    <h3>What COEP does and does not block</h3>
+
+    <p>
+      <code>require-corp</code> sounds alarming, but it <strong>only constrains no-cors subresources</strong> —
+      things loaded by <code>&lt;img&gt;</code>, <code>&lt;script&gt;</code> and <code>&lt;link&gt;</code>.
+      The site only loads its own assets today, which is why this is safe.
+    </p>
+
+    <p>
+      <strong><code>fetch()</code> is the exception</strong>: it goes through the CORS channel and is not
+      subject to COEP. That is exactly how background removal pulls weights from HuggingFace — even though
+      HuggingFace's responses carry no <code>Cross-Origin-Resource-Policy</code> header at all.
+    </p>
+
+    <div class="note">
+      <strong>Corollary:</strong> model weights can only be loaded via <code>fetch()</code>, never via
+      <code>&lt;img&gt;</code> or <code>&lt;script&gt;</code> — switching the loading mechanism would get
+      them blocked by the browser.
+    </div>
+
+    <h2>The cost of a first visit</h2>
+
+    <table>
+      <thead>
+        <tr><th>Item</th><th>Size</th><th>When</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Main JS + CSS</td><td>~470 KB (132 KB gzipped)</td><td>First page load</td></tr>
+        <tr><td>ORT runtime</td><td>25.5 MB → 6.3 MB over the wire</td><td>First use of inference</td></tr>
+        <tr><td>Upscaling model</td><td>4.9 MB</td><td>First upscale</td></tr>
+        <tr><td>Removal model (lite)</td><td>94 MB</td><td>First removal</td></tr>
+        <tr><td>Removal model (no-WebGPU variant)</td><td>192 MB</td><td>First removal without WebGPU</td></tr>
+      </tbody>
+    </table>
+
+    <p>Downloaded models are stored in the browser's Cache Storage and not requested again.</p>
+
+    <h3>Why 25.5 MB of runtime only transfers 6.3 MB</h3>
+
+    <p>
+      ORT's wasm binary is 25.5 MB, <strong>over Cloudflare's 25 MiB single-file limit</strong>, so a direct
+      deploy would be rejected. The build therefore stores it gzipped (~6.3 MB), and the browser decompresses
+      it via <code>DecompressionStream</code> into a Blob URL before handing it to ORT. That also cuts
+      first-load volume by three quarters.
+    </p>
+
+    <h2>Why model weights are not committed</h2>
+
+    <p>
+      The ORT runtime is generated at build time and does ship inside <code>dist/</code>.
+      <strong>Model weights are handled differently on each side:</strong>
+    </p>
+
+    <ul>
+      <li><strong>Upscaling model</strong> (4.9 MB) is committed to <code>public/models/</code>.</li>
+      <li><strong>Removal models</strong> (94–452 MB) are not committed; they are fetched from HuggingFace at runtime and cached.</li>
+    </ul>
+
+    <p>
+      The reason is size: the removal weights are far past what any static host will accept. The upscaling
+      model is small enough to keep in the repo, which guarantees the build output is complete and does not
+      depend on a third-party site being reachable.
+    </p>
+
+    <div class="pager">
+      <a href="/en/docs/usage.html">← Usage</a>
+      <a href="/en/docs/models.html">Models →</a>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

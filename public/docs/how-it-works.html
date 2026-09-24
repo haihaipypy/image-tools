@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>浏览器端推理原理 - 图片工具文档</title>
+  <meta name="description" content="图片工具的浏览器端推理原理：ONNX Runtime Web 如何在 WebGPU 与 WASM 之间选择、跨域隔离（COOP/COEP）的作用、以及首次加载为什么要下载模型。">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://img.1day.vip/docs/how-it-works.html" />
+  <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/how-it-works.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/docs/how-it-works.html" />
+  <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/docs/how-it-works.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://img.1day.vip/docs/how-it-works.html" />
+  <meta property="og:title" content="浏览器端推理原理 - 图片工具文档" />
+  <meta property="og:description" content="ONNX Runtime Web 的后端选择、跨域隔离与首次加载的代价。">
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/docs/style.css" />
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="/">图片工具 <span>文档</span></a>
+    <div class="group">
+      <p>开始</p>
+      <ul>
+        <li><a href="/docs/">介绍</a></li>
+        <li><a href="/docs/usage.html">使用方法</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>原理</p>
+      <ul>
+        <li><a href="/docs/how-it-works.html" aria-current="page">浏览器端推理</a></li>
+        <li><a href="/docs/models.html">模型说明</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>部署</p>
+      <ul>
+        <li><a href="/docs/deployment.html">部署流程</a></li>
+        <li><a href="/docs/customize.html">自定义与扩展</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>其他</p>
+      <ul>
+        <li><a href="/docs/license.html">许可与版权</a></li>
+        <li><a href="/en/docs/">English</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>浏览器端推理</h1>
+    <p class="lead">
+      放大与抠图都跑在本机显卡或 CPU 上。这里说明它是怎么选后端的、为什么要跨域隔离，
+      以及首次加载的代价从哪来。
+    </p>
+
+    <h2>推理引擎</h2>
+
+    <p>
+      两个工具共用同一份 <strong>ONNX Runtime Web</strong>（版本 1.30.0），模型是标准的 ONNX 格式。
+      运行时文件（约 25.5 MB）随站点一起部署在 <code>/ort/</code> 下，不从 CDN 加载 ——
+      这样没有第三方依赖，也不受 CDN 可用性影响。
+    </p>
+
+    <h2>后端怎么选</h2>
+
+    <p>页面加载时会探测设备能力，然后按这个顺序尝试：</p>
+
+    <table>
+      <thead>
+        <tr><th>后端</th><th>条件</th><th>速度</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>WebGPU</strong></td>
+          <td>浏览器与显卡驱动都支持</td>
+          <td>最快。推理跑在显卡上，走 fp16 半精度权重。</td>
+        </tr>
+        <tr>
+          <td><strong>WASM（多线程）</strong></td>
+          <td>不支持 WebGPU，但页面处于跨域隔离状态</td>
+          <td>中等。CPU 计算，多线程并行（最多 4 线程）。</td>
+        </tr>
+        <tr>
+          <td><strong>WASM（单线程）</strong></td>
+          <td>上述都不满足</td>
+          <td>最慢。仍然能用，只是要等更久。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      WebGPU 建不起来时会<strong>自动降级</strong>到 WASM，不会直接失败。
+      界面上会显示当前实际用的是哪个后端。
+    </p>
+
+    <div class="note warn">
+      <strong>降级会触发第二次下载。</strong>抠图的 fp16（WebGPU 用）与 fp32（WASM 用）是两套独立权重，
+      所以从 WebGPU 掉到 WASM 时，需要重新下载另一个版本。这是无法避免的代价。
+    </div>
+
+    <h2>跨域隔离：为什么需要它</h2>
+
+    <p>
+      浏览器默认不给页面 <code>SharedArrayBuffer</code>，而没有它就无法让 WASM 多线程运行。
+      解锁的办法是让页面进入「跨域隔离」状态，通过两个响应头：
+    </p>
+
+    <pre><code>Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Embedder-Policy: require-corp</code></pre>
+
+    <p>
+      <strong>这是一个性能开关，不是可有可无的配置。</strong>缺了它们，所有没有 WebGPU 的机器
+      都会掉到单线程 WASM，慢好几倍。
+    </p>
+
+    <p>
+      这两个头写在 <code>public/_headers</code> 里（Cloudflare Pages 格式）。
+      换到其他托管平台需要写对应的等价配置 —— 详见<a href="/docs/deployment.html">部署流程</a>。
+    </p>
+
+    <h3>COEP 会拦什么、不会拦什么</h3>
+
+    <p>
+      <code>require-corp</code> 听起来很吓人，但它<strong>只约束 no-cors 子资源</strong> ——
+      也就是 <code>&lt;img&gt;</code>、<code>&lt;script&gt;</code>、<code>&lt;link&gt;</code> 这类标签加载的东西。
+      站内目前只加载自己的资源，所以是安全的。
+    </p>
+
+    <p>
+      <strong><code>fetch()</code> 是例外</strong>：它走 CORS 通道，不受 COEP 限制。
+      抠图从 HuggingFace 拉权重用的正是 <code>fetch()</code>，所以能正常工作 ——
+      尽管 HuggingFace 的响应并不带 <code>Cross-Origin-Resource-Policy</code> 头。
+    </p>
+
+    <div class="note">
+      <strong>推论：</strong>模型权重只能用 <code>fetch()</code> 取，不能塞进 <code>&lt;img&gt;</code> 或
+      <code>&lt;script&gt;</code> —— 换一种加载方式就会被浏览器拦下。
+    </div>
+
+    <h2>首次加载的代价</h2>
+
+    <table>
+      <thead>
+        <tr><th>项</th><th>体积</th><th>何时加载</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>主程序 JS + CSS</td><td>约 470 KB（gzip 132 KB）</td><td>首次进站</td></tr>
+        <tr><td>ORT 运行时</td><td>25.5 MB → 传输 6.3 MB</td><td>首次用到推理时</td></tr>
+        <tr><td>放大模型</td><td>4.9 MB</td><td>首次放大时</td></tr>
+        <tr><td>抠图模型（轻量）</td><td>94 MB</td><td>首次抠图时</td></tr>
+        <tr><td>抠图模型（无 WebGPU 时的版本）</td><td>192 MB</td><td>无 WebGPU 时首次抠图</td></tr>
+      </tbody>
+    </table>
+
+    <p>模型下载后会存进浏览器的 Cache Storage，之后不再请求。</p>
+
+    <h3>为什么 ORT 运行时是 25.5 MB 却只说传 6.3 MB</h3>
+
+    <p>
+      ORT 的 wasm 文件是 25.5 MB，<strong>超过了 Cloudflare 单个文件 25 MiB 的上限</strong>，
+      直接部署会被拒。所以构建时把它转成 gzip 存储（约 6.3 MB），
+      浏览器端用 <code>DecompressionStream</code> 解压成 Blob URL 再交给 ORT。
+      顺带把首次加载量砍掉了四分之三。
+    </p>
+
+    <h2>为什么模型权重不随仓库提交</h2>
+
+    <p>
+      ORT 运行时是构建时生成的，可以进 <code>dist/</code>。但<strong>模型权重的处理方式两边不同</strong>：
+    </p>
+
+    <ul>
+      <li><strong>放大模型</strong>（4.9 MB）随仓库提交到 <code>public/models/</code>。</li>
+      <li><strong>抠图模型</strong>（94–452 MB）不提交，运行时从 HuggingFace 拉取并缓存。</li>
+    </ul>
+
+    <p>
+      原因是体积：抠图权重远超任何静态托管能接受的范围。放大模型则小得多，
+      而且放在仓库里能保证部署产物完整、不依赖第三方站点的可用性。
+    </p>
+
+    <div class="pager">
+      <a href="/docs/usage.html">← 使用方法</a>
+      <a href="/docs/models.html">模型说明 →</a>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

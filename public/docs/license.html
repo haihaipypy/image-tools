@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>许可与版权 - 图片工具文档</title>
+  <meta name="description" content="图片工具的许可证与第三方版权说明：本项目代码、上游基础项目、各 AI 模型权重与开源库的授权情况。">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://img.1day.vip/docs/license.html" />
+  <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/license.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/docs/license.html" />
+  <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/docs/license.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://img.1day.vip/docs/license.html" />
+  <meta property="og:title" content="许可与版权 - 图片工具文档" />
+  <meta property="og:description" content="本项目与所有第三方组件的授权说明。">
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/docs/style.css" />
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="/">图片工具 <span>文档</span></a>
+    <div class="group">
+      <p>开始</p>
+      <ul>
+        <li><a href="/docs/">介绍</a></li>
+        <li><a href="/docs/usage.html">使用方法</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>原理</p>
+      <ul>
+        <li><a href="/docs/how-it-works.html">浏览器端推理</a></li>
+        <li><a href="/docs/models.html">模型说明</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>部署</p>
+      <ul>
+        <li><a href="/docs/deployment.html">部署流程</a></li>
+        <li><a href="/docs/customize.html">自定义与扩展</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>其他</p>
+      <ul>
+        <li><a href="/docs/license.html" aria-current="page">许可与版权</a></li>
+        <li><a href="/en/docs/">English</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>许可与版权</h1>
+    <p class="lead">本项目按 MIT 发布。用到的模型与开源库各有自己的授权，都列在下面。</p>
+
+    <h2>本项目</h2>
+
+    <table>
+      <thead><tr><th>范围</th><th>授权</th><th>版权</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>本站代码</td>
+          <td>MIT</td>
+          <td>© 2026 无辣（haihaipypy）</td>
+        </tr>
+        <tr>
+          <td>上游基础项目</td>
+          <td>MIT</td>
+          <td>
+            © 2024 Addy Osmani —— 压缩与格式转换部分源自其 image-tools，
+            原始版权声明保留在 <code>LICENSE</code> 中。
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      MIT 允许自由使用、修改、分发，包括商用，条件是保留版权声明与许可文本。
+      完整文本见仓库根目录的 <code>LICENSE</code>。
+    </p>
+
+    <h2>模型权重</h2>
+
+    <table>
+      <thead><tr><th>模型</th><th>授权</th><th>版权与来源</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Real-ESRGAN 权重</td>
+          <td>BSD-3-Clause</td>
+          <td>
+            © 2021 Xintao Wang（<a href="https://github.com/xinntao/Real-ESRGAN">Real-ESRGAN</a>），
+            ONNX 导出由 <a href="https://huggingface.co/qualcomm/Real-ESRGAN-General-x4v3">Qualcomm AI Hub</a> 提供
+          </td>
+        </tr>
+        <tr>
+          <td>BiRefNet 权重</td>
+          <td>MIT</td>
+          <td>
+            © 2024 Peng Zheng（<a href="https://github.com/ZhengPeng7/BiRefNet">BiRefNet</a>），
+            ONNX 导出由 <a href="https://huggingface.co/studioludens/birefnet-lite-512">studioludens</a>
+            与 <a href="https://huggingface.co/naddy24/birefnet-512-webgpu">naddy24</a> 提供
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>BSD-3-Clause 与 MIT 都允许商用，只需保留版权声明。</p>
+
+    <h2>开源库</h2>
+
+    <table>
+      <thead><tr><th>组件</th><th>授权</th><th>版权</th></tr></thead>
+      <tbody>
+        <tr><td>ONNX Runtime Web</td><td>MIT</td><td>© Microsoft</td></tr>
+        <tr>
+          <td>jSquash 及封装的编解码器</td>
+          <td>MIT</td>
+          <td>© James Sinclair；编解码器为 MozJPEG / libavif / libjxl / OxiPNG</td>
+        </tr>
+        <tr><td>Lucide 图标</td><td>ISC</td><td>Lucide Contributors</td></tr>
+        <tr><td>React / Vite / Tailwind CSS</td><td>MIT</td><td>各自所属基金会与作者</td></tr>
+      </tbody>
+    </table>
+
+    <h2>关于 Upscayl</h2>
+
+    <p>
+      放大功能的<strong>交互形态</strong>参考了 <a href="https://github.com/upscayl/upscayl">Upscayl</a>，
+      但<strong>代码是重写的，没有复制它的源码</strong>，推理层也完全不同 ——
+      Upscayl 是 Electron + ncnn 原生二进制，本项目是纯浏览器里的 ONNX Runtime。
+    </p>
+
+    <p>
+      因此本项目<strong>不受 Upscayl 的 AGPL-3.0 传染</strong>，按 MIT 发布。
+    </p>
+
+    <h2>关于 bg0</h2>
+
+    <p>
+      抠图功能的<strong>交互与 API 设计</strong>参考了
+      <a href="https://github.com/opencoredev/bg0">bg0</a>（Apache-2.0），
+      但<strong>推理层是独立实现的</strong>。
+    </p>
+
+    <p>
+      bg0 经 <code>@huggingface/transformers</code> 自带一份 ONNX Runtime，
+      而本项目直接复用站内已有的 ORT 运行时与自托管 wasm，不引入第二份推理引擎。
+      因此本项目的依赖树里<strong>没有</strong> <code>@huggingface/transformers</code>，
+      也<strong>没有</strong> <code>@bg0/browser</code>。
+    </p>
+
+    <h2>隐私</h2>
+
+    <p>
+      图片数据全程留在你的浏览器里，没有任何上传步骤。站点也不记录图片内容或元数据。
+      唯一的外部请求是首次加载抠图模型时从 HuggingFace 拉取权重。
+    </p>
+
+    <div class="pager">
+      <a href="/docs/customize.html">← 自定义与扩展</a>
+      <span></span>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

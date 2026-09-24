@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>自定义与扩展 - 图片工具文档</title>
+  <meta name="description" content="如何给图片工具换模型、加语言、扩展功能：模型注册表的结构、i18n 的组织方式、以及新增一个工具页面的步骤。">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://img.1day.vip/docs/customize.html" />
+  <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/customize.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/docs/customize.html" />
+  <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/docs/customize.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://img.1day.vip/docs/customize.html" />
+  <meta property="og:title" content="自定义与扩展 - 图片工具文档" />
+  <meta property="og:description" content="换模型、加语言、扩展功能的做法。">
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/docs/style.css" />
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="/">图片工具 <span>文档</span></a>
+    <div class="group">
+      <p>开始</p>
+      <ul>
+        <li><a href="/docs/">介绍</a></li>
+        <li><a href="/docs/usage.html">使用方法</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>原理</p>
+      <ul>
+        <li><a href="/docs/how-it-works.html">浏览器端推理</a></li>
+        <li><a href="/docs/models.html">模型说明</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>部署</p>
+      <ul>
+        <li><a href="/docs/deployment.html">部署流程</a></li>
+        <li><a href="/docs/customize.html" aria-current="page">自定义与扩展</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>其他</p>
+      <ul>
+        <li><a href="/docs/license.html">许可与版权</a></li>
+        <li><a href="/en/docs/">English</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>自定义与扩展</h1>
+    <p class="lead">换模型、加语言、加工具 —— 代码结构上该怎么动。</p>
+
+    <h2>代码结构</h2>
+
+    <pre><code>src/
+├── lib/
+│   ├── ort/               两个工具共用的 ONNX Runtime 层
+│   │   ├── runtime.ts     运行时准备（wasm 路径、线程数）
+│   │   └── modelCache.ts  权重下载 + Cache Storage 缓存
+│   ├── upscaler/          AI 放大：模型表、会话、张量、瓦片
+│   ├── cutout/            AI 抠图：模型表、预处理、会话、合成
+│   ├── models.ts          放大模型注册表
+│   └── types.ts           共享类型
+├── components/
+│   ├── compress/          压缩工作区
+│   ├── upscale/           放大工作区
+│   └── cutout/            抠图工作区
+├── hooks/                 useUpscaler / useCutout 状态机
+└── i18n/                  中英文案</code></pre>
+
+    <p>
+      一个刻意的设计：<strong>推理层不写任何面向用户的文案</strong>。
+      进度只产出结构化的 <code>{ phase, ratio, detail }</code>，错误只抛带 <code>code</code> 的错误对象，
+      结果附注产出结构化的 note。文案全部由 i18n 渲染 —— 这样加语言不用碰算法代码。
+    </p>
+
+    <h2>换成别的放大模型</h2>
+
+    <p>在 <code>src/lib/models.ts</code> 里加一条，并把 <code>.onnx</code> 放进 <code>public/models/</code>：</p>
+
+    <pre><code>{
+  id: 'my-model',
+  label: '显示名称',
+  url: '/models/my-model.onnx',
+  scale: 4,
+  approxBytes: 0,
+  inputRange: 'unit',        // 'unit' = 0–1，'byte' = 0–255
+  inputName: 'image',        // ONNX 图里的输入张量名
+  outputName: 'upscaled_image',
+  fixedInputSize: 128,       // 固定输入边长；动态形状填 null
+  license: 'BSD-3-Clause',
+}</code></pre>
+
+    <p>
+      单个文件别超过 25 MiB，否则 Cloudflare 会拒绝部署。
+      模型说明文案放在 i18n 的 <code>upscaleModels</code> 下，按 <code>id</code> 取用。
+    </p>
+
+    <h2>换成别的抠图模型</h2>
+
+    <p>在 <code>src/lib/cutout/models.ts</code> 里加一条：</p>
+
+    <pre><code>{
+  id: 'my-matting-model',
+  label: '显示名称',
+  variants: {
+    webgpu: { url: 'https://…/model_fp16.onnx', approxBytes: 0, dtype: 'fp16' },
+    wasm:   { url: 'https://…/model.onnx',      approxBytes: 0, dtype: 'fp32' },
+  },
+  inputSize: 512,
+  inputName: 'input_image',
+  outputName: 'output_image',   // 写错会报 tensor-missing
+  outputIsLogits: true,         // 输出是否需要过 sigmoid
+  license: 'MIT',
+}</code></pre>
+
+    <div class="note">
+      如果模型输入不是 512 而是别的方形尺寸，改 <code>inputSize</code> 即可，预处理会跟着走。
+      但预处理里的 ImageNet 均值方差是写死的（<code>models.ts</code> 的
+      <code>IMAGE_MEAN</code> / <code>IMAGE_STD</code>），换模型时要一起核对。
+    </div>
+
+    <p>
+      <strong>输出张量名有容错。</strong>注册表里的名字对不上时，会退到「唯一输出」，
+      多输出时按形状挑最像遮罩的那张（最后一维最小的空间张量）。
+      全都认不出才会报 <code>tensor-missing</code>，并把图里实际有哪些输出名带上。
+    </p>
+
+    <h2>加一种语言</h2>
+
+    <ol>
+      <li>
+        在 <code>src/i18n/locales/</code> 下新建一份语言文件，参照 <code>en.ts</code> 的结构。
+        类型是 <code>Translation = typeof en</code>，所以漏翻会在编译期报错。
+      </li>
+      <li>在 <code>src/i18n/index.ts</code> 里注册这门语言。</li>
+      <li>
+        复制 HTML 入口：<code>index.html</code>、<code>upscale/index.html</code>、<code>cutout/index.html</code>
+        各来一份带语言前缀的副本，改好 <code>canonical</code> 与 <code>hreflang</code>。
+      </li>
+      <li>在 <code>vite.config.ts</code> 的 <code>rollupOptions.input</code> 里加上新入口。</li>
+    </ol>
+
+    <h2>加一个新工具</h2>
+
+    <ol>
+      <li>
+        在 <code>src/lib/</code> 下建推理层（如果这个工具需要模型）。
+        运行时与缓存直接复用 <code>src/lib/ort/</code>，<strong>不要引入第二份 ONNX Runtime</strong>。
+      </li>
+      <li>在 <code>src/hooks/</code> 下写状态机，约定同上：不碰面向用户的文案。</li>
+      <li>在 <code>src/components/&lt;tool&gt;/</code> 下写组件。</li>
+      <li>
+        在 <code>src/App.tsx</code> 里加进 <code>Tool</code> 类型、<code>PATHS</code> 映射与 <code>TOOLS</code> 列表 ——
+        标签页和路由会自动跟着走。
+      </li>
+      <li>新建 HTML 入口（含英文版），加进 <code>vite.config.ts</code> 的 <code>DIR_INDEX</code> 与 <code>input</code>。</li>
+      <li>补 i18n 文案、sitemap 条目，以及文档站里对应的页面。</li>
+    </ol>
+
+    <h2>已知限制</h2>
+
+    <table>
+      <thead><tr><th>限制</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>放大输出上限 6400 万像素</td>
+          <td>按倍率折算，4× 约能处理 2000×2000 的源图。超出需要先裁切或缩小。</td>
+        </tr>
+        <tr>
+          <td>放大与抠图是单张处理</td>
+          <td>压缩可以批量，这两个是重计算任务，且需要逐张确认效果。</td>
+        </tr>
+        <tr>
+          <td>抠图遮罩上限 512×512</td>
+          <td>源图更大时边缘精度受遮罩分辨率限制，结果面板会给出附注。</td>
+        </tr>
+        <tr>
+          <td>无 WebGPU 的机器体验有限</td>
+          <td>会降级到 WASM，且抠图要下载 192 MB 而非 94 MB。</td>
+        </tr>
+        <tr>
+          <td>抠图只找最显著的主体</td>
+          <td>多对象图只抠最突出的那个；纯风景图可能判定为「无主体」并报错。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>本地开发</h2>
+
+    <pre><code>npm run dev        # 开发服务器（已带 COOP/COEP 头）
+npm run build      # 生产构建
+npm run typecheck  # 只做类型检查
+npm run lint       # ESLint
+npm run preview    # 预览构建产物</code></pre>
+
+    <div class="note">
+      <strong>开发服务器也带跨域隔离头</strong>（<code>vite.config.ts</code> 的 <code>server.headers</code> 与
+      <code>preview.headers</code> 共用同一份常量），保证本地与线上行为一致 ——
+      不然多线程 WASM 在本地测不出来。
+    </div>
+
+    <div class="pager">
+      <a href="/docs/deployment.html">← 部署流程</a>
+      <a href="/docs/license.html">许可与版权 →</a>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

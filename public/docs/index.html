@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>文档 - 图片工具 | 使用、原理与部署说明</title>
+  <meta name="description" content="图片工具的完整文档：三个工具的使用方法、浏览器端推理的原理、部署流程、许可与版权说明，以及换模型的扩展指南。">
+  <meta name="keywords" content="图片工具文档,图片压缩原理,AI放大原理,AI抠图原理,浏览器端推理,ONNX Runtime WebGPU,部署说明">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://img.1day.vip/docs/" />
+  <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/" />
+  <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/docs/" />
+  <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/docs/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://img.1day.vip/docs/" />
+  <meta property="og:title" content="文档 - 图片工具" />
+  <meta property="og:description" content="三个工具的使用方法、浏览器端推理原理、部署流程与版权说明。">
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:locale:alternate" content="en" />
+  <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="图片工具 —— 在线图片压缩、格式转换、AI 放大与抠图" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/docs/style.css" />
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="/">图片工具 <span>文档</span></a>
+
+    <div class="group">
+      <p>开始</p>
+      <ul>
+        <li><a href="/docs/" aria-current="page">介绍</a></li>
+        <li><a href="/docs/usage.html">使用方法</a></li>
+      </ul>
+    </div>
+
+    <div class="group">
+      <p>原理</p>
+      <ul>
+        <li><a href="/docs/how-it-works.html">浏览器端推理</a></li>
+        <li><a href="/docs/models.html">模型说明</a></li>
+      </ul>
+    </div>
+
+    <div class="group">
+      <p>部署</p>
+      <ul>
+        <li><a href="/docs/deployment.html">部署流程</a></li>
+        <li><a href="/docs/customize.html">自定义与扩展</a></li>
+      </ul>
+    </div>
+
+    <div class="group">
+      <p>其他</p>
+      <ul>
+        <li><a href="/docs/license.html">许可与版权</a></li>
+        <li><a href="/en/docs/">English</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>介绍</h1>
+    <p class="lead">
+      图片工具是一套完全在浏览器里运行的图片处理工具：压缩、格式转换、AI 放大、AI 抠图。
+      没有服务器，没有上传，没有账号。
+    </p>
+
+    <h2>三个工具</h2>
+
+    <table>
+      <thead>
+        <tr><th>工具</th><th>地址</th><th>做什么</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>图片压缩</strong></td>
+          <td><code>/</code></td>
+          <td>压缩与格式转换，支持 JPEG / PNG / WebP / AVIF / JPEG XL，可批量处理。</td>
+        </tr>
+        <tr>
+          <td><strong>AI 放大</strong></td>
+          <td><code>/upscale/</code></td>
+          <td>用 Real-ESRGAN 把图片放大到 4 倍，重建细节。</td>
+        </tr>
+        <tr>
+          <td><strong>AI 抠图</strong></td>
+          <td><code>/cutout/</code></td>
+          <td>用 BiRefNet 识别主体、去掉背景，输出透明 PNG 或换底色。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>为什么是「浏览器端」</h2>
+
+    <p>
+      市面上的在线图片工具大多要把文件传到服务器处理。这意味着你的照片要离开你的设备，
+      在别人的机器上停留，处理完再传回来 —— 无论对方怎么承诺「处理完即删」，文件都已经出过门了。
+    </p>
+
+    <p>本站三个工具全部相反：</p>
+
+    <ul>
+      <li><strong>文件不离开你的设备。</strong>处理全程在你的浏览器里完成，没有上传步骤。</li>
+      <li><strong>没有账号、没有配额。</strong>不需要注册，也没有「每天免费 5 张」这类限制。</li>
+      <li><strong>断网也能用。</strong>页面加载完、模型下完之后，拔掉网线照样处理。</li>
+    </ul>
+
+    <p>
+      代价是首次使用要下载模型权重（放大 4.9 MB，抠图 94 MB），以及处理速度取决于你自己的设备。
+      换来的是隐私与不限量 —— 对处理私人照片、证件照、含敏感信息的截图来说，这个交换是值得的。
+    </p>
+
+    <div class="note">
+      <strong>唯一的外部请求</strong>是首次加载抠图模型时从 HuggingFace 拉取权重（94 MB 或 452 MB）。
+      下载后会被浏览器缓存，之后不再请求。图片本身从不上传。
+    </div>
+
+    <h2>下一步</h2>
+
+    <ul>
+      <li><a href="/docs/usage.html">使用方法</a> —— 三个工具各自怎么用、有什么参数值得调。</li>
+      <li><a href="/docs/how-it-works.html">浏览器端推理</a> —— WebGPU 与 WASM 是怎么选的，为什么第一次会慢。</li>
+      <li><a href="/docs/deployment.html">部署流程</a> —— 想把这份站部署到自己域名下该怎么操作。</li>
+    </ul>
+
+    <div class="pager">
+      <span></span>
+      <a href="/docs/usage.html">使用方法 →</a>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

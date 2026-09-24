@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>部署流程 - 图片工具文档</title>
+  <meta name="description" content="图片工具的部署流程：Cloudflare Pages 与任意静态托管的配置方法、必须设置的跨域隔离响应头、以及换自定义域名要改哪些地方。">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://img.1day.vip/docs/deployment.html" />
+  <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/deployment.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/docs/deployment.html" />
+  <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/docs/deployment.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://img.1day.vip/docs/deployment.html" />
+  <meta property="og:title" content="部署流程 - 图片工具文档" />
+  <meta property="og:description" content="Cloudflare Pages 与静态托管部署，含跨域隔离头的配置要求。">
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/docs/style.css" />
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="/">图片工具 <span>文档</span></a>
+    <div class="group">
+      <p>开始</p>
+      <ul>
+        <li><a href="/docs/">介绍</a></li>
+        <li><a href="/docs/usage.html">使用方法</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>原理</p>
+      <ul>
+        <li><a href="/docs/how-it-works.html">浏览器端推理</a></li>
+        <li><a href="/docs/models.html">模型说明</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>部署</p>
+      <ul>
+        <li><a href="/docs/deployment.html" aria-current="page">部署流程</a></li>
+        <li><a href="/docs/customize.html">自定义与扩展</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>其他</p>
+      <ul>
+        <li><a href="/docs/license.html">许可与版权</a></li>
+        <li><a href="/en/docs/">English</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>部署流程</h1>
+    <p class="lead">
+      本站是纯静态站点，没有服务端代码。但有一条硬性要求：<strong>必须能设置自定义响应头</strong>。
+    </p>
+
+    <h2>前置要求</h2>
+
+    <ul>
+      <li><strong>Node.js 20+</strong></li>
+      <li><strong>能设置响应头的静态托管</strong> —— Cloudflare Pages、Netlify、自建 nginx 都可以。
+        GitHub Pages 不行（它不支持自定义响应头，跨域隔离开不起来）。</li>
+    </ul>
+
+    <h2>本地构建</h2>
+
+    <pre><code>npm install
+npm run build      # 准备 ORT 资源 → 类型检查 → 打包
+npm run preview    # 本地起服务，带上 COOP/COEP 头</code></pre>
+
+    <p>构建产物结构：</p>
+
+    <pre><code>dist/
+├── index.html            中文首页（压缩功能）
+├── upscale/index.html    中文放大页
+├── cutout/index.html     中文抠图页
+├── blog/                 中文博客（手写静态页）
+├── docs/                 本套文档
+├── en/  zh-CN/           英文 / 中文旧路径，结构同上
+├── assets/               打包后的 JS + CSS
+├── ort/                  ONNX Runtime 资源（构建时生成，gzip 存储）
+├── models/               放大模型权重
+├── _headers              Cloudflare 响应头（跨域隔离 + 缓存）
+└── robots.txt  sitemap.xml  site.webmanifest</code></pre>
+
+    <h2>方式一：Cloudflare Pages（推荐）</h2>
+
+    <p>仓库已带 <code>wrangler.toml</code>，直接推送到 Cloudflare 即可：</p>
+
+    <pre><code>npm run deploy     # = npm run build &amp;&amp; wrangler pages deploy dist --project-name=image-tools</code></pre>
+
+    <p>或者在 Cloudflare 控制台连接 Git 仓库，构建设置填：</p>
+
+    <table>
+      <thead><tr><th>项</th><th>值</th></tr></thead>
+      <tbody>
+        <tr><td>构建命令</td><td><code>npm run build</code></td></tr>
+        <tr><td>输出目录</td><td><code>dist</code></td></tr>
+        <tr><td>环境变量</td><td>不需要</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      <code>public/_headers</code> 是 Cloudflare Pages 的原生特性，跨域隔离头会自动生效，无需额外配置。
+    </p>
+
+    <h2>方式二：其他静态托管</h2>
+
+    <p>没有任何服务端代码，把 <code>dist/</code> 丢上去即可。但要注意三点：</p>
+
+    <ol>
+      <li>
+        <strong><code>public/_headers</code> 是 Cloudflare 专有格式。</strong>
+        其他平台要写各自等价的配置 —— Netlify 用同名的 <code>_headers</code>、
+        nginx 用 <code>add_header</code>、EdgeOne 用响应头规则。
+        <strong>跨域隔离头必须真的生效</strong>，否则会掉到单线程 WASM。
+      </li>
+      <li><strong>ORT 运行时在 <code>dist/ort/</code> 里</strong>，别漏传。</li>
+      <li>
+        <strong>放大模型权重在 <code>dist/models/</code> 里</strong>（已提交到仓库）。
+        <strong>抠图权重不在 <code>dist/</code> 里</strong> —— 它是运行时从 HuggingFace 按需拉取并缓存的，
+        部署时不需要额外准备。
+      </li>
+    </ol>
+
+    <h3>nginx 示例</h3>
+
+    <pre><code>location / {
+  add_header Cross-Origin-Opener-Policy "same-origin" always;
+  add_header Cross-Origin-Embedder-Policy "require-corp" always;
+  try_files $uri $uri/ $uri/index.html =404;
+}</code></pre>
+
+    <h2>部署前必须知道的几件事</h2>
+
+    <h3>1. 跨域隔离是性能开关，不是可选项</h3>
+
+    <p>
+      <code>Cross-Origin-Opener-Policy: same-origin</code> 与
+      <code>Cross-Origin-Embedder-Policy: require-corp</code> 是解锁
+      <code>SharedArrayBuffer</code>、进而让 WASM 多线程推理生效的前提。
+      缺了它们站点仍然能用，但没有 WebGPU 的机器会掉到单线程 WASM，
+      慢好几倍。详见<a href="/docs/how-it-works.html">浏览器端推理</a>。
+    </p>
+
+    <h3>2. require-corp 会拦 no-cors 子资源</h3>
+
+    <p>
+      页面目前只加载自己的资源，所以是安全的。但如果你加了 CDN 脚本、远程字体或统计代码，
+      就必须给它们配好 CORP 头，否则会被拦下 —— 或者重新考虑这套策略。
+    </p>
+
+    <p>
+      <strong><code>fetch()</code> 是唯一的例外</strong>，抠图拉权重靠的就是它。
+    </p>
+
+    <h3>3. ORT 的 wasm 是 25.5 MB，超过 Cloudflare 单文件 25 MiB 上限</h3>
+
+    <p>
+      <code>scripts/prepare-ort.mjs</code> 因此在构建时把它转成 gzip 存储（约 6.3 MB），
+      浏览器端用 <code>DecompressionStream</code> 解压。这同时把首次加载量砍掉了四分之三。
+    </p>
+
+    <p>
+      出于同样的原因，<strong>放大模型权重必须提交到仓库</strong>：
+      构建环境里既没有 Python 也没有上游模型源，不可能在构建时下载。
+      （抠图权重是 94–452 MB，远超任何静态托管能接受的范围，所以走运行时拉取这条路。）
+    </p>
+
+    <h2>换自定义域名</h2>
+
+    <p>
+      <code>canonical</code>、<code>hreflang</code>、<code>og:url</code>、<code>og:image</code>、
+      JSON-LD、sitemap 与 robots.txt 用的都是<strong>绝对 URL</strong>，
+      所以换域名要在这些文件里全局查找替换：
+    </p>
+
+    <ul>
+      <li><code>index.html</code>、<code>en/index.html</code>、<code>zh-CN/index.html</code></li>
+      <li><code>upscale/index.html</code>、<code>en/upscale/index.html</code>、<code>zh-CN/upscale/index.html</code></li>
+      <li><code>cutout/index.html</code>、<code>en/cutout/index.html</code>、<code>zh-CN/cutout/index.html</code></li>
+      <li><code>public/blog/**/*.html</code>、<code>public/en/blog/**/*.html</code>、<code>public/zh-CN/blog/**/*.html</code></li>
+      <li><code>public/docs/**/*.html</code>、<code>public/en/docs/**/*.html</code></li>
+      <li><code>public/sitemap.xml</code>、<code>public/robots.txt</code></li>
+      <li><code>src/i18n/index.ts</code> 里的 <code>SITE_ORIGIN</code> 常量</li>
+    </ul>
+
+    <div class="note">
+      <strong>中文规范路径没有语言前缀。</strong>中文版在 <code>/</code>、<code>/upscale/</code>、<code>/cutout/</code>；
+      <code>/zh-CN/**</code> 是早期路径，其 canonical 一律指回非 zh-CN 的版本，属于别名。
+    </div>
+
+    <div class="pager">
+      <a href="/docs/models.html">← 模型说明</a>
+      <a href="/docs/customize.html">自定义与扩展 →</a>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>模型说明 - 图片工具文档</title>
+  <meta name="description" content="图片工具使用的 AI 模型说明：Real-ESRGAN 超分模型与 BiRefNet 抠图模型的来源、授权、体积与选择规则。">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://img.1day.vip/docs/models.html" />
+  <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/models.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/docs/models.html" />
+  <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/docs/models.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://img.1day.vip/docs/models.html" />
+  <meta property="og:title" content="模型说明 - 图片工具文档" />
+  <meta property="og:description" content="Real-ESRGAN 与 BiRefNet 模型的来源、授权与选择规则。">
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/docs/style.css" />
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="/">图片工具 <span>文档</span></a>
+    <div class="group">
+      <p>开始</p>
+      <ul>
+        <li><a href="/docs/">介绍</a></li>
+        <li><a href="/docs/usage.html">使用方法</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>原理</p>
+      <ul>
+        <li><a href="/docs/how-it-works.html">浏览器端推理</a></li>
+        <li><a href="/docs/models.html" aria-current="page">模型说明</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>部署</p>
+      <ul>
+        <li><a href="/docs/deployment.html">部署流程</a></li>
+        <li><a href="/docs/customize.html">自定义与扩展</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>其他</p>
+      <ul>
+        <li><a href="/docs/license.html">许可与版权</a></li>
+        <li><a href="/en/docs/">English</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>模型说明</h1>
+    <p class="lead">本站用的是两个开源模型，都是 MIT / BSD 类的宽松授权，可商用。</p>
+
+    <h2>AI 放大：Real-ESRGAN</h2>
+
+    <p>
+      采用 <strong>Real-ESRGAN General x4v3</strong>，4 倍超分。<a href="https://github.com/xinntao/Real-ESRGAN">Real-ESRGAN</a>
+      由 Xintao Wang 等人提出，目标是处理真实场景中的退化图像（压缩痕迹、轻微模糊、噪点），
+      而不只是理想条件下的超分。
+    </p>
+
+    <table>
+      <thead><tr><th>项</th><th>值</th></tr></thead>
+      <tbody>
+        <tr><td>模型体积</td><td>4.9 MB</td></tr>
+        <tr><td>放大倍率</td><td>4×</td></tr>
+        <tr><td>输入尺寸</td><td>固定 128×128，大图会切成瓦片逐块处理</td></tr>
+        <tr><td>授权</td><td>BSD-3-Clause（模型权重）</td></tr>
+        <tr><td>ONNX 导出</td><td><a href="https://huggingface.co/qualcomm/Real-ESRGAN-General-x4v3">Qualcomm AI Hub</a></td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      因为输入是固定 128×128，大图会被切成 128 的瓦片逐块推理，再把结果拼回去。
+      拼接处需要一定的重叠与融合，否则会出现网格状接缝 —— 这是超分类应用的通用做法。
+    </p>
+
+    <h2>AI 抠图：BiRefNet</h2>
+
+    <p>
+      采用 <strong>BiRefNet</strong>（Bilateral Reference Network），一个二分图像分割模型。
+      <a href="https://github.com/ZhengPeng7/BiRefNet">BiRefNet</a> 由 Peng Zheng 等人提出，
+      在多个显著性分割与抠图数据集上表现都不错，尤其是发丝、毛绒这类高频边缘。
+    </p>
+
+    <h3>两个版本怎么选</h3>
+
+    <p>
+      界面上有两个选项，但<strong>这不是「画质高低」的区别，而是「能不能用」的区别</strong>：
+    </p>
+
+    <table>
+      <thead>
+        <tr><th>版本</th><th>什么时候用</th><th>体积</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>BiRefNet Lite</strong><br><span style="color:var(--text-faint)">默认推荐</span></td>
+          <td><strong>平时都用这个。</strong>发丝、毛绒这类细节也能抠得比较干净，绝大多数图片都够用。</td>
+          <td>94 MB（fp16）</td>
+        </tr>
+        <tr>
+          <td><strong>BiRefNet Full</strong><br><span style="color:var(--text-faint)">兼容备用</span></td>
+          <td><strong>只有设备不支持 WebGPU 时才会用到。</strong>效果和 Lite 基本一样，但文件大得多、速度慢不少。</td>
+          <td>452 MB</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      <strong>大多数情况下你不需要手动选。</strong>程序会按设备能力自动挑合适的版本。
+      只有当你明确知道自己在做什么（比如在没有 WebGPU 的机器上想强制指定）时，才需要手动切换。
+    </div>
+
+    <h3>技术细节</h3>
+
+    <table>
+      <thead><tr><th>项</th><th>值</th></tr></thead>
+      <tbody>
+        <tr><td>输入尺寸</td><td>固定 512×512，整图一次推理（不做瓦片切分）</td></tr>
+        <tr><td>输入张量名</td><td><code>input_image</code></td></tr>
+        <tr><td>输出张量名</td><td><code>output_image</code></td></tr>
+        <tr><td>输出形式</td><td>未激活的 logits，需过 sigmoid 得到 0–1 的 alpha</td></tr>
+        <tr><td>预处理</td><td>直接 resize 到 512×512（不做 letterbox），ImageNet 均值方差归一化</td></tr>
+        <tr><td>授权</td><td>MIT</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      <strong>遮罩分辨率上限是 512×512。</strong>源图比这大时，边缘精度受遮罩分辨率限制，
+      而不是受模型能力限制。结果面板下方会有一条附注说明这件事。
+    </p>
+
+    <div class="note warn">
+      <strong>输出张量名踩过坑。</strong>BiRefNet 有多个 ONNX 导出，不同导出者给输出起的名字不一样。
+      实测确认这两个 revision 都叫 <code>output_image</code>（不是常见的 <code>logits</code>）。
+      代码里做了容错：注册表里的名字对不上时会退到「唯一输出」或按形状推断。
+    </div>
+
+    <h2>权重从哪来</h2>
+
+    <table>
+      <thead><tr><th>模型</th><th>来源</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Real-ESRGAN x4v3</td>
+          <td>提交在仓库 <code>public/models/</code> 下，随站点一起部署</td>
+        </tr>
+        <tr>
+          <td>BiRefNet Lite</td>
+          <td><a href="https://huggingface.co/studioludens/birefnet-lite-512">studioludens/birefnet-lite-512</a>，HuggingFace</td>
+        </tr>
+        <tr>
+          <td>BiRefNet Full</td>
+          <td><a href="https://huggingface.co/naddy24/birefnet-512-webgpu">naddy24/birefnet-512-webgpu</a>，HuggingFace</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      HuggingFace 上的地址是可变的，所以代码里<strong>钉死了具体的 commit revision</strong> ——
+      保证今天跑通的模型明天还是同一个。升级模型等于改这个 revision 常量。
+    </p>
+
+    <div class="pager">
+      <a href="/docs/how-it-works.html">← 浏览器端推理</a>
+      <a href="/docs/deployment.html">部署流程 →</a>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

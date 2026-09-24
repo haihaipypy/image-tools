@@ -5,9 +5,18 @@
 # without WebGPU fall back to single-threaded WASM, which is several times
 # slower.
 #
-# `require-corp` means every subresource must be same-origin or carry an
-# explicit CORP header. This app only loads its own assets, so that is fine —
-# but if you later add a third-party font or CDN script, revisit this.
+# `require-corp` means every no-cors subresource (img, script, link, video…)
+# must be same-origin or carry an explicit CORP header.
+#
+# One cross-origin dependency exists: the background-removal models are pulled
+# from huggingface.co with `fetch()`. That is deliberate and safe here — COEP
+# does not apply to CORS-mode fetches, and HuggingFace answers the preflight by
+# echoing an allow-origin for our domain. Their responses carry no CORP header,
+# so this would break the moment those weights were loaded through an <img> or
+# <script> tag instead. Fetch them, never embed them.
+#
+# (The upscaling weights and the ONNX Runtime itself stay same-origin under
+# /models/ and /ort/, so they are unaffected either way.)
 
 /*
   Cross-Origin-Opener-Policy: same-origin
@@ -17,4 +26,16 @@
   Cache-Control: public, max-age=604800
 
 /ort/*
+  Cache-Control: public, max-age=604800
+
+# The docs site is hand-written static HTML with one shared stylesheet. The HTML
+# changes whenever the docs are edited, so it gets a short TTL; the stylesheet is
+# effectively frozen and can be cached for longer.
+/docs/*.html
+  Cache-Control: public, max-age=3600
+
+/en/docs/*.html
+  Cache-Control: public, max-age=3600
+
+/docs/*.css
   Cache-Control: public, max-age=604800

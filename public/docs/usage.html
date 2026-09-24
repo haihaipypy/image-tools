@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>使用方法 - 图片工具文档</title>
+  <meta name="description" content="图片工具三个功能的使用方法：图片压缩与格式转换、AI 放大、AI 抠图，以及各自的参数建议与常见问题。">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://img.1day.vip/docs/usage.html" />
+  <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/usage.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/docs/usage.html" />
+  <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/docs/usage.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://img.1day.vip/docs/usage.html" />
+  <meta property="og:title" content="使用方法 - 图片工具文档" />
+  <meta property="og:description" content="三个功能的使用方法与参数建议。">
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/docs/style.css" />
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="/">图片工具 <span>文档</span></a>
+    <div class="group">
+      <p>开始</p>
+      <ul>
+        <li><a href="/docs/">介绍</a></li>
+        <li><a href="/docs/usage.html" aria-current="page">使用方法</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>原理</p>
+      <ul>
+        <li><a href="/docs/how-it-works.html">浏览器端推理</a></li>
+        <li><a href="/docs/models.html">模型说明</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>部署</p>
+      <ul>
+        <li><a href="/docs/deployment.html">部署流程</a></li>
+        <li><a href="/docs/customize.html">自定义与扩展</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>其他</p>
+      <ul>
+        <li><a href="/docs/license.html">许可与版权</a></li>
+        <li><a href="/en/docs/">English</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>使用方法</h1>
+    <p class="lead">三个工具都是拖进图片、调参数、下载结果。这里说一下各自的取舍。</p>
+
+    <h2>图片压缩与格式转换</h2>
+
+    <p>地址：<code>/</code></p>
+
+    <p>
+      拖入图片（支持批量），选择输出格式与质量，然后下载。压缩是纯编解码，没有 AI 参与，
+      所以速度很快，也不受设备性能影响。
+    </p>
+
+    <h3>格式怎么选</h3>
+
+    <table>
+      <thead>
+        <tr><th>格式</th><th>适合</th><th>说明</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>WebP</strong></td>
+          <td>通用首选</td>
+          <td>兼容性最好，压缩率明显优于 JPEG。拿不定主意就用它。</td>
+        </tr>
+        <tr>
+          <td><strong>AVIF</strong></td>
+          <td>追求极致体积</td>
+          <td>同画质下体积最小，但编码慢一些，老浏览器不支持。</td>
+        </tr>
+        <tr>
+          <td><strong>JPEG</strong></td>
+          <td>需要最广兼容</td>
+          <td>所有设备都能打开。照片类图片的稳妥选择。</td>
+        </tr>
+        <tr>
+          <td><strong>PNG</strong></td>
+          <td>需要透明或无损</td>
+          <td>体积大。如果只是要透明通道，优先考虑 WebP。</td>
+        </tr>
+        <tr>
+          <td><strong>JPEG XL</strong></td>
+          <td>实验性</td>
+          <td>前景不错，但浏览器支持还不普及。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      <strong>质量参数不是越高越好。</strong>照片类图片质量从 100 降到 80，肉眼几乎看不出差别，
+      但体积往往能小一半以上。建议从这里开始试。
+    </div>
+
+    <h2>AI 放大</h2>
+
+    <p>地址：<code>/upscale/</code></p>
+
+    <p>
+      用 Real-ESRGAN 把图片放大 4 倍。它会<strong>重建</strong>细节，而不是简单地把像素插值放大 ——
+      所以老照片、低分辨率素材放大会清晰很多。
+    </p>
+
+    <h3>适用与不适用</h3>
+
+    <ul>
+      <li><strong>适合：</strong>分辨率偏低但本身清晰的图、需要放大的素材、轻度压缩痕迹。</li>
+      <li><strong>不适合：</strong>失焦或严重模糊的图。超分是重建细节，不是修模糊 ——
+        拍虚了的照片放大后还是虚的，只是变大了。</li>
+    </ul>
+
+    <div class="note warn">
+      <strong>有硬性上限：输出不超过 6400 万像素。</strong>按 4 倍折算，源图大约 2000×2000 以内。
+      再大的图需要先裁切或缩小。这是为了避免把浏览器标签页跑到崩溃。
+    </div>
+
+    <h2>AI 抠图</h2>
+
+    <p>地址：<code>/cutout/</code></p>
+
+    <p>
+      拖入图片，点「一键抠图」，得到带透明背景的 PNG。也可以换成白底、红底或蓝底 ——
+      换底色是即时重合成的，不会重新跑一遍模型。
+    </p>
+
+    <h3>首次使用会下载模型</h3>
+
+    <p>
+      抠图模型第一次使用需要下载权重（约 94 MB），进度条会显示下载百分比。
+      <strong>下载后会存进浏览器缓存，之后再用是秒开的。</strong>
+      换浏览器或清了缓存才会重新下载。
+    </p>
+
+    <h3>结果预览怎么看</h3>
+
+    <ul>
+      <li><strong>比较</strong> —— 拖动分割线，左右对比原图与抠图结果。</li>
+      <li><strong>结果</strong> —— 只看抠好的图，透明区域显示为棋盘格。</li>
+      <li><strong>原版</strong> —— 只看原图。</li>
+      <li><strong>按住空格键</strong> —— 临时露一下原图，方便检查边缘抠得准不准。</li>
+    </ul>
+
+    <h3>边缘不够锐怎么办</h3>
+
+    <p>
+      「边缘处理」有两个档位：「锐利」会把半透明的过渡带压窄，看起来更干净；
+      「柔和」保留原本的羽化感，适合头发、毛绒这类需要自然过渡的主体。
+    </p>
+
+    <h3>抠不出来 / 抠空了</h3>
+
+    <p>
+      BiRefNet 找的是画面里<strong>最显著的主体</strong>。所以：
+    </p>
+
+    <ul>
+      <li><strong>一张图里有多个对象</strong> —— 只会抠最突出的那个。</li>
+      <li><strong>纯风景、没有明确前景</strong> —— 可能判定为「没有主体」并给出提示，
+        而不是给你一张几乎全透明的图。</li>
+      <li><strong>主体太小或与背景太接近</strong> —— 效果会打折。主体占画面比例大一些、与背景有一定对比度，效果最好。</li>
+    </ul>
+
+    <p>遇到这些情况，换一张前景更清晰的图通常比调参数更有效。</p>
+
+    <h2>常见问题</h2>
+
+    <h3>为什么第一次特别慢？</h3>
+
+    <p>
+      放大和抠图都要先下载模型、初始化推理引擎。这部分只发生一次，之后走缓存。
+      详见<a href="/docs/how-it-works.html">浏览器端推理</a>。
+    </p>
+
+    <h3>为什么没有 WebGPU 的机器慢很多？</h3>
+
+    <p>
+      有 WebGPU 时推理跑在显卡上；没有就退回 CPU 计算，慢几倍是正常的。
+      桌面版 Chrome / Edge 的 WebGPU 支持最好，Safari 较新版本也可以。
+    </p>
+
+    <h3>处理一百张图要多久？</h3>
+
+    <p>
+      压缩可以一次拖入上百张，走批量队列。放大和抠图目前是单张处理 ——
+      这两个任务本来就是重计算，而且需要你逐张确认效果。
+    </p>
+
+    <div class="pager">
+      <a href="/docs/">← 介绍</a>
+      <a href="/docs/how-it-works.html">浏览器端推理 →</a>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

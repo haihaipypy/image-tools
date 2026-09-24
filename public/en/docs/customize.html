@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customizing - Image Tools Docs</title>
+  <meta name="description" content="Extending Image Tools: code layout, swapping the upscaler or cutout model, adding a language, adding a new tool, known limits and local development scripts.">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://img.1day.vip/en/docs/customize.html" />
+  <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/customize.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/docs/customize.html" />
+  <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/docs/customize.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://img.1day.vip/en/docs/customize.html" />
+  <meta property="og:title" content="Customizing - Image Tools Docs" />
+  <meta property="og:description" content="Swapping models, adding languages, adding tools, known limits and local development.">
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/docs/style.css" />
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="/en/">Image Tools <span>Docs</span></a>
+    <div class="group">
+      <p>Getting started</p>
+      <ul>
+        <li><a href="/en/docs/">Introduction</a></li>
+        <li><a href="/en/docs/usage.html">Usage</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>Under the hood</p>
+      <ul>
+        <li><a href="/en/docs/how-it-works.html">In-browser inference</a></li>
+        <li><a href="/en/docs/models.html">Models</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>Deployment</p>
+      <ul>
+        <li><a href="/en/docs/deployment.html">Deploying</a></li>
+        <li><a href="/en/docs/customize.html" aria-current="page">Customizing</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>More</p>
+      <ul>
+        <li><a href="/en/docs/license.html">License</a></li>
+        <li><a href="/docs/">中文</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>Customizing</h1>
+    <p class="lead">Swapping models, adding languages, adding tools — how to move through the codebase.</p>
+
+    <h2>Code layout</h2>
+
+    <pre><code>src/
+├── lib/
+│   ├── ort/               ONNX Runtime layer shared by both tools
+│   │   ├── runtime.ts     runtime setup (wasm paths, thread count)
+│   │   └── modelCache.ts  weight downloads + Cache Storage
+│   ├── upscaler/          AI upscaling: model table, session, tensors, tiling
+│   ├── cutout/            AI cutout: model table, preprocessing, session, compositing
+│   ├── models.ts          upscaler model registry
+│   └── types.ts           shared types
+├── components/
+│   ├── compress/          compression workbench
+│   ├── upscale/           upscale workbench
+│   └── cutout/            cutout workbench
+├── hooks/                 useUpscaler / useCutout state machines
+└── i18n/                  Chinese and English copy</code></pre>
+
+    <p>
+      One deliberate design choice: <strong>the inference layer never contains user-facing copy</strong>.
+      Progress is emitted as structured <code>{ phase, ratio, detail }</code>, errors are thrown as objects
+      carrying a <code>code</code>, and result notes are structured data. All wording is rendered by i18n —
+      so adding a language never means touching algorithm code.
+    </p>
+
+    <h2>Swapping in another upscaler</h2>
+
+    <p>Add an entry in <code>src/lib/models.ts</code> and drop the <code>.onnx</code> file into <code>public/models/</code>:</p>
+
+    <pre><code>{
+  id: 'my-model',
+  label: 'Display name',
+  url: '/models/my-model.onnx',
+  scale: 4,
+  approxBytes: 0,
+  inputRange: 'unit',        // 'unit' = 0–1, 'byte' = 0–255
+  inputName: 'image',        // input tensor name in the ONNX graph
+  outputName: 'upscaled_image',
+  fixedInputSize: 128,       // fixed input edge; null for dynamic shapes
+  license: 'BSD-3-Clause',
+}</code></pre>
+
+    <p>
+      Keep any single file under 25 MiB or Cloudflare will reject the deploy.
+      The model description copy goes under <code>upscaleModels</code> in i18n, keyed by <code>id</code>.
+    </p>
+
+    <h2>Swapping in another cutout model</h2>
+
+    <p>Add an entry in <code>src/lib/cutout/models.ts</code>:</p>
+
+    <pre><code>{
+  id: 'my-matting-model',
+  label: 'Display name',
+  variants: {
+    webgpu: { url: 'https://…/model_fp16.onnx', approxBytes: 0, dtype: 'fp16' },
+    wasm:   { url: 'https://…/model.onnx',      approxBytes: 0, dtype: 'fp32' },
+  },
+  inputSize: 512,
+  inputName: 'input_image',
+  outputName: 'output_image',   // a typo here triggers tensor-missing
+  outputIsLogits: true,         // does the output need a sigmoid?
+  license: 'MIT',
+}</code></pre>
+
+    <div class="note">
+      If the model takes a different square input size, just change <code>inputSize</code> and the preprocessing
+      follows. But the ImageNet mean/std in the preprocessing is hard-coded (as <code>IMAGE_MEAN</code> /
+      <code>IMAGE_STD</code> in <code>models.ts</code>) — check it whenever you swap models.
+    </div>
+
+    <p>
+      <strong>The output tensor name is fault-tolerant.</strong> If the registry name doesn't match, it falls
+      back to the sole output; with multiple outputs it picks the one that looks most like a mask (the spatial
+      tensor with the smallest last dimension). Only if nothing can be identified does it throw
+      <code>tensor-missing</code>, listing the output names actually present in the graph.
+    </p>
+
+    <h2>Adding a language</h2>
+
+    <ol>
+      <li>
+        Create a locale file under <code>src/i18n/locales/</code>, using <code>en.ts</code> as the template.
+        The type is <code>Translation = typeof en</code>, so a missing translation is a compile-time error.
+      </li>
+      <li>Register the language in <code>src/i18n/index.ts</code>.</li>
+      <li>
+        Copy the HTML entries: one language-prefixed copy each of <code>index.html</code>,
+        <code>upscale/index.html</code> and <code>cutout/index.html</code>, with
+        <code>canonical</code> and <code>hreflang</code> updated.
+      </li>
+      <li>Add the new entries to <code>rollupOptions.input</code> in <code>vite.config.ts</code>.</li>
+    </ol>
+
+    <h2>Adding a new tool</h2>
+
+    <ol>
+      <li>
+        Build an inference layer under <code>src/lib/</code> if the tool needs a model.
+        Reuse <code>src/lib/ort/</code> for the runtime and cache — <strong>do not pull in a second copy of
+        ONNX Runtime</strong>.
+      </li>
+      <li>Write the state machine under <code>src/hooks/</code>, following the same rule: no user-facing copy.</li>
+      <li>Write the components under <code>src/components/&lt;tool&gt;/</code>.</li>
+      <li>
+        Add it in <code>src/App.tsx</code> — the <code>Tool</code> type, the <code>PATHS</code> map and the
+        <code>TOOLS</code> list. Tabs and routing follow automatically.
+      </li>
+      <li>Create the HTML entries (including the English version) and add them to <code>DIR_INDEX</code> and <code>input</code> in <code>vite.config.ts</code>.</li>
+      <li>Add the i18n copy, the sitemap entries, and the matching documentation page.</li>
+    </ol>
+
+    <h2>Known limits</h2>
+
+    <table>
+      <thead><tr><th>Limit</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Upscale output capped at 64 megapixels</td>
+          <td>At 4× that is roughly a 2000×2000 source. Anything larger must be cropped or downscaled first.</td>
+        </tr>
+        <tr>
+          <td>Upscale and cutout are one image at a time</td>
+          <td>Compression supports batches; these two are heavy compute jobs where you check each result.</td>
+        </tr>
+        <tr>
+          <td>Cutout mask capped at 512×512</td>
+          <td>For larger sources, edge accuracy is limited by mask resolution. The result panel adds a note.</td>
+        </tr>
+        <tr>
+          <td>A machine without WebGPU has a limited experience</td>
+          <td>It falls back to WASM, and cutout downloads 192 MB instead of 94 MB.</td>
+        </tr>
+        <tr>
+          <td>Cutout only finds the most salient subject</td>
+          <td>Multi-object images get only the most prominent one; a pure landscape may be judged "no subject" and error out.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Local development</h2>
+
+    <pre><code>npm run dev        # dev server (with COOP/COEP headers)
+npm run build      # production build
+npm run typecheck  # types only
+npm run lint       # ESLint
+npm run preview    # preview the build output</code></pre>
+
+    <div class="note">
+      <strong>The dev server also sends the isolation headers</strong> (<code>server.headers</code> and
+      <code>preview.headers</code> in <code>vite.config.ts</code> share the same constant), so local and
+      production behaviour match — otherwise multi-threaded WASM would be untestable locally.
+    </div>
+
+    <div class="pager">
+      <a href="/en/docs/deployment.html">← Deploying</a>
+      <a href="/en/docs/license.html">License →</a>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

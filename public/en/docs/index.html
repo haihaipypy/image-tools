@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docs - Image Tools | Usage, How It Works, Deployment</title>
+  <meta name="description" content="Full documentation for Image Tools: how to use all three tools, how in-browser inference works, deployment steps, licensing, and how to swap models.">
+  <meta name="keywords" content="image tools docs,image compression,AI upscaling,background removal,browser inference,ONNX Runtime WebGPU,deployment">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://img.1day.vip/en/docs/" />
+  <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/" />
+  <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/docs/" />
+  <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/docs/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://img.1day.vip/en/docs/" />
+  <meta property="og:title" content="Docs - Image Tools" />
+  <meta property="og:description" content="How to use the tools, how in-browser inference works, and how to deploy.">
+  <meta property="og:locale" content="en" />
+  <meta property="og:locale:alternate" content="zh_CN" />
+  <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Image Tools - compress, convert, upscale and remove backgrounds in your browser" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/docs/style.css" />
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="/en/">Image Tools <span>Docs</span></a>
+    <div class="group">
+      <p>Getting started</p>
+      <ul>
+        <li><a href="/en/docs/" aria-current="page">Introduction</a></li>
+        <li><a href="/en/docs/usage.html">Usage</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>Under the hood</p>
+      <ul>
+        <li><a href="/en/docs/how-it-works.html">In-browser inference</a></li>
+        <li><a href="/en/docs/models.html">Models</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>Deployment</p>
+      <ul>
+        <li><a href="/en/docs/deployment.html">Deploying</a></li>
+        <li><a href="/en/docs/customize.html">Customizing</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>More</p>
+      <ul>
+        <li><a href="/en/docs/license.html">License</a></li>
+        <li><a href="/docs/">中文</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>Introduction</h1>
+    <p class="lead">
+      Image Tools is a set of image utilities that run entirely in your browser: compression,
+      format conversion, AI upscaling, and AI background removal. No server, no uploads, no account.
+    </p>
+
+    <h2>The three tools</h2>
+
+    <table>
+      <thead>
+        <tr><th>Tool</th><th>Path</th><th>What it does</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Compress</strong></td>
+          <td><code>/</code></td>
+          <td>Compression and format conversion — JPEG / PNG / WebP / AVIF / JPEG XL, in batches.</td>
+        </tr>
+        <tr>
+          <td><strong>Upscale</strong></td>
+          <td><code>/upscale/</code></td>
+          <td>4× upscaling with Real-ESRGAN, rebuilding detail rather than interpolating pixels.</td>
+        </tr>
+        <tr>
+          <td><strong>Remove background</strong></td>
+          <td><code>/cutout/</code></td>
+          <td>BiRefNet finds the subject and drops the background, producing a transparent PNG or a solid backdrop.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Why "in your browser"</h2>
+
+    <p>
+      Most online image tools process your files on a server. Your photos leave your device,
+      sit on someone else's machine, and come back — no matter how sincerely they promise
+      to delete them afterwards, the files have already left the room.
+    </p>
+
+    <p>These tools do the opposite:</p>
+
+    <ul>
+      <li><strong>Your files never leave your device.</strong> Everything runs in your browser. There is no upload step.</li>
+      <li><strong>No account, no quota.</strong> No sign-up, and no "5 free images per day" limit.</li>
+      <li><strong>Works offline.</strong> Once the page and models have loaded, you can pull the network cable and keep working.</li>
+    </ul>
+
+    <p>
+      The trade-off is a first-run download for the model weights (4.9 MB for upscaling, 94 MB for
+      background removal) and processing speed that depends on your own hardware. What you get back is
+      privacy and unlimited use — a good trade for private photos, ID pictures, or screenshots with
+      sensitive information in them.
+    </p>
+
+    <div class="note">
+      <strong>The only external request</strong> is fetching background-removal weights from HuggingFace
+      on first use (94 MB or 452 MB). They are cached by the browser afterwards. Your images are never uploaded.
+    </div>
+
+    <h2>Next steps</h2>
+
+    <ul>
+      <li><a href="/en/docs/usage.html">Usage</a> — how to use each tool and which settings are worth touching.</li>
+      <li><a href="/en/docs/how-it-works.html">In-browser inference</a> — how WebGPU vs WASM is chosen, and why the first run is slow.</li>
+      <li><a href="/en/docs/deployment.html">Deploying</a> — hosting this site under your own domain.</li>
+    </ul>
+
+    <div class="pager">
+      <span></span>
+      <a href="/en/docs/usage.html">Usage →</a>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

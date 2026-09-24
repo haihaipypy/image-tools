@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>License - Image Tools Docs</title>
+  <meta name="description" content="Licensing and copyright for Image Tools: the project license, model weight licenses, open-source dependencies, and how it relates to Upscayl and bg0.">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://img.1day.vip/en/docs/license.html" />
+  <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/license.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/docs/license.html" />
+  <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/docs/license.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://img.1day.vip/en/docs/license.html" />
+  <meta property="og:title" content="License - Image Tools Docs" />
+  <meta property="og:description" content="Project license, model weight licenses, open-source dependencies, and how it relates to Upscayl and bg0.">
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/docs/style.css" />
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="/en/">Image Tools <span>Docs</span></a>
+    <div class="group">
+      <p>Getting started</p>
+      <ul>
+        <li><a href="/en/docs/">Introduction</a></li>
+        <li><a href="/en/docs/usage.html">Usage</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>Under the hood</p>
+      <ul>
+        <li><a href="/en/docs/how-it-works.html">In-browser inference</a></li>
+        <li><a href="/en/docs/models.html">Models</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>Deployment</p>
+      <ul>
+        <li><a href="/en/docs/deployment.html">Deploying</a></li>
+        <li><a href="/en/docs/customize.html">Customizing</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>More</p>
+      <ul>
+        <li><a href="/en/docs/license.html" aria-current="page">License</a></li>
+        <li><a href="/docs/">中文</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>License</h1>
+    <p class="lead">This project is released under the MIT license. The models and open-source libraries it uses carry their own licenses, all listed below.</p>
+
+    <h2>This project</h2>
+
+    <table>
+      <thead><tr><th>Scope</th><th>License</th><th>Copyright</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Site code</td>
+          <td>MIT</td>
+          <td>© 2026 无辣 (haihaipypy)</td>
+        </tr>
+        <tr>
+          <td>Upstream foundation</td>
+          <td>MIT</td>
+          <td>
+            © 2024 Addy Osmani — the compression and format-conversion parts derive from his image-tools,
+            with the original copyright notice retained in <code>LICENSE</code>.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      MIT permits free use, modification and distribution, including commercially, provided the copyright notice
+      and license text are retained. The full text is in <code>LICENSE</code> at the repository root.
+    </p>
+
+    <h2>Model weights</h2>
+
+    <table>
+      <thead><tr><th>Model</th><th>License</th><th>Copyright and source</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Real-ESRGAN weights</td>
+          <td>BSD-3-Clause</td>
+          <td>
+            © 2021 Xintao Wang (<a href="https://github.com/xinntao/Real-ESRGAN">Real-ESRGAN</a>);
+            ONNX export by <a href="https://huggingface.co/qualcomm/Real-ESRGAN-General-x4v3">Qualcomm AI Hub</a>
+          </td>
+        </tr>
+        <tr>
+          <td>BiRefNet weights</td>
+          <td>MIT</td>
+          <td>
+            © 2024 Peng Zheng (<a href="https://github.com/ZhengPeng7/BiRefNet">BiRefNet</a>);
+            ONNX exports by <a href="https://huggingface.co/studioludens/birefnet-lite-512">studioludens</a>
+            and <a href="https://huggingface.co/naddy24/birefnet-512-webgpu">naddy24</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Both BSD-3-Clause and MIT permit commercial use; only the copyright notice must be retained.</p>
+
+    <h2>Open-source libraries</h2>
+
+    <table>
+      <thead><tr><th>Component</th><th>License</th><th>Copyright</th></tr></thead>
+      <tbody>
+        <tr><td>ONNX Runtime Web</td><td>MIT</td><td>© Microsoft</td></tr>
+        <tr>
+          <td>jSquash and the bundled codecs</td>
+          <td>MIT</td>
+          <td>© James Sinclair; codecs are MozJPEG / libavif / libjxl / OxiPNG</td>
+        </tr>
+        <tr><td>Lucide icons</td><td>ISC</td><td>Lucide Contributors</td></tr>
+        <tr><td>React / Vite / Tailwind CSS</td><td>MIT</td><td>Their respective foundations and authors</td></tr>
+      </tbody>
+    </table>
+
+    <h2>A note on Upscayl</h2>
+
+    <p>
+      The upscaling <strong>interaction design</strong> takes inspiration from
+      <a href="https://github.com/upscayl/upscayl">Upscayl</a>, but <strong>the code is a rewrite and copies none
+      of its source</strong>. The inference layer is entirely different, too — Upscayl is Electron with native
+      ncnn binaries, while this project runs ONNX Runtime entirely in the browser.
+    </p>
+
+    <p>
+      This project is therefore <strong>not subject to Upscayl's AGPL-3.0 copyleft</strong> and is released
+      under MIT.
+    </p>
+
+    <h2>A note on bg0</h2>
+
+    <p>
+      The cutout <strong>interaction and API design</strong> takes inspiration from
+      <a href="https://github.com/opencoredev/bg0">bg0</a> (Apache-2.0), but <strong>the inference layer is an
+      independent implementation</strong>.
+    </p>
+
+    <p>
+      bg0 bundles its own copy of ONNX Runtime through <code>@huggingface/transformers</code>, whereas this
+      project reuses the site's existing ORT runtime and self-hosted wasm and pulls in no second inference engine.
+      The dependency tree therefore contains <strong>neither</strong> <code>@huggingface/transformers</code>
+      <strong>nor</strong> <code>@bg0/browser</code>.
+    </p>
+
+    <h2>Privacy</h2>
+
+    <p>
+      Image data stays in your browser the whole time — there is no upload step. The site does not record image
+      contents or metadata. The only external request is fetching cutout model weights from HuggingFace on first use.
+    </p>
+
+    <div class="pager">
+      <a href="/en/docs/customize.html">← Customizing</a>
+      <span></span>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

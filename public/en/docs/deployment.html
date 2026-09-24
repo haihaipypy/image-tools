@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deploying - Image Tools Docs</title>
+  <meta name="description" content="How to build and deploy Image Tools: requirements, build output, Cloudflare Pages, other static hosts, the cross-origin isolation constraints, and changing the domain.">
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://img.1day.vip/en/docs/deployment.html" />
+  <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/deployment.html" />
+  <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/docs/deployment.html" />
+  <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/docs/deployment.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://img.1day.vip/en/docs/deployment.html" />
+  <meta property="og:title" content="Deploying - Image Tools Docs" />
+  <meta property="og:description" content="Requirements, build output, Cloudflare Pages, other static hosts, and the hard constraints.">
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+  <meta name="theme-color" content="#18181b" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="stylesheet" href="/docs/style.css" />
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="brand" href="/en/">Image Tools <span>Docs</span></a>
+    <div class="group">
+      <p>Getting started</p>
+      <ul>
+        <li><a href="/en/docs/">Introduction</a></li>
+        <li><a href="/en/docs/usage.html">Usage</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>Under the hood</p>
+      <ul>
+        <li><a href="/en/docs/how-it-works.html">In-browser inference</a></li>
+        <li><a href="/en/docs/models.html">Models</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>Deployment</p>
+      <ul>
+        <li><a href="/en/docs/deployment.html" aria-current="page">Deploying</a></li>
+        <li><a href="/en/docs/customize.html">Customizing</a></li>
+      </ul>
+    </div>
+    <div class="group">
+      <p>More</p>
+      <ul>
+        <li><a href="/en/docs/license.html">License</a></li>
+        <li><a href="/docs/">中文</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1>Deploying</h1>
+    <p class="lead">
+      This is a purely static site with no server-side code. But there is one hard requirement:
+      <strong>you must be able to set custom response headers</strong>.
+    </p>
+
+    <h2>Requirements</h2>
+
+    <ul>
+      <li><strong>Node.js 20+</strong></li>
+      <li><strong>A static host that can set response headers</strong> — Cloudflare Pages, Netlify and
+        self-hosted nginx all work. GitHub Pages does not (it cannot set custom response headers, so
+        cross-origin isolation is impossible).</li>
+    </ul>
+
+    <h2>Building locally</h2>
+
+    <pre><code>npm install
+npm run build      # prepare ORT assets → type-check → bundle
+npm run preview    # serve locally with COOP/COEP headers</code></pre>
+
+    <p>The build output looks like this:</p>
+
+    <pre><code>dist/
+├── index.html            Chinese home (compression)
+├── upscale/index.html    Chinese upscaler
+├── cutout/index.html     Chinese cutout
+├── blog/                 Chinese blog (hand-written static pages)
+├── docs/                 This documentation
+├── en/  zh-CN/           English / legacy Chinese paths, same structure
+├── assets/               Bundled JS + CSS
+├── ort/                  ONNX Runtime assets (generated at build time, stored gzipped)
+├── models/               Upscaler model weights
+├── _headers              Cloudflare response headers (isolation + caching)
+└── robots.txt  sitemap.xml  site.webmanifest</code></pre>
+
+    <h2>Option 1: Cloudflare Pages (recommended)</h2>
+
+    <p>The repo ships a <code>wrangler.toml</code>, so you can push straight to Cloudflare:</p>
+
+    <pre><code>npm run deploy     # = npm run build &amp;&amp; wrangler pages deploy dist --project-name=image-tools</code></pre>
+
+    <p>Or connect the Git repo in the Cloudflare dashboard and fill in:</p>
+
+    <table>
+      <thead><tr><th>Item</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Build command</td><td><code>npm run build</code></td></tr>
+        <tr><td>Output directory</td><td><code>dist</code></td></tr>
+        <tr><td>Environment variables</td><td>None needed</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      <code>public/_headers</code> is a native Cloudflare Pages feature, so the isolation headers take effect
+      automatically with no extra configuration.
+    </p>
+
+    <h2>Option 2: Other static hosts</h2>
+
+    <p>There is no server-side code — just upload <code>dist/</code>. Three things to watch:</p>
+
+    <ol>
+      <li>
+        <strong><code>public/_headers</code> is a Cloudflare-specific format.</strong>
+        Other platforms need their own equivalent — Netlify uses a same-named <code>_headers</code>,
+        nginx uses <code>add_header</code>, EdgeOne uses response-header rules.
+        <strong>The isolation headers must actually take effect</strong>, otherwise you drop to single-threaded WASM.
+      </li>
+      <li><strong>The ORT runtime lives in <code>dist/ort/</code></strong> — don't forget to upload it.</li>
+      <li>
+        <strong>The upscaler weights live in <code>dist/models/</code></strong> (already committed to the repo).
+        <strong>The cutout weights are not in <code>dist/</code></strong> — they are fetched on demand from
+        HuggingFace at runtime and cached, so there is nothing to prepare at deploy time.
+      </li>
+    </ol>
+
+    <h3>nginx example</h3>
+
+    <pre><code>location / {
+  add_header Cross-Origin-Opener-Policy "same-origin" always;
+  add_header Cross-Origin-Embedder-Policy "require-corp" always;
+  try_files $uri $uri/ $uri/index.html =404;
+}</code></pre>
+
+    <h2>Things you must know before deploying</h2>
+
+    <h3>1. Cross-origin isolation is a performance switch, not an optional extra</h3>
+
+    <p>
+      <code>Cross-Origin-Opener-Policy: same-origin</code> and
+      <code>Cross-Origin-Embedder-Policy: require-corp</code> are what unlock
+      <code>SharedArrayBuffer</code>, and therefore multi-threaded WASM inference.
+      Without them the site still works, but machines without WebGPU fall back to single-threaded WASM and
+      run several times slower. See <a href="/en/docs/how-it-works.html">In-browser inference</a>.
+    </p>
+
+    <h3>2. require-corp blocks no-cors subresources</h3>
+
+    <p>
+      The page currently only loads its own assets, so this is safe. But if you add a CDN script, a remote font
+      or an analytics snippet, you have to give them proper CORP headers or they will be blocked — or reconsider
+      the whole policy.
+    </p>
+
+    <p>
+      <strong><code>fetch()</code> is the one exception</strong>, and that is exactly what the cutout model uses
+      to pull its weights.
+    </p>
+
+    <h3>3. The ORT wasm file is 25.5 MB, over Cloudflare's 25 MiB per-file limit</h3>
+
+    <p>
+      That is why <code>scripts/prepare-ort.mjs</code> converts it to gzip storage (about 6.3 MB) at build time
+      and the browser decompresses it with <code>DecompressionStream</code>. This also cuts the initial download
+      to a quarter of its original size.
+    </p>
+
+    <p>
+      For the same reason, <strong>the upscaler weights must be committed to the repo</strong>:
+      the build environment has neither Python nor an upstream model source, so downloading them at build time
+      is not an option. (The cutout weights are 94–452 MB, far beyond what any static host will accept, which is
+      why they are fetched at runtime instead.)
+    </p>
+
+    <h2>Changing the domain</h2>
+
+    <p>
+      <code>canonical</code>, <code>hreflang</code>, <code>og:url</code>, <code>og:image</code>, the JSON-LD,
+      the sitemap and robots.txt all use <strong>absolute URLs</strong>, so a domain change means a global
+      find-and-replace in these files:
+    </p>
+
+    <ul>
+      <li><code>index.html</code>, <code>en/index.html</code>, <code>zh-CN/index.html</code></li>
+      <li><code>upscale/index.html</code>, <code>en/upscale/index.html</code>, <code>zh-CN/upscale/index.html</code></li>
+      <li><code>cutout/index.html</code>, <code>en/cutout/index.html</code>, <code>zh-CN/cutout/index.html</code></li>
+      <li><code>public/blog/**/*.html</code>, <code>public/en/blog/**/*.html</code>, <code>public/zh-CN/blog/**/*.html</code></li>
+      <li><code>public/docs/**/*.html</code>, <code>public/en/docs/**/*.html</code></li>
+      <li><code>public/sitemap.xml</code>, <code>public/robots.txt</code></li>
+      <li>the <code>SITE_ORIGIN</code> constant in <code>src/i18n/index.ts</code></li>
+    </ul>
+
+    <div class="note">
+      <strong>The canonical Chinese paths carry no language prefix.</strong> Chinese lives at <code>/</code>,
+      <code>/upscale/</code> and <code>/cutout/</code>; <code>/zh-CN/**</code> are earlier paths whose canonicals
+      all point back to the non-prefixed versions — they are aliases.
+    </div>
+
+    <div class="pager">
+      <a href="/en/docs/models.html">← Models</a>
+      <a href="/en/docs/customize.html">Customizing →</a>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>
