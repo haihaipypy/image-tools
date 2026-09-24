@@ -3,7 +3,7 @@ export const en = {
   // 品牌与标语
   brand: 'Image Tools',
   tagline:
-    'Free online image compression, format conversion, and AI upscaling — compress to AVIF, WebP, JPEG, JPEG XL, or PNG, or enlarge a photo up to 4x. Everything runs in your browser: nothing is uploaded, and batch compression is included.',
+    'Free online image compression, format conversion, AI upscaling, and background removal — compress to AVIF, WebP, JPEG, JPEG XL, or PNG, enlarge a photo up to 4x, or cut out the subject with hair-level precision. Everything runs in your browser: nothing is uploaded, and batch compression is included.',
 
   // 工具切换（顶部标签栏）
   toolNavAria: 'Choose a tool',
@@ -11,6 +11,8 @@ export const en = {
   compressToolDesc: 'Shrink and convert images',
   upscaleTool: 'AI upscale',
   upscaleToolDesc: 'Enlarge images up to 4x',
+  cutoutTool: 'Remove BG',
+  cutoutToolDesc: 'Cut out the subject',
 
   // 压缩选项
   outputFormat: 'Output Format',
@@ -103,6 +105,8 @@ export const en = {
     adapter ? `WebGPU · ${adapter}` : 'WebGPU',
   upscaleBackendWasmThreads: 'WASM (multi-threaded)',
   upscaleBackendWasmSingle: 'WASM (single-threaded)',
+  upscaleBackendWebgpuShort: 'WEBGPU',
+  upscaleBackendWasmShort: 'WASM',
 
   // 错误（按 code 映射，未知错误回落到原始 message）
   upscaleErrorDecode: 'Could not read that image — please try another one',
@@ -123,6 +127,90 @@ export const en = {
     'realesr-general-x4v3': {
       note: 'General-purpose photo model — smallest download, fastest output',
       tags: ['General', 'Lightweight'],
+    },
+  } as Record<string, { note: string; tags: string[] }>,
+
+  // ── AI 抠图 ──────────────────────────────────────────────
+  // 拖拽区
+  cutoutDropTitle: 'Drop an image here, or click to choose',
+  cutoutDropSubtitle: 'PNG / JPEG / WebP / AVIF · the image never leaves this device',
+  cutoutFirstRunHint:
+    'The first run downloads the AI model (about 94 MB for most devices), then it is cached on this device and never fetched again.',
+
+  // 工作区
+  cutoutOriginal: 'Original',
+  cutoutResult: 'Cutout',
+  cutoutCompareHint: 'Drag to compare before and after',
+  cutoutTabCompare: 'Compare',
+  cutoutTabResult: 'Result',
+  cutoutTabOriginal: 'Original',
+  cutoutBefore: 'Before',
+  cutoutAfter: 'After',
+  cutoutKeepHint: 'Hold to peek',
+  cutoutKeepKey: 'Space',
+  cutoutNextImage: 'Next image',
+  cutoutNextKey: 'Esc',
+  cutoutNoNext: 'Only one image loaded',
+  cutoutRun: 'Remove background',
+  cutoutRerun: 'Run again',
+  cutoutRunning: 'Working…',
+  cutoutDownload: 'Download PNG',
+  cutoutReplace: 'Choose another image',
+  cutoutCoverage: (percent: number) => `${percent}% kept`,
+
+  // 控制项
+  cutoutSectionModel: 'Model',
+  cutoutSectionQuality: 'Edge quality',
+  cutoutQualityFast: 'Crisp',
+  cutoutQualityQuality: 'Soft',
+  cutoutQualityHint: 'Crisp narrows the edge transition; Soft keeps the original anti-aliasing.',
+  cutoutSectionBackdrop: 'Background',
+  cutoutBackdropHint: 'Switching the backdrop re-composes instantly — no re-run needed.',
+  cutoutBackdropLocked: 'Available once the cutout finishes.',
+  cutoutBackdrops: {
+    transparent: 'Transparent',
+    white: 'White',
+    red: 'Red',
+    blue: 'Blue',
+  },
+  cutoutNoWebgpu:
+    'WebGPU is unavailable, so this runs on CPU: expect roughly 94 MB and 192 MB of model downloads, and slower processing. Chrome or Edge on a desktop GPU is much faster.',
+
+  // 进度
+  cutoutPhaseIdle: 'Idle',
+  cutoutPhaseFetchingModel: 'Downloading the model',
+  cutoutPhaseWarmingUp: 'Warming up',
+  cutoutPhaseInference: 'Finding the subject',
+  cutoutPhaseCompositing: 'Compositing',
+  cutoutPhaseDone: 'Done',
+  cutoutPhaseError: 'Failed',
+  cutoutDownloadOnce: 'Only the first run downloads — this file is cached afterwards.',
+
+  // 结果附注
+  cutoutNoteMaskUpscaled: (maskEdge: number, outputEdge: number) =>
+    `Mask computed at ${maskEdge}px, scaled to ${outputEdge}px`,
+
+  // 错误
+  cutoutErrorDecode: 'Could not read that image — please try another one',
+  cutoutErrorUnsupported: 'Choose a PNG, JPG, or WebP image',
+  cutoutErrorTooLarge: 'That image is over 40 MB — please choose a smaller file',
+  cutoutErrorModelDownload: (status: string) => `Model download failed (${status})`,
+  cutoutErrorInvalidMask: 'The model returned an unusable mask — try another image',
+  cutoutErrorSessionInit: (detail: string) =>
+    `Could not start the inference engine${detail ? `: ${detail}` : ''}`,
+  cutoutErrorEmpty: 'No subject found — try an image with a clearer foreground',
+  cutoutErrorTensor: (name: string) =>
+    `This model did not return a usable result (outputs: ${name}). The tensor name most likely does not match — try another model.`,
+
+  // 模型说明：按 model.id 取用，避免把文案写进模型注册表
+  cutoutModels: {
+    'birefnet-lite-512': {
+      note: 'The default. Handles hair, fur and other fine detail well — good enough for almost any photo.',
+      tags: ['Default'],
+    },
+    'birefnet-512': {
+      note: 'Only used when your device has no WebGPU. Results are essentially the same, but the file is far larger and much slower.',
+      tags: ['Fallback'],
     },
   } as Record<string, { note: string; tags: string[] }>,
 };
