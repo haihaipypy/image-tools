@@ -12,9 +12,11 @@ output is a pile of static files, so **no backend is required**.
 Live: <https://img.1day.vip/>
 Docs: <https://img.1day.vip/en/docs/>
 
-![Screenshot](./public/screenshot-zh.png)
+![Compression UI](./public/screenshot-zh.png)
 
-![Upscaling UI](./public/screenshot-upscale-zh.png)
+![AI upscaling UI](./public/screenshot-upscale-zh.jpg)
+
+![AI cutout UI](./public/screenshot-cutout-zh.jpg)
 
 ## Features
 

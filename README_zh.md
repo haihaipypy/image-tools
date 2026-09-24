@@ -11,9 +11,11 @@
 线上地址：<https://img.1day.vip/>
 文档：<https://img.1day.vip/docs/>
 
-![压缩界面](./public/screenshot-zh.png)
+![图片压缩界面](./public/screenshot-zh.png)
 
-![放大界面](./public/screenshot-upscale-zh.png)
+![AI 放大界面](./public/screenshot-upscale-zh.jpg)
+
+![AI 抠图界面](./public/screenshot-cutout-zh.jpg)
 
 ## 功能
 
