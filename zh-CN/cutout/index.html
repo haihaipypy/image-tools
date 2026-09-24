@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <title>AI 抠图去背景 - 浏览器本地一键抠出主体，发丝级边缘 | 图片工具</title>
+    <meta name="description" content="免费的浏览器端 AI 抠图工具：用 BiRefNet 模型一键去除图片背景，发丝、绒毛、透明纱这类细节也能保留，输出透明 PNG。全程在本机推理，图片不上传服务器；支持 WebGPU 加速，没有 WebGPU 时自动回退 WASM。可一键切换透明／白／黑／蓝底，附带图片压缩、格式转换与 AI 放大。" />
+    <meta name="keywords" content="AI抠图,在线抠图,免费抠图,去背景,自动抠图,一键抠图,抠图工具,透明背景,背景去除,消除背景,抠人像,抠商品图,PNG透明图,图片去背景,免安装抠图,浏览器抠图,birefnet,webgpu,头发丝抠图" />
+    <meta name="author" content="无辣" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <link rel="canonical" href="https://img.1day.vip/cutout/" />
+    <link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/cutout/" />
+    <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/cutout/" />
+    <link rel="alternate" hreflang="x-default" href="https://img.1day.vip/cutout/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="图片工具" />
+    <meta property="og:title" content="AI 抠图去背景 - 浏览器本地一键抠出主体" />
+    <meta property="og:description" content="用 BiRefNet 一键去除图片背景，连发丝都能留住，输出透明 PNG。全程在浏览器本地推理，图片不上传，支持 WebGPU 加速。" />
+    <meta property="og:url" content="https://img.1day.vip/cutout/" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="图片工具 —— 在线图片压缩、格式转换、AI 放大与 AI 抠图，浏览器端处理" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AI 抠图去背景 - 浏览器本地一键抠出主体" />
+    <meta name="twitter:description" content="免费在线 AI 抠图：BiRefNet 一键去背景，发丝级边缘，输出透明 PNG，浏览器本地推理，图片不上传。" />
+    <meta name="twitter:image" content="https://img.1day.vip/meta.jpg" />
+    <meta name="twitter:image:alt" content="图片工具 —— 在线图片压缩、格式转换、AI 放大与 AI 抠图，浏览器端处理" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "AI 抠图去背景",
+        "alternateName": "AI Background Remover",
+        "url": "https://img.1day.vip/cutout/",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any (Web Browser)",
+        "description": "免费的浏览器端 AI 抠图工具，基于 BiRefNet 模型一键去除图片背景并输出透明 PNG，发丝级边缘，全程本地推理、无需上传。",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
+        "featureList": [
+          "AI 一键去背景（BiRefNet）",
+          "发丝级边缘细节",
+          "输出透明 PNG",
+          "一键切换透明／白／黑／蓝底",
+          "浏览器本地推理（无需上传）",
+          "WebGPU 加速，WASM 自动回退"
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <noscript>AI 抠图是一款免费的在线去背景工具，需要启用 JavaScript。请在浏览器中启用 JavaScript 后抠图。</noscript>
+  </body>
+</html>

@@ -33,6 +33,64 @@ export interface UpscaleModelSpec {
   license: string
 }
 
+/** 抠图权重的精度变体。WebGPU 走 fp16，WASM 走 fp32。 */
+export type CutoutDtype = 'fp16' | 'fp32'
+
+export interface CutoutVariant {
+  /** ONNX 权重位置（同源路径或绝对 URL）。 */
+  url: string
+  approxBytes: number
+  dtype: CutoutDtype
+}
+
+export interface CutoutModelSpec {
+  id: string
+  /** 型号名，跨语言保持一致，不翻译。 */
+  label: string
+  /**
+   * 按执行后端区分的权重变体。同一个模型在 WebGPU 下用半精度、WASM 下用
+   * 全精度，是两套完全不同的文件，所以体积与 URL 都要分开记。
+   */
+  variants: Record<BackendKind, CutoutVariant>
+  /** 模型固定的正方形输入边长。 */
+  inputSize: number
+  /** ONNX 图的输入 / 输出张量名。 */
+  inputName: string
+  outputName: string
+  /** 输出是否为未激活 logits（需要 sigmoid）。 */
+  outputIsLogits: boolean
+  license: string
+}
+
+/** 抠图的两档质量。fast 走边缘硬化，quality 保留原始软过渡。 */
+export type CutoutQuality = 'fast' | 'quality'
+
+export type CutoutProgressPhase =
+  | 'idle'
+  | 'fetching-model'
+  | 'warming-up'
+  | 'inference'
+  | 'compositing'
+  | 'done'
+  | 'error'
+
+export interface CutoutProgress {
+  phase: CutoutProgressPhase
+  /** 0..1；null 表示该阶段没有可量化的进度。 */
+  ratio: number | null
+}
+
+export type CutoutProgressHandler = (progress: CutoutProgress) => void
+
+export interface CutoutResult {
+  canvas: OffscreenCanvas | HTMLCanvasElement
+  backend: BackendKind
+  elapsedMs: number
+  /** 命中的前景像素占比，用来判断「是不是抠空了」。 */
+  coverage: number
+  notes: ResultNote[]
+}
+
 export interface TileSettings {
   /** 送进网络的瓦片边长，单位是源图像素。 */
   tileSize: number
@@ -71,6 +129,7 @@ export type ResultNote =
   | { kind: 'tiles'; totalTiles: number; tileEdge: number; overlap: number }
   | { kind: 'resample'; nativeScale: number; targetScale: number }
   | { kind: 'wasm-fallback' }
+  | { kind: 'mask-upscaled'; maskEdge: number; outputEdge: number }
 
 export interface UpscaleResult {
   canvas: OffscreenCanvas | HTMLCanvasElement

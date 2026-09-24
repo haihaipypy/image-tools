@@ -54,6 +54,9 @@ function localeRouting(): Plugin {
     '/upscale/': '/upscale/index.html',
     '/en/upscale/': '/en/upscale/index.html',
     '/zh-CN/upscale/': '/zh-CN/upscale/index.html',
+    '/cutout/': '/cutout/index.html',
+    '/en/cutout/': '/en/cutout/index.html',
+    '/zh-CN/cutout/': '/zh-CN/cutout/index.html',
     '/blog/': '/blog/index.html',
     '/en/blog/': '/en/blog/index.html',
     '/zh-CN/blog/': '/zh-CN/blog/index.html',
@@ -111,7 +114,7 @@ export default defineConfig({
     target: 'es2022',
     chunkSizeWarningLimit: 2048,
     rollupOptions: {
-      // 六个 HTML 入口，共用同一份 chunk，浏览器只需下载一次。
+      // 九个 HTML 入口，共用同一份 chunk，浏览器只需下载一次。
       input: {
         main: path.resolve(projectRoot, 'index.html'),
         'en/index': path.resolve(projectRoot, 'en/index.html'),
@@ -119,6 +122,9 @@ export default defineConfig({
         'upscale/index': path.resolve(projectRoot, 'upscale/index.html'),
         'en/upscale/index': path.resolve(projectRoot, 'en/upscale/index.html'),
         'zh-CN/upscale/index': path.resolve(projectRoot, 'zh-CN/upscale/index.html'),
+        'cutout/index': path.resolve(projectRoot, 'cutout/index.html'),
+        'en/cutout/index': path.resolve(projectRoot, 'en/cutout/index.html'),
+        'zh-CN/cutout/index': path.resolve(projectRoot, 'zh-CN/cutout/index.html'),
       },
       output: sharedOutput,
     },

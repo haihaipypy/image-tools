@@ -1,19 +1,30 @@
 import { useCallback, useEffect, useState } from 'react'
-import { BookOpen, Image as ImageIcon, Sparkles } from 'lucide-react'
+import { BookOpen, Image as ImageIcon, Scissors, Sparkles } from 'lucide-react'
 import { CompressWorkbench } from './components/compress/CompressWorkbench'
+import { CutoutWorkbench } from './components/cutout/CutoutWorkbench'
 import { LanguageSwitcher } from './components/LanguageSwitcher'
 import { UpscaleWorkbench } from './components/upscale/UpscaleWorkbench'
 import { languagePrefix, useTranslation } from './i18n'
 
-type Tool = 'compress' | 'upscale'
+type Tool = 'compress' | 'upscale' | 'cutout'
+
+const PATHS: Record<Tool, string> = {
+  compress: '/',
+  upscale: '/upscale/',
+  cutout: '/cutout/',
+}
+
+const TOOLS = Object.keys(PATHS) as Tool[]
 
 /**
  * hash 优先（站内切换标签时写它），路径兜底（/upscale/ 这类独立入口进来时用）。
  */
 function resolveTool(): Tool {
   const hash = window.location.hash.slice(1)
-  if (hash === 'upscale' || hash === 'compress') return hash
-  return /\/upscale\/?$/.test(window.location.pathname) ? 'upscale' : 'compress'
+  const fromHash = TOOLS.find((tool) => tool === hash)
+  if (fromHash) return fromHash
+  const fromPath = TOOLS.find((tool) => tool !== 'compress' && new RegExp(`/${tool}/?$`).test(window.location.pathname))
+  return fromPath ?? 'compress'
 }
 
 export function App() {
@@ -29,10 +40,10 @@ export function App() {
   const switchTool = useCallback(
     (next: Tool) => {
       setTool(next)
-      // 顺手把路径改成语义化的那个，但不整页跳转 —— 两个工具共用同一份 bundle，
+      // 顺手把路径改成语义化的那个，但不整页跳转 —— 三个工具共用同一份 bundle，
       // 切换应当是瞬时的。history.replaceState 不进历史栈，避免退格键要走两步。
       const prefix = languagePrefix(lang)
-      window.history.replaceState(null, '', next === 'upscale' ? `${prefix}/upscale/` : `${prefix}/`)
+      window.history.replaceState(null, '', `${prefix}${PATHS[next]}`)
     },
     [lang],
   )
@@ -42,6 +53,7 @@ export function App() {
   const tabs = [
     { id: 'compress' as const, label: t.compressTool, desc: t.compressToolDesc, Icon: ImageIcon },
     { id: 'upscale' as const, label: t.upscaleTool, desc: t.upscaleToolDesc, Icon: Sparkles },
+    { id: 'cutout' as const, label: t.cutoutTool, desc: t.cutoutToolDesc, Icon: Scissors },
   ]
 
   return (
@@ -55,7 +67,7 @@ export function App() {
             <div className="leading-tight">
               <p className="text-sm font-medium">{t.brand}</p>
               <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
-                {t.compressToolDesc} · {t.upscaleToolDesc}
+                {t.compressToolDesc} · {t.upscaleToolDesc} · {t.cutoutToolDesc}
               </p>
             </div>
           </div>
@@ -89,7 +101,9 @@ export function App() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-        {tool === 'compress' ? <CompressWorkbench /> : <UpscaleWorkbench />}
+        {tool === 'compress' && <CompressWorkbench />}
+        {tool === 'upscale' && <UpscaleWorkbench />}
+        {tool === 'cutout' && <CutoutWorkbench />}
       </main>
 
       <div className="mx-auto max-w-6xl space-y-6 px-4 pb-10 sm:px-6">
