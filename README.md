@@ -5,9 +5,10 @@
 **English** | [简体中文](./README_zh.md)
 
 A browser-side image toolbox: **compression / format conversion** (WebAssembly codecs), plus
-**AI super-resolution upscaling** and **AI background removal** (both on ONNX Runtime). Everything
-runs on the visitor's own device — images are never uploaded, never leave the machine — and the
-output is a pile of static files, so **no backend is required**.
+**AI super-resolution upscaling**, **AI background removal** and **click to cut** (all three on
+ONNX Runtime) and **crop / rotate / grid slicing** (plain Canvas). Everything runs on the
+visitor's own device — images are never uploaded, never leave the machine — and the output is a
+pile of static files, so **no backend is required**.
 
 Live: <https://img.1day.vip/>
 Docs: <https://img.1day.vip/en/docs/>
@@ -18,9 +19,13 @@ Docs: <https://img.1day.vip/en/docs/>
 
 ![AI cutout UI](./public/screenshot-cutout-zh.jpg)
 
+![Click-to-cut UI](./public/screenshot-segment-zh.jpg)
+
+![Crop & rotate UI](./public/screenshot-edit-zh.jpg)
+
 ## Features
 
-All three tools share one page shell with a segmented tab switcher in the header (instant, same
+All five tools share one page shell with a segmented tab switcher in the header (instant, same
 bundle — no full page reload), and each keeps its own URL so they can be bookmarked and linked
 separately.
 
@@ -49,16 +54,64 @@ Default quality: AVIF 50, JPEG 75, JPEG XL 75, WebP 75, PNG lossless.
 
 | | |
 | --- | --- |
-| Model | BiRefNet (512×512 input, one forward pass over the whole image, single-channel alpha mask out) |
-| Variants | Lite 94 MB (default) / Full 452 MB (fallback for devices without WebGPU) |
+| Models | Two tiers: **MODNet** (portrait, default) and **BiRefNet Lite** (HD) |
+| Size | MODNet **24.7 MB** fp32 (this tier always runs on CPU, so fp32 is what ships); BiRefNet Lite fp16 93.9 MB / fp32 183 MB |
+| Input | MODNet: short edge 512, both sides rounded up to a multiple of 32 (the network requires it); BiRefNet: fixed 512×512 |
 | Weights | **Not committed** — fetched from the HuggingFace Hub at a pinned revision and cached in Cache Storage |
-| Backend | **WebGPU preferred**, automatic fallback to WASM (multi-threaded → single-threaded) |
+| Sources | huggingface.co with a mirror behind it: mirror first, official host as backup, 10 s per source before moving on, and the host that worked is remembered for next time |
+| Backend | BiRefNet and MobileSAM prefer **WebGPU** with a WASM fallback; MODNet is **CPU-only** because it computes the wrong answer on WebGPU (see `webgpuSafe`) |
 | Edges | Two modes: "sharp" narrows the transition band, "soft" keeps the original feathering |
 | Backdrop | Transparent / white / red / blue — switching only recomposites, no re-inference |
 | Flow | Upload → choose model and edge mode → run → comparison slider → pick a backdrop → download PNG |
 
+The two tiers split by use case: MODNet is trained on people and is one eighth the download of the
+HD tier, which is enough for portraits and everyday objects; switch to BiRefNet Lite for products,
+logos and other intricate subjects. **All weights are commercially usable** — Apache-2.0 and MIT
+for MODNet and BiRefNet respectively (the RMBG family is non-commercial only and is excluded).
+
 Cutout and upscaling share a single ONNX Runtime instance (`public/ort/`) —
 **no second inference engine is bundled**.
+
+### 4. Click to Cut — `/segment/`
+
+Automatic cutout asks the model to decide who the subject is. Click to Cut inverts that —
+**you tell the model where the subject is**.
+
+| | |
+| --- | --- |
+| Model | **MobileSAM** (the lightweight Segment Anything), 26.9 MiB encoder + 15.7 MiB decoder |
+| Input | Letterboxed into 1024×1024 (padded black); prompt coordinates use that square as their frame of reference |
+| Prompts | Positive ("keep") and negative ("exclude") points — `Alt` / `Shift` click or right-click excludes |
+| Layout | Picking and the result sit **side by side** — one click and the cutout appears, no tab switching |
+| Key design | **Encode once, click many times** — the encoding depends only on the image, so further points reuse it and only re-run the decoder |
+| Output | Transparent PNG at the original resolution, with an IoU confidence score and subject coverage |
+| Weights | Fetched from HuggingFace at a pinned commit, cached in its own bucket (`segment-models-v1`) |
+
+"Encode once" is a precondition, not an optimisation: encoding a 1024² image with MobileSAM takes
+seconds on CPU while decoding takes a few hundred milliseconds, so without that cache every click
+would send you back to the start.
+
+The implementation follows [sam-web](https://github.com/karlorz/sam-web) (MIT) for the model
+configuration and preprocessing spec, but does **not** depend on it: sam-web hardcodes the ONNX
+Runtime wasm path to the jsDelivr CDN and ships its own separate ORT instance, which conflicts with
+this project's self-hosted `public/ort/`. Here the existing ORT runtime is reused, wired up against
+the same tensor spec (HWC layout, 0-255 input range, `orig_im_size` reported back).
+
+### 5. Crop / rotate / grid slicing — `/edit/`
+
+| | |
+| --- | --- |
+| Rotate | Any angle (slider plus ±1° / ±90° nudges) |
+| Straighten | **Automatic skew correction** — a Sobel gradient-orientation histogram estimates the dominant tilt, with a confidence gate |
+| Flip | Horizontal / vertical mirror |
+| Crop | Free-form, or locked to 1:1, 4:3, 3:4, 16:9, 9:16 |
+| Slicing | Split into rows × columns (gap adjustable) and download as a **ZIP** in one go |
+| Slice preview | A live grid of the current rows/columns/gap in the sidebar, redrawn as you drag the crop box |
+| Dependencies | **No model, no network requests** — plain Canvas plus a hand-rolled store-mode ZIP writer |
+
+Rotating automatically tightens the crop box to the largest rectangle that still fits inside the
+turned image, so the corners never go empty. That is the part free-angle rotation usually gets
+wrong: skip it and you are guaranteed four blank triangles.
 
 ## Tech stack
 

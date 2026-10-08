@@ -5,8 +5,8 @@
 [English](./README.md) | **简体中文**
 
 浏览器端的图片工具箱：**压缩 / 格式转换**（WebAssembly 编解码）＋ **AI 超分辨率放大** ＋ **AI 抠图去背景**
-（两者都跑 ONNX Runtime）。所有处理都在访问者自己的设备上完成 —— 图片不上传、不出本机，
-产物是一堆静态文件，**不需要任何后端**。
+＋ **点选抠图**（后三者跑 ONNX Runtime）＋ **裁剪旋转 / 九宫格切片**（纯 Canvas）。
+所有处理都在访问者自己的设备上完成 —— 图片不上传、不出本机，产物是一堆静态文件，**不需要任何后端**。
 
 线上地址：<https://img.1day.vip/>
 文档：<https://img.1day.vip/docs/>
@@ -17,9 +17,13 @@
 
 ![AI 抠图界面](./public/screenshot-cutout-zh.jpg)
 
+![点选抠图界面](./public/screenshot-segment-zh.jpg)
+
+![裁剪旋转与切片预览](./public/screenshot-edit-zh.jpg)
+
 ## 功能
 
-三个工具共用同一套页面外壳，顶栏胶囊标签切换，切换是瞬时的（同一份 bundle，不整页跳转）；
+五个工具共用同一套页面外壳，顶栏胶囊标签切换，切换是瞬时的（同一份 bundle，不整页跳转）；
 同时各自保留独立 URL，可以分别收藏、分别投放。
 
 ### 一、图片压缩 / 格式转换 —— `/`
@@ -47,15 +51,58 @@
 
 | 项 | 说明 |
 | --- | --- |
-| 模型 | BiRefNet（512×512 输入，单次整图推理，输出单通道 alpha 遮罩） |
-| 版本 | 轻量版 94 MB（默认推荐）/ 完整版 452 MB（无 WebGPU 时的兼容备用） |
+| 模型 | 两档：**MODNet**（人像档，默认）与 **BiRefNet Lite**（高清档） |
+| 体积 | MODNet fp32 **24.7 MB**（该档固定走 CPU，故只用 fp32）；BiRefNet Lite fp16 93.9 MB / fp32 183 MB |
+| 输入 | MODNet：短边 512 且长宽对齐到 32 的倍数（网络结构要求）；BiRefNet：固定 512×512 |
 | 权重 | **不随仓库提交**，从 HuggingFace Hub 按固定 revision 拉取并缓存到 Cache Storage |
-| 后端 | **WebGPU 优先**，不可用时自动降级 WASM（多线程 → 单线程） |
+| 下载源 | huggingface.co 配国内镜像兜底：镜像优先、官方托底，每个源 10 秒没响应就换下一个，成功的源记在本机下次先用 |
+| 后端 | BiRefNet / MobileSAM **WebGPU 优先**，不可用时降级 WASM；MODNet 因 WebGPU 精度问题**固定走 CPU**（见 `webgpuSafe`） |
 | 边缘 | 两档：「锐利」收窄过渡带，「柔和」保留原始羽化 |
 | 底色 | 透明 / 白 / 红 / 蓝 —— 换底色只重合成，不重跑推理 |
 | 交互 | 上传 → 选择模型与边缘 → 抠图 → 对比滑块 → 换底色 → 下载 PNG |
 
+两档的分工是按适用场景划的：MODNet 为人像训练，体积只有高清档的 1/8，人像与常见物体都够用；
+抠商品、Logo 这类复杂主体时切到 BiRefNet Lite。**许可全部可商用**：MODNet / BiRefNet 分别是
+Apache-2.0 与 MIT（RMBG 系列权重仅限非商业，已排除）。
+
 抠图与放大共用同一份 ONNX Runtime（`public/ort/`），**没有引入第二个推理引擎**。
+
+### 四、点选抠图 —— `/segment/`
+
+自动抠图是「模型决定主体是谁」，点选抠图反过来 —— **你告诉模型主体在哪**。
+
+| 项 | 说明 |
+| --- | --- |
+| 模型 | **MobileSAM**（Segment Anything 的轻量版），编码器 26.9 MiB + 解码器 15.7 MiB |
+| 输入 | 等比放入 1024×1024（补边填黑），提示点坐标以该正方形为参考系 |
+| 提示点 | 正点「保留」+ 负点「排除」，`Alt` / `Shift` 点击或右键即排除 |
+| 交互 | 左侧点选、右侧结果**同屏并排**，点一下立刻出结果，不用切标签页 |
+| 关键设计 | **编码一次、点击多次** —— 编码结果只与图片有关，换点不换图时直接复用，后续每次点击只跑解码器 |
+| 输出 | 透明 PNG（原图分辨率），附置信度与主体占比 |
+| 权重 | 从 HuggingFace 按固定 commit 拉取，缓存到独立桶 `segment-models-v1` |
+
+「编码一次」不是顺手做的优化，而是这个功能成不成立的前提：MobileSAM 编码一张 1024² 的图在
+CPU 上要好几秒，而解码只要几百毫秒 —— 没有这层缓存，用户每点一下都要从头再等一遍。
+
+实现上参考了 [sam-web](https://github.com/karlorz/sam-web)（MIT）的模型配置与预处理规格，
+但**没有直接依赖它**：它把 ONNX Runtime 的 wasm 路径写死到 jsDelivr CDN，且自带一份独立的
+ORT 实例，与本项目自托管 `public/ort/` 的方案冲突。这里复用本站已有的 ORT 运行时，
+按同样的张量规格（HWC 排布、0-255 输入、`orig_im_size` 回传）自己接了一遍。
+
+### 五、裁剪旋转 / 九宫格切片 —— `/edit/`
+
+| 项 | 说明 |
+| --- | --- |
+| 旋转 | 任意角度（滑块 + ±1° / ±90° 微调） |
+| 拉正 | **拍歪自动矫正**：Sobel 梯度方向直方图估算主导倾斜角，带置信度判断 |
+| 翻转 | 水平 / 垂直镜像 |
+| 裁剪 | 自由框选，或锁定 1:1 / 4:3 / 3:4 / 16:9 / 9:16 |
+| 切片 | 按行列切分（列/行/间距可调），打包成 **ZIP** 一次下载 |
+| 切片预览 | 侧栏实时画出当前行列间距的分块网格，拖动裁剪框时同步更新 |
+| 依赖 | **零模型、零网络请求**，纯 Canvas + 手写 ZIP（store 模式，无第三方依赖） |
+
+旋转后会自动把裁剪框收成「画面里最大的内接矩形」，四个角永远是实的 —— 这是任意角度旋转
+最容易出问题的地方（不裁就必然是四个空白三角）。
 
 ## 技术栈
 
@@ -131,8 +178,8 @@ npm run deploy     # = npm run build && wrangler pages deploy dist --project-nam
   **`Cross-Origin-Opener-Policy: same-origin` + `Cross-Origin-Embedder-Policy: require-corp`
   必须真正生效**，否则无 WebGPU 的机器会掉到单线程 WASM，慢好几倍。
   **GitHub Pages 做不到，不要用它。**
-- **`dist/ort/` 与 `dist/models/` 别漏传。** 抠图权重不在 `dist/` 里 —— 它从 HuggingFace
-  现拉现缓存，部署时不需要额外准备。
+- **`dist/ort/` 与 `dist/models/` 别漏传。** 抠图与点选抠图的权重都不在 `dist/` 里 —— 它们从
+  HuggingFace 现拉现缓存，部署时不需要额外准备。
 
 完整的部署细节、换域名清单、代码结构说明见 **<https://img.1day.vip/docs/deployment.html>**。
 
@@ -143,7 +190,7 @@ npm run deploy     # = npm run build && wrangler pages deploy dist --project-nam
 | 页面 | 内容 |
 | --- | --- |
 | [介绍](https://img.1day.vip/docs/) | 项目定位与整体结构 |
-| [使用方法](https://img.1day.vip/docs/usage.html) | 三个工具怎么用、注意事项、常见问题 |
+| [使用方法](https://img.1day.vip/docs/usage.html) | 五个工具怎么用、注意事项、常见问题 |
 | [浏览器端推理](https://img.1day.vip/docs/how-it-works.html) | 后端选择、跨域隔离、首次加载体积 |
 | [模型说明](https://img.1day.vip/docs/models.html) | 模型来源、授权、参数与选择规则 |
 | [部署流程](https://img.1day.vip/docs/deployment.html) | 构建产出、各平台部署、硬约束、换域名 |
