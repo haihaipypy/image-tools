@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { clearCutoutModelCache } from '../lib/cutout/modelCache'
+import { clearModelCache as clearCutoutModelCache } from '../lib/cutout/modelCache'
 import { DEFAULT_CUTOUT_MODEL_ID, getCutoutModel } from '../lib/cutout/models'
 import { cutoutLocally } from '../lib/cutout'
 import { probeCapabilities } from '../lib/cutout/backend'

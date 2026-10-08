@@ -1,7 +1,7 @@
 import type { ProgressHandler, UpscaleModelSpec } from '../types'
 import { UpscaleError } from './errors'
 import { fetchModelBuffer } from './modelCache'
-import { configureThreads, ort, prepareOrtRuntime, type LocalBackend } from './ortRuntime'
+import { configureThreads, ort, prepareOrtRuntime, RuntimeError, type LocalBackend } from './ortRuntime'
 
 export interface ActiveSession {
   session: ort.InferenceSession
@@ -74,7 +74,11 @@ export async function acquireSession(options: AcquireOptions): Promise<ActiveSes
     }
   }
 
-  if (lastError instanceof UpscaleError) throw lastError
+  // 分过类的错误原样抛回。RuntimeError 尤其不能包：它的 message 就是 code，
+  // 包进 session-init-failed 之后 UI 再按 code 翻译就找不到人了，用户看到
+  // 的会是 model-fetch-failed 这种原始码。详见 cutout/session.ts 的注释。
+  if (lastError instanceof UpscaleError || lastError instanceof RuntimeError) throw lastError
+
   throw new UpscaleError('session-init-failed', {
     detail: lastError instanceof Error ? lastError.message : String(lastError),
   })

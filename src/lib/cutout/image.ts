@@ -1,6 +1,12 @@
-import type { CutoutQuality } from '../types'
+import type { CutoutPreprocess, CutoutQuality } from '../types'
 import { CutoutError } from './errors'
-import { IMAGE_MEAN, IMAGE_STD } from './models'
+
+/** preprocess 的产物：展开的 NCHW 数据 + 实际输入尺寸。 */
+export interface PreparedInput {
+  data: Float32Array
+  width: number
+  height: number
+}
 
 export const MAX_IMAGE_BYTES = 40 * 1024 * 1024
 
@@ -27,10 +33,16 @@ export async function decodeImage(input: Blob): Promise<ImageBitmap> {
 }
 
 /**
- * 把源图画到 512×512 并归一化成 NCHW float32。
+ * 把源图画到网络要求的尺寸并归一化成 NCHW float32。
  *
- * BiRefNet 的官方预处理很朴素：等比缩放到固定边长（**不做** letterbox，
- * 长宽比失真交给网络吸收），除以 255 转 [0,1]，再减均值除标准差。
+ * 尺寸与归一化都按模型给的规则走（见 CutoutPreprocess）：
+ *
+ * - `square`（BiRefNet）：直接拉伸到 edge×edge，不做 letterbox，长宽比失真
+ *   交给网络吸收。
+ * - `aspect`（MODNet）：短边缩到 edge，长边等比跟随，再把两边各自向上取整到
+ *   divisibility 的倍数。**整除数不是随便取的** —— MODNet 的 encoder/decoder
+ *   有多级下采样再上采样，尺寸不能被 32 整除时会在 Concat 节点直接报维度
+ *   不匹配。实测 672/544 能跑，516/656/528 全部失败。
  *
  * `willReadFrequently` 在这里是必要的 —— 我们只画一次但马上要把像素读回来，
  * 不标这个会让浏览器把 canvas 放在 GPU 上，回读触发一次同步拷贝。
@@ -39,28 +51,66 @@ export function preprocess(
   source: CanvasImageSource,
   sourceWidth: number,
   sourceHeight: number,
-  size: number,
-): Float32Array {
-  const canvas = new OffscreenCanvas(size, size)
+  rule: CutoutPreprocess,
+): PreparedInput {
+  const { width, height } = planInputSize(sourceWidth, sourceHeight, rule)
+  const canvas = new OffscreenCanvas(width, height)
   const ctx = canvas.getContext('2d', { willReadFrequently: true })
   if (!ctx) throw new CutoutError('canvas-context-failed')
 
   ctx.imageSmoothingEnabled = true
   ctx.imageSmoothingQuality = 'high'
-  ctx.drawImage(source, 0, 0, sourceWidth, sourceHeight, 0, 0, size, size)
+  ctx.drawImage(source, 0, 0, sourceWidth, sourceHeight, 0, 0, width, height)
 
-  const { data } = ctx.getImageData(0, 0, size, size)
-  const plane = size * size
+  const { data } = ctx.getImageData(0, 0, width, height)
+  const plane = width * height
   const out = new Float32Array(plane * 3)
+  const [meanR, meanG, meanB] = rule.mean
+  const [stdR, stdG, stdB] = rule.std
 
   for (let i = 0, p = 0; i < plane; i += 1, p += 4) {
-    out[i] = (data[p]! / 255 - IMAGE_MEAN[0]) / IMAGE_STD[0]
-    out[plane + i] = (data[p + 1]! / 255 - IMAGE_MEAN[1]) / IMAGE_STD[1]
-    out[plane * 2 + i] = (data[p + 2]! / 255 - IMAGE_MEAN[2]) / IMAGE_STD[2]
+    out[i] = (data[p]! / 255 - meanR) / stdR
+    out[plane + i] = (data[p + 1]! / 255 - meanG) / stdG
+    out[plane * 2 + i] = (data[p + 2]! / 255 - meanB) / stdB
   }
 
-  return out
+  return { data: out, width, height }
 }
+
+/**
+ * 按模型规则算出实际送进网络的输入尺寸。
+ *
+ * `aspect` 模式下长边不设上限会出事：一张 8000×500 的全景图短边缩到 512 后
+ * 长边会到 8192，单个输入张量就要 8000 万个 float。这里把长边压到短边的
+ * 4 倍以内 —— 能覆盖 4:1 以内的绝大多数图，超宽图接受一定失真。
+ */
+export function planInputSize(
+  sourceWidth: number,
+  sourceHeight: number,
+  rule: CutoutPreprocess,
+): { width: number; height: number } {
+  if (rule.mode === 'square') {
+    return { width: rule.edge, height: rule.edge }
+  }
+
+  const shortest = Math.max(1, Math.min(sourceWidth, sourceHeight))
+  const scale = rule.edge / shortest
+  const divisor = Math.max(1, rule.divisibility)
+  const longestLimit = rule.edge * MAX_ASPECT_RATIO
+
+  const clamp = (value: number) => {
+    const rounded = Math.ceil(Math.round(value * scale) / divisor) * divisor
+    return Math.min(Math.max(rounded, divisor), longestLimit)
+  }
+
+  return {
+    width: clamp(sourceWidth),
+    height: clamp(sourceHeight),
+  }
+}
+
+/** `aspect` 模式下最长边相对短边的倍数上限，防止超宽图撑爆输入张量。 */
+const MAX_ASPECT_RATIO = 4
 
 /**
  * 把网络输出转成 0..1 的 alpha 通道。

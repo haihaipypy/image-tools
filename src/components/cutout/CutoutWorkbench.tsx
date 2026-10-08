@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from '../../i18n'
 import { useCutout } from '../../hooks/useCutout'
+import { getCutoutModel } from '../../lib/cutout/models'
 import { downloadBlob } from '../../lib/imageOutput'
 import { CutoutCompareSlider } from './CutoutCompareSlider'
 import { CutoutControls } from './CutoutControls'
@@ -42,6 +43,15 @@ export function CutoutWorkbench() {
   const [peeking, setPeeking] = useState(false)
 
   const running = status === 'running'
+
+  /**
+   * 人像档抠出来的主体少得离谱时，十有八九是张非人像图。
+   * 与其让用户对着一地碎片发懵，不如直接把下一步该做什么写出来。
+   */
+  const suggestHd =
+    Boolean(result) &&
+    getCutoutModel(modelId).scope === 'portrait' &&
+    (result?.coverage ?? 1) < LOW_COVERAGE_HINT
 
   const backendLabel = capabilities
     ? capabilities.webgpu
@@ -107,13 +117,30 @@ export function CutoutWorkbench() {
           </div>
         )}
 
+        {suggestHd && (
+          <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+            {t.cutoutSuggestHd}
+          </div>
+        )}
+
         {result && result.notes.length > 0 && (
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-neutral-500 dark:text-neutral-400">
             {result.notes.map((note) => (
               <span key={note.kind}>
-                {note.kind === 'wasm-fallback' && t.upscaleNoteWasmFallback}
+                {/* 同一个 wasm-fallback 有两种成因，说法必须分开：设备没有
+                    WebGPU 才算「降级」，而 MODNet 是有意避开 WebGPU（见
+                    models.ts）；把它说成降级会让用户以为好显卡白买了。 */}
+                {note.kind === 'wasm-fallback' &&
+                  (getCutoutModel(modelId).webgpuSafe === false
+                    ? t.cutoutNoteCpuByDesign
+                    : t.upscaleNoteWasmFallback)}
                 {note.kind === 'mask-upscaled' &&
-                  t.cutoutNoteMaskUpscaled(note.maskEdge, note.outputEdge)}
+                  t.cutoutNoteMaskUpscaled(
+                    note.maskWidth,
+                    note.maskHeight,
+                    note.imageWidth,
+                    note.imageHeight,
+                  )}
               </span>
             ))}
           </div>
@@ -121,7 +148,7 @@ export function CutoutWorkbench() {
       </div>
 
       <aside className="space-y-5">
-        <div className="rounded-2xl border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
           <CutoutControls
             modelId={modelId}
             onModelChange={setModelId}
@@ -135,7 +162,13 @@ export function CutoutWorkbench() {
           />
         </div>
 
-        <div className="space-y-2">
+        {/* 运行按钮吸在视口底部。
+            侧栏内容比一屏还高时（窗口小、笔记本竖屏、字体放大），用户被推到
+            下面翻设置，「一键抠图」就跟着滑出屏幕了 —— 而这是整页唯一必须够得着
+            的按钮。吸底之后不管内容多长它都在。
+            底色跟着页面走 + 毛玻璃 + 上边框：滚动时它下面会压着卡片文字，不留
+            这层遮挡会糊成一片。 */}
+        <div className="sticky bottom-0 z-10 space-y-2 border-t border-neutral-200 bg-neutral-50/95 pt-3 pb-2 backdrop-blur dark:border-neutral-800 dark:bg-neutral-950/95">
           <button
             type="button"
             onClick={run}
@@ -145,7 +178,7 @@ export function CutoutWorkbench() {
             {running ? t.cutoutRunning : result ? t.cutoutRerun : t.cutoutRun}
           </button>
 
-          <p className="pt-1 text-center text-[11px] text-neutral-400 dark:text-neutral-500">
+          <p className="text-center text-[11px] text-neutral-400 dark:text-neutral-500">
             {backendLabel}
           </p>
         </div>
@@ -153,6 +186,14 @@ export function CutoutWorkbench() {
     </div>
   )
 }
+
+/**
+ * 主体占比低于这个数，就认为「这张图多半不是人像」。
+ *
+ * 实测参考：人像约 66%，杯子约 18%，而 MODNet 的量化版在杯子上只剩 4%。
+ * 取 8% 是想让「明显抠坏」触发提示，又不至于把正常的半身像、小主体误伤。
+ */
+const LOW_COVERAGE_HINT = 0.08
 
 /**
  * 下载文件名沿用原图的名字，加上底色后缀。

@@ -19,6 +19,8 @@ export function describeCutoutError(error: Error, t: Translation): string {
         return t.upscaleErrorRuntimeManifestInvalid
       case 'asset-failed':
         return t.upscaleErrorRuntimeAsset(status)
+      case 'model-fetch-failed':
+        return t.errorModelFetch
       default:
         return error.message
     }

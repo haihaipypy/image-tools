@@ -8,7 +8,7 @@ import type {
 import { ort } from '../ort'
 import { CutoutError } from './errors'
 import { composeTransparent, preprocess, toAlpha } from './image'
-import { CUTOUT_CACHE_NAME } from './modelCache'
+import { CACHE_NAME as CUTOUT_CACHE_NAME } from './modelCache'
 import { acquireCutoutSession } from './session'
 
 /** 覆盖率低于这个值就认为抠空了 —— 网络找不到主体，结果对用户没用。 */
@@ -25,20 +25,20 @@ export interface LocalCutoutOptions {
 }
 
 /**
- * 在本机跑一次 BiRefNet 抠图。
+ * 在本机跑一次抠图推理。
  *
- * 与放大流水线最大的不同：抠图是**单张整图推理**，没有瓦片循环。模型输入被
- * 固定成 512×512，所以源图无论多大都只跑一次前向 —— 这也意味着输出遮罩的分辨
- * 率上限就是 512，细节全靠合成阶段把遮罩放大回原尺寸。
+ * 与放大流水线最大的不同：抠图是**单张整图推理**，没有瓦片循环。网络输入由
+ * 模型的预处理规则决定（BiRefNet 是固定 512×512，MODNet 是短边 512 的矩形），
+ * 所以源图无论多大都只跑一次前向 —— 这也意味着输出遮罩的分辨率上限就是网络
+ * 输入尺寸，细节全靠合成阶段把遮罩放大回原尺寸。
  *
- * 因此这里显式记一条 `mask-upscaled` 附注：当源图远大于 512 时，边缘质量受
- * 遮罩分辨率而非网络能力限制，用户应该知道这一点（UI 会据此提示）。
+ * 因此这里显式记一条 `mask-upscaled` 附注：当遮罩分辨率低于原图时，边缘质量
+ * 受遮罩分辨率而非网络能力限制，用户应该知道这一点（UI 会据此提示）。
  */
 export async function cutoutLocally(options: LocalCutoutOptions): Promise<CutoutResult> {
   const { bitmap, spec, quality, preferWebgpu, threads, onProgress, signal } = options
 
   const startedAt = performance.now()
-  const size = spec.inputSize
 
   const { session, backend } = await acquireCutoutSession({
     spec,
@@ -56,8 +56,10 @@ export async function cutoutLocally(options: LocalCutoutOptions): Promise<Cutout
   throwIfCancelled(signal)
   onProgress?.({ phase: 'inference', ratio: 0 })
 
-  const pixels = preprocess(bitmap, bitmap.width, bitmap.height, size)
-  const tensor = new ort.Tensor('float32', pixels, [1, 3, size, size])
+  // 输入尺寸由模型规则决定，不一定等于原图尺寸 —— MODNet 走短边等比，得到
+  // 的是矩形输入（如 512×928），BiRefNet 则是固定正方形。
+  const prepared = preprocess(bitmap, bitmap.width, bitmap.height, spec.preprocess)
+  const tensor = new ort.Tensor('float32', prepared.data, [1, 3, prepared.height, prepared.width])
 
   let alpha: Float32Array
   let maskWidth: number
@@ -68,8 +70,8 @@ export async function cutoutLocally(options: LocalCutoutOptions): Promise<Cutout
     const output = pickOutput(outputs, spec)
 
     const dims = output.dims
-    maskHeight = dims[dims.length - 2] ?? size
-    maskWidth = dims[dims.length - 1] ?? size
+    maskHeight = dims[dims.length - 2] ?? prepared.height
+    maskWidth = dims[dims.length - 1] ?? prepared.width
 
     alpha = toAlpha(output.data as Float32Array, maskWidth * maskHeight, spec.outputIsLogits)
     output.dispose()
@@ -92,11 +94,16 @@ export async function cutoutLocally(options: LocalCutoutOptions): Promise<Cutout
     throw new CutoutError('empty-result', { detail: String(coverage) })
   }
 
-  if (bitmap.width > size || bitmap.height > size) {
+  // 遮罩分辨率低于原图时明说 —— 但**两个方向分别报**，不要拿「最短边对最长边」
+  // 去凑一个倍数。竖图上那样会算出 4.8× 这种骇人的数字，而实际横向只放大
+  // 2.81×、纵向 2.74×，用户会以为画质被砍得比实际狠得多。
+  if (maskWidth < bitmap.width || maskHeight < bitmap.height) {
     notes.push({
       kind: 'mask-upscaled',
-      maskEdge: Math.min(maskWidth, maskHeight),
-      outputEdge: Math.max(bitmap.width, bitmap.height),
+      maskWidth,
+      maskHeight,
+      imageWidth: bitmap.width,
+      imageHeight: bitmap.height,
     })
   }
 

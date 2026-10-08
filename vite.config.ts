@@ -57,6 +57,12 @@ function localeRouting(): Plugin {
     '/cutout/': '/cutout/index.html',
     '/en/cutout/': '/en/cutout/index.html',
     '/zh-CN/cutout/': '/zh-CN/cutout/index.html',
+    '/segment/': '/segment/index.html',
+    '/en/segment/': '/en/segment/index.html',
+    '/zh-CN/segment/': '/zh-CN/segment/index.html',
+    '/edit/': '/edit/index.html',
+    '/en/edit/': '/en/edit/index.html',
+    '/zh-CN/edit/': '/zh-CN/edit/index.html',
     '/blog/': '/blog/index.html',
     '/en/blog/': '/en/blog/index.html',
     '/zh-CN/blog/': '/zh-CN/blog/index.html',
@@ -114,7 +120,7 @@ export default defineConfig({
     target: 'es2022',
     chunkSizeWarningLimit: 2048,
     rollupOptions: {
-      // 九个 HTML 入口，共用同一份 chunk，浏览器只需下载一次。
+      // 十五个 HTML 入口，共用同一份 chunk，浏览器只需下载一次。
       input: {
         main: path.resolve(projectRoot, 'index.html'),
         'en/index': path.resolve(projectRoot, 'en/index.html'),
@@ -125,6 +131,12 @@ export default defineConfig({
         'cutout/index': path.resolve(projectRoot, 'cutout/index.html'),
         'en/cutout/index': path.resolve(projectRoot, 'en/cutout/index.html'),
         'zh-CN/cutout/index': path.resolve(projectRoot, 'zh-CN/cutout/index.html'),
+        'segment/index': path.resolve(projectRoot, 'segment/index.html'),
+        'en/segment/index': path.resolve(projectRoot, 'en/segment/index.html'),
+        'zh-CN/segment/index': path.resolve(projectRoot, 'zh-CN/segment/index.html'),
+        'edit/index': path.resolve(projectRoot, 'edit/index.html'),
+        'en/edit/index': path.resolve(projectRoot, 'en/edit/index.html'),
+        'zh-CN/edit/index': path.resolve(projectRoot, 'zh-CN/edit/index.html'),
       },
       output: sharedOutput,
     },

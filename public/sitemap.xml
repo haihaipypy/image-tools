@@ -70,6 +70,48 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/cutout/"/>
   </url>
 
+  <!-- 裁剪旋转工具 -->
+  <url>
+    <loc>https://img.1day.vip/edit/</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/edit/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/edit/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/edit/"/>
+  </url>
+
+  <url>
+    <loc>https://img.1day.vip/en/edit/</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/edit/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/edit/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/edit/"/>
+  </url>
+
+  <!-- 点选抠图工具 -->
+  <url>
+    <loc>https://img.1day.vip/segment/</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/segment/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/segment/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/segment/"/>
+  </url>
+
+  <url>
+    <loc>https://img.1day.vip/en/segment/</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://img.1day.vip/en/segment/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://img.1day.vip/segment/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://img.1day.vip/segment/"/>
+  </url>
+
   <!-- 博客列表 -->
   <url>
     <loc>https://img.1day.vip/blog/</loc>

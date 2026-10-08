@@ -1,4 +1,5 @@
 import { RuntimeError } from './errors'
+import { modelSourceCandidates, rememberModelHost } from './sources'
 
 /**
  * 模型权重的通用下载与缓存。
@@ -11,10 +12,22 @@ import { RuntimeError } from './errors'
  * 因此每次交互都跟一个计时器赛跑，失败就放弃 —— 走网络照样能用。
  *
  * 缓存名按模型族分开，这样一个工具的清理不会误伤另一个。
+ *
+ * 一个地址可能对应多个下载源（官方站 + 国内镜像），见 sources.ts。缓存键
+ * 一律用**注册表里的规范地址**，不是实际命中的那个源 —— 否则换一次源就等于
+ * 换一个缓存键，几十兆要重下一遍。
  */
 const OPEN_TIMEOUT_MS = 1500
 const READ_TIMEOUT_MS = 2000
 const WRITE_TIMEOUT_MS = 30_000
+
+/**
+ * 单个源「连上并拿到响应头」的等待上限。
+ *
+ * 只限到响应头为止 —— 见 openModelResponse 的注释：罩住整个下载会误杀慢网，
+ * 而完全不限时又会让备选源永远轮不到。
+ */
+const HEADER_TIMEOUT_MS = 10_000
 
 export interface FetchModelOptions {
   onProgress?: (ratio: number) => void
@@ -117,6 +130,39 @@ async function readBody(
   return merged.buffer
 }
 
+/**
+ * 打开一个响应流，**只给「拿到响应头」这一步限时**。
+ *
+ * 为什么不能把整个下载罩进超时：几十兆的权重在慢网上下几分钟很正常，一刀切
+ * 会误杀正常下载。为什么又必须限时：国内直连 huggingface.co 是「连接挂住」而
+ * 不是「立刻报错」，不限时的话备选源永远轮不到，兜底机制等于白写。
+ *
+ * 用户取消必须**在响应头回来之后依然生效** —— 后面还有几十兆的 body 要传，
+ * 所以那个转发监听不随 finally 摘掉。
+ */
+async function openModelResponse(
+  url: string,
+  signal: AbortSignal | undefined,
+): Promise<Response> {
+  const attempt = new AbortController()
+  const timer = setTimeout(
+    () => attempt.abort(new DOMException('等待响应头超时', 'TimeoutError')),
+    HEADER_TIMEOUT_MS,
+  )
+
+  if (signal) {
+    if (signal.aborted) attempt.abort(signal.reason)
+    else signal.addEventListener('abort', () => attempt.abort(signal.reason), { once: true })
+  }
+
+  try {
+    return await fetch(url, { signal: attempt.signal })
+  } finally {
+    // 头已经回来（或者已经失败），撤掉计时器，别让它掐断后面的 body 传输。
+    clearTimeout(timer)
+  }
+}
+
 export async function fetchModelBuffer(
   url: string,
   options: FetchModelOptions = {},
@@ -132,14 +178,37 @@ export async function fetchModelBuffer(
     }
   }
 
-  const response = await fetch(url, { signal })
-  if (!response.ok) {
-    throw new RuntimeError('asset-failed', { status: response.status })
+  let lastError: unknown = null
+  let lastStatus: string | number = '?'
+
+  for (const candidate of modelSourceCandidates(url)) {
+    try {
+      const response = await openModelResponse(candidate, signal)
+      if (!response.ok) {
+        // 4xx/5xx 也算这个源不行，换下一个。body 不读，直接放掉。
+        void response.body?.cancel()
+        lastError = null
+        lastStatus = response.status
+        continue
+      }
+
+      const buffer = await readBody(response, onProgress)
+      rememberModelHost(candidate)
+      if (cache) storeCached(cache, url, buffer)
+      return buffer
+    } catch (error) {
+      // 用户按了取消：这不是「这个源不可用」，别拿去试下一个地址，更别最后
+      // 被包装成「下载失败」——上层靠这个异常判断是取消。
+      if (signal?.aborted) throw error
+      lastError = error
+      lastStatus = '网络'
+    }
   }
 
-  const buffer = await readBody(response, onProgress)
-  if (cache) storeCached(cache, url, buffer)
-  return buffer
+  throw new RuntimeError('model-fetch-failed', {
+    status: lastStatus,
+    detail: lastError instanceof Error ? lastError.message : undefined,
+  })
 }
 
 export async function clearModelCache(cacheName = DEFAULT_CACHE_NAME): Promise<void> {

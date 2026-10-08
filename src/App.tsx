@@ -1,18 +1,30 @@
 import { useCallback, useEffect, useState } from 'react'
-import { BookOpen, BookText, Image as ImageIcon, Scissors, Sparkles } from 'lucide-react'
+import {
+  BookOpen,
+  BookText,
+  Crop,
+  Image as ImageIcon,
+  MousePointerClick,
+  Scissors,
+  Sparkles,
+} from 'lucide-react'
 import { CompressWorkbench } from './components/compress/CompressWorkbench'
 import { CutoutWorkbench } from './components/cutout/CutoutWorkbench'
+import { EditWorkbench } from './components/edit/EditWorkbench'
 import { GithubIcon } from './components/GithubIcon'
 import { LanguageSwitcher } from './components/LanguageSwitcher'
+import { SegmentWorkbench } from './components/segment/SegmentWorkbench'
 import { UpscaleWorkbench } from './components/upscale/UpscaleWorkbench'
 import { languagePrefix, useTranslation } from './i18n'
 
-type Tool = 'compress' | 'upscale' | 'cutout'
+type Tool = 'compress' | 'upscale' | 'cutout' | 'segment' | 'edit'
 
 const PATHS: Record<Tool, string> = {
   compress: '/',
   upscale: '/upscale/',
   cutout: '/cutout/',
+  segment: '/segment/',
+  edit: '/edit/',
 }
 
 const TOOLS = Object.keys(PATHS) as Tool[]
@@ -59,6 +71,13 @@ export function App() {
     { id: 'compress' as const, label: t.compressTool, desc: t.compressToolDesc, Icon: ImageIcon },
     { id: 'upscale' as const, label: t.upscaleTool, desc: t.upscaleToolDesc, Icon: Sparkles },
     { id: 'cutout' as const, label: t.cutoutTool, desc: t.cutoutToolDesc, Icon: Scissors },
+    {
+      id: 'segment' as const,
+      label: t.segmentTool,
+      desc: t.segmentToolDesc,
+      Icon: MousePointerClick,
+    },
+    { id: 'edit' as const, label: t.editTool, desc: t.editToolDesc, Icon: Crop },
   ]
 
   return (
@@ -72,7 +91,7 @@ export function App() {
             <div className="leading-tight">
               <p className="text-sm font-medium">{t.brand}</p>
               <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
-                {t.compressToolDesc} · {t.upscaleToolDesc} · {t.cutoutToolDesc}
+                {t.brandSubtitle}
               </p>
             </div>
           </div>
@@ -131,6 +150,8 @@ export function App() {
         {tool === 'compress' && <CompressWorkbench />}
         {tool === 'upscale' && <UpscaleWorkbench />}
         {tool === 'cutout' && <CutoutWorkbench />}
+        {tool === 'segment' && <SegmentWorkbench />}
+        {tool === 'edit' && <EditWorkbench />}
       </main>
 
       <div className="mx-auto max-w-6xl space-y-6 px-4 pb-10 sm:px-6">

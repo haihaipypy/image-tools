@@ -1,7 +1,7 @@
 import type { BackendKind, CutoutModelSpec, CutoutProgressHandler } from '../types'
 import { CutoutError } from './errors'
 import { fetchModelBuffer, type FetchModelOptions } from './modelCache'
-import { configureThreads, ort, prepareOrtRuntime } from '../ort'
+import { configureThreads, ort, prepareOrtRuntime, RuntimeError } from '../ort'
 
 export interface CutoutSession {
   session: ort.InferenceSession
@@ -53,7 +53,11 @@ export async function acquireCutoutSession(
   options: AcquireCutoutOptions,
 ): Promise<CutoutSession> {
   const { spec, preferWebgpu, threads, onProgress, signal } = options
-  const attempts: BackendKind[] = preferWebgpu ? ['webgpu', 'wasm'] : ['wasm']
+  // webgpuSafe === false 的模型一次都不给 WebGPU 试：它在 WebGPU 上会静默
+  // 产出错误结果（见 CutoutModelSpec.webgpuSafe 的实测数据），试一次就已经
+  // 错了一次，而且用户根本无从察觉。
+  const attempts: BackendKind[] =
+    preferWebgpu && spec.webgpuSafe !== false ? ['webgpu', 'wasm'] : ['wasm']
 
   let lastError: unknown = null
 
@@ -70,6 +74,15 @@ export async function acquireCutoutSession(
       lastError = error
     }
   }
+
+  // 已经分好类的错误原样抛回去，不要再包一层。
+  //
+  // 包一层会把 RuntimeError 抹掉它的 code —— RuntimeError 的 message 本身就
+  // 是 code，塞进 session-init-failed 的 detail 之后，UI 侧「按 code 翻译」
+  // 的链路就断了。实测后果：所有下载源都连不上时，用户看到的是
+  // 推理引擎初始化失败：model-fetch-failed，而不是「检查网络或代理」。
+  // 而「哪一档错的」恰恰是这一刻唯一有用的信息。
+  if (lastError instanceof CutoutError || lastError instanceof RuntimeError) throw lastError
 
   throw new CutoutError('session-init-failed', {
     detail: lastError instanceof Error ? lastError.message : String(lastError),
