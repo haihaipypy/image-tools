@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>使用方法 - 图片工具文档</title>
-  <meta name="description" content="图片工具三个功能的使用方法：图片压缩与格式转换、AI 放大、AI 抠图，以及各自的参数建议与常见问题。">
+  <meta name="description" content="图片工具五个功能的使用方法：图片压缩与格式转换、AI 放大、AI 抠图、点选抠图、裁剪旋转与切片，以及各自的参数建议与常见问题。">
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://img.1day.vip/docs/usage.html" />
   <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/usage.html" />
@@ -13,7 +13,7 @@
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://img.1day.vip/docs/usage.html" />
   <meta property="og:title" content="使用方法 - 图片工具文档" />
-  <meta property="og:description" content="三个功能的使用方法与参数建议。">
+  <meta property="og:description" content="五个功能的使用方法与参数建议。">
   <meta property="og:locale" content="zh_CN" />
   <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -64,7 +64,7 @@
 
   <main class="main">
     <h1>使用方法</h1>
-    <p class="lead">三个工具都是拖进图片、调参数、下载结果。这里说一下各自的取舍。</p>
+    <p class="lead">五个工具都是拖进图片、调参数、下载结果。这里说一下各自的取舍。</p>
 
     <h2>图片压缩与格式转换</h2>
 
@@ -146,12 +146,38 @@
       换底色是即时重合成的，不会重新跑一遍模型。
     </p>
 
-    <h3>首次使用会下载模型</h3>
+    <h3>两个模型档怎么选</h3>
+
+    <table>
+      <thead>
+        <tr><th>档位</th><th>下载量</th><th>适合</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>MODNet（默认）</td>
+          <td>约 24 MB</td>
+          <td>人像、宠物。发丝边缘干净，体积只有高清档的四分之一。固定走 CPU 推理。</td>
+        </tr>
+        <tr>
+          <td>BiRefNet Lite（高清）</td>
+          <td>约 94 MB</td>
+          <td>商品、Logo、结构复杂的物体，人像与非人像都能打。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      <strong>默认档是为「快」选的，不是为「全」选的。</strong>MODNet 是在人像上训练的，
+      抠商品、抠 Logo 这类复杂主体时建议切到高清档。如果抠出来的主体少得离谱，
+      界面会直接提示你换档 —— 与其对着一地碎片发懵，不如照着提示走。
+      <br><br>
+      另外注意：<strong>MODNet 固定跑在 CPU 上，用不到你的显卡</strong>（原因见
+      <a href="/docs/models.html">模型说明</a>）。所以换一张好显卡不会让它变快 ——
+      想吃到 GPU 的加速，用高清档或点选抠图。
+    </div>
 
     <p>
-      抠图模型第一次使用需要下载权重（约 94 MB），进度条会显示下载百分比。
-      <strong>下载后会存进浏览器缓存，之后再用是秒开的。</strong>
-      换浏览器或清了缓存才会重新下载。
+      权重下载后会存进浏览器缓存，<strong>之后再用是秒开的</strong>。换浏览器或清了缓存才会重新下载。
     </p>
 
     <h3>结果预览怎么看</h3>
@@ -173,17 +199,90 @@
     <h3>抠不出来 / 抠空了</h3>
 
     <p>
-      BiRefNet 找的是画面里<strong>最显著的主体</strong>。所以：
+      模型找的是画面里<strong>最显著的主体</strong>。所以：
     </p>
 
     <ul>
-      <li><strong>一张图里有多个对象</strong> —— 只会抠最突出的那个。</li>
+      <li><strong>一张图里有多个对象</strong> —— 只会抠最突出的那个。想要哪一个就用手动点选（见下一节）。</li>
       <li><strong>纯风景、没有明确前景</strong> —— 可能判定为「没有主体」并给出提示，
         而不是给你一张几乎全透明的图。</li>
       <li><strong>主体太小或与背景太接近</strong> —— 效果会打折。主体占画面比例大一些、与背景有一定对比度，效果最好。</li>
     </ul>
 
     <p>遇到这些情况，换一张前景更清晰的图通常比调参数更有效。</p>
+
+    <h2>点选抠图</h2>
+
+    <p>地址：<code>/segment/</code></p>
+
+    <p>
+      自动抠图是「模型自己决定主体是谁」，点选抠图反过来 —— <strong>你告诉模型主体在哪</strong>。
+      想抠画面里第二个、第三个对象，或者自动档总是抠错东西时，用这个。
+    </p>
+
+    <h3>怎么用</h3>
+
+    <ol>
+      <li>拖入图片，在画布上<strong>点一下想保留的主体</strong>，轮廓立刻就出来了。</li>
+      <li>不满意就继续点：补的点会一起参与计算，越点越准。</li>
+      <li>多选进来的部分，按住 <kbd>Alt</kbd> 点击（或直接右键）标记为「排除」。</li>
+      <li>右边<strong>同时显示抠图结果</strong>，边点边看，确认没问题就下载透明 PNG。</li>
+    </ol>
+
+    <div class="note">
+      <strong>第一次点击要等十几秒，之后每次点击都是秒回。</strong>
+      模型把整张图编码一次（45 MB 权重也要在这时下载），而编码结果跟点击位置无关 ——
+      所以后面每次补点只跑很快的解码器。换图片才会重新编码。
+    </div>
+
+    <h3>和自动抠图比，什么时候用哪个</h3>
+
+    <ul>
+      <li><strong>人像、主体明确</strong> —— 自动抠图更快，一步到位。</li>
+      <li><strong>多个对象、想指定抠哪个</strong> —— 点选抠图。</li>
+      <li><strong>自动档抠错或抠漏了</strong> —— 换点选抠图，点一下就好，不用换模型。</li>
+      <li><strong>结构特别复杂的商品图</strong> —— 点选抠图 + 多点几下，通常比换更重的模型更省事。</li>
+    </ul>
+
+    <div class="note warn">
+      <strong>点在空背景上会得到「什么都没选中」。</strong>这不是故障 —— SAM 只能圈出
+      点到的东西。直接点在主体上就好了。
+    </div>
+
+    <h2>裁剪旋转与切片</h2>
+
+    <p>地址：<code>/edit/</code></p>
+
+    <p>这个工具不跑模型，纯 Canvas 运算，所以没有任何下载、也不需要等。</p>
+
+    <h3>裁剪</h3>
+
+    <p>
+      拖四角或四边改裁剪框，框内拖动可以整体移动。右侧可以锁 1:1、4:3、3:4、16:9、9:16
+      等比例，选「自由」则不受限制。输出尺寸实时显示在框下方。
+    </p>
+
+    <h3>旋转与拍歪自动矫正</h3>
+
+    <ul>
+      <li><strong>任意角度</strong> —— 滑块调到 ±180°，再配合 ±1° 微调按钮。</li>
+      <li><strong>±90° 与水平 / 垂直翻转</strong> —— 一次点到位，用于修正手机拍摄方向。</li>
+      <li><strong>拍歪自动矫正</strong> —— 拍文档、拍白板经常整张歪一点。点「自动拉正」后，
+        它会从画面里的直线推断倾斜角度并自动转正，转的角度会显示出来，可以继续手动微调。</li>
+    </ul>
+
+    <div class="note">
+      <strong>旋转后裁剪框会自动收缩到「不出空白」的最大矩形。</strong>因为斜着看一张矩形图，
+      四角必然落在原图之外。想保留更多画面就减小旋转角度，或者换个裁剪比例。
+    </div>
+
+    <h3>九宫格切片</h3>
+
+    <p>
+      设定行列数（比如 3 × 3）和块与块之间的间距，点「下载切片（ZIP）」即可。
+      切分范围是<strong>当前的裁剪框</strong>，所以可以先裁好再切。
+      余下的零头会按列宽 / 行高平摊到前几块，不会出现「最后一块特别窄」的情况。
+    </p>
 
     <h2>常见问题</h2>
 
@@ -200,6 +299,13 @@
       有 WebGPU 时推理跑在显卡上；没有就退回 CPU 计算，慢几倍是正常的。
       桌面版 Chrome / Edge 的 WebGPU 支持最好，Safari 较新版本也可以。
     </p>
+
+    <div class="note warn">
+      <strong>但别拿这一条去衡量默认档。</strong>MODNet（默认档）<strong>无论如何都跑在 CPU 上</strong>，
+      跟你的显卡无关 —— 它在 WebGPU 上会静默算错，所以代码里干脆不用。
+      换句话说：抠人像时，好显卡帮不上忙；<strong>切到高清档或点选抠图，才吃得到 GPU 的加速</strong>。
+      具体数据和原因见<a href="/docs/models.html">模型说明</a>。
+    </div>
 
     <h3>处理一百张图要多久？</h3>
 

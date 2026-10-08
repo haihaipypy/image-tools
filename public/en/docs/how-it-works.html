@@ -165,8 +165,10 @@ Cross-Origin-Embedder-Policy: require-corp</code></pre>
         <tr><td>Main JS + CSS</td><td>~470 KB (132 KB gzipped)</td><td>First page load</td></tr>
         <tr><td>ORT runtime</td><td>25.5 MB → 6.3 MB over the wire</td><td>First use of inference</td></tr>
         <tr><td>Upscaling model</td><td>4.9 MB</td><td>First upscale</td></tr>
-        <tr><td>Removal model (lite)</td><td>94 MB</td><td>First removal</td></tr>
-        <tr><td>Removal model (no-WebGPU variant)</td><td>192 MB</td><td>First removal without WebGPU</td></tr>
+        <tr><td>Removal model (default · MODNet)</td><td>24 MB (always on CPU — see <a href="/en/docs/models.html">the model notes</a>)</td><td>First removal</td></tr>
+        <tr><td>Removal model (HD · BiRefNet Lite)</td><td>94 MB (183 MB without WebGPU)</td><td>Switching to HD by hand</td></tr>
+        <tr><td>Removal model (fallback · BiRefNet)</td><td>452 MB</td><td>Switching to that tier by hand</td></tr>
+        <tr><td>Click-to-cut (MobileSAM encoder + decoder)</td><td>42.6 MB</td><td>First click-to-cut</td></tr>
       </tbody>
     </table>
 
@@ -190,7 +192,8 @@ Cross-Origin-Embedder-Policy: require-corp</code></pre>
 
     <ul>
       <li><strong>Upscaling model</strong> (4.9 MB) is committed to <code>public/models/</code>.</li>
-      <li><strong>Removal models</strong> (94–452 MB) are not committed; they are fetched from HuggingFace at runtime and cached.</li>
+      <li><strong>Removal models</strong> (24–452 MB depending on the tier) and <strong>MobileSAM for
+        click-to-cut</strong> (42.6 MB) are not committed; they are fetched from HuggingFace at runtime and cached.</li>
     </ul>
 
     <p>

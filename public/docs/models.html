@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>模型说明 - 图片工具文档</title>
-  <meta name="description" content="图片工具使用的 AI 模型说明：Real-ESRGAN 超分模型与 BiRefNet 抠图模型的来源、授权、体积与选择规则。">
+  <meta name="description" content="图片工具使用的 AI 模型说明：Real-ESRGAN 超分、MODNet / BiRefNet 抠图、MobileSAM 点选分割的来源、授权、体积与选择规则。">
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://img.1day.vip/docs/models.html" />
   <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/models.html" />
@@ -13,7 +13,7 @@
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://img.1day.vip/docs/models.html" />
   <meta property="og:title" content="模型说明 - 图片工具文档" />
-  <meta property="og:description" content="Real-ESRGAN 与 BiRefNet 模型的来源、授权与选择规则。">
+  <meta property="og:description" content="Real-ESRGAN、MODNet、BiRefNet 与 MobileSAM 的来源、授权与选择规则。">
   <meta property="og:locale" content="zh_CN" />
   <meta property="og:image" content="https://img.1day.vip/meta.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -64,7 +64,7 @@
 
   <main class="main">
     <h1>模型说明</h1>
-    <p class="lead">本站用的是两个开源模型，都是 MIT / BSD 类的宽松授权，可商用。</p>
+    <p class="lead">本站的 AI 功能都基于开源模型，授权均为 MIT / BSD / Apache 类的宽松许可，可商用。</p>
 
     <h2>AI 放大：Real-ESRGAN</h2>
 
@@ -90,32 +90,42 @@
       拼接处需要一定的重叠与融合，否则会出现网格状接缝 —— 这是超分类应用的通用做法。
     </p>
 
-    <h2>AI 抠图：BiRefNet</h2>
+    <h2>AI 抠图：MODNet 与 BiRefNet</h2>
 
     <p>
-      采用 <strong>BiRefNet</strong>（Bilateral Reference Network），一个二分图像分割模型。
-      <a href="https://github.com/ZhengPeng7/BiRefNet">BiRefNet</a> 由 Peng Zheng 等人提出，
-      在多个显著性分割与抠图数据集上表现都不错，尤其是发丝、毛绒这类高频边缘。
+      自动抠图提供三档模型，在界面上直接选。默认是体积最小的 <strong>MODNet</strong> ——
+      <a href="https://github.com/ZHKKKe/MODNet">MODNet</a> 由 Zhanghan Ke 等人提出，是专门为人像抠图
+      训练的轻量网络，参数量小一个数量级，但发丝、半透明这类人像高频边缘处理得干净。
+      <strong>BiRefNet</strong>（Bilateral Reference Network）由 Peng Zheng 等人提出，
+      是通用二分图像分割模型，人和物都能抠。
     </p>
 
-    <h3>两个版本怎么选</h3>
+    <h3>三档怎么选</h3>
 
     <p>
-      界面上有两个选项，但<strong>这不是「画质高低」的区别，而是「能不能用」的区别</strong>：
+      这<strong>不是单纯的「画质高低」，而是「下多少」与「能抠什么」的取舍</strong>：
     </p>
 
     <table>
       <thead>
-        <tr><th>版本</th><th>什么时候用</th><th>体积</th></tr>
+        <tr><th>档位</th><th>什么时候用</th><th>体积</th></tr>
       </thead>
       <tbody>
         <tr>
-          <td><strong>BiRefNet Lite</strong><br><span style="color:var(--text-faint)">默认推荐</span></td>
-          <td><strong>平时都用这个。</strong>发丝、毛绒这类细节也能抠得比较干净，绝大多数图片都够用。</td>
-          <td>94 MB（fp16）</td>
+          <td><strong>MODNet</strong><br><span style="color:var(--text-faint)">默认</span></td>
+          <td><strong>抠人像就用这个。</strong>下载量小一个数量级。它有两条已知边界：一是「专为人像训练」，
+            抠商品、Logo 这类非人像主体时掉得比较厉害（界面上会提示换档）；二是<strong>固定走 CPU 推理</strong> ——
+            这个模型在 WebGPU 上精度不足，实测前景占比从 47.4% 掉到 35.9%，主体边缘被啃掉一大片，
+            所以干脆不给它用 GPU（原因见下文「关于 WebGPU」）。</td>
+          <td>24 MB（fp32）</td>
         </tr>
         <tr>
-          <td><strong>BiRefNet Full</strong><br><span style="color:var(--text-faint)">兼容备用</span></td>
+          <td><strong>BiRefNet Lite</strong><br><span style="color:var(--text-faint)">高清</span></td>
+          <td><strong>非人像主体、或对细节要求高时用这个。</strong>不挑主体类型，发丝、毛绒和复杂结构都稳。</td>
+          <td>94 MB（fp16）<br>183 MB（fp32）</td>
+        </tr>
+        <tr>
+          <td><strong>BiRefNet</strong><br><span style="color:var(--text-faint)">兼容备用</span></td>
           <td><strong>只有设备不支持 WebGPU 时才会用到。</strong>效果和 Lite 基本一样，但文件大得多、速度慢不少。</td>
           <td>452 MB</td>
         </tr>
@@ -123,23 +133,49 @@
     </table>
 
     <div class="note">
-      <strong>大多数情况下你不需要手动选。</strong>程序会按设备能力自动挑合适的版本。
-      只有当你明确知道自己在做什么（比如在没有 WebGPU 的机器上想强制指定）时，才需要手动切换。
+      <strong>每一档的体积为什么有两个数。</strong>同一档模型按后端分两套权重：WebGPU 上取 fp16，
+      WASM 上取 fp32。界面上显示的是<em>你当前设备实际会下的那个</em> —— 否则在 CPU 上看到「94 MB」
+      却下载了 183 MB，会让人以为哪里出了错。默认档是例外：它固定走 CPU，所以只有 fp32 一个数。
+    </div>
+
+    <div class="note">
+      <strong>默认档为什么挑最小的。</strong>94 MB 的下载量对新用户是很高的门槛，而人像又是最高频的使用场景。
+      默认档因此选了 24 MB 的 MODNet —— 只有高清档的四分之一：先把「第一次能不能等到」解决掉，再谈「一次抠得完不完美」。
+      特意没用更小的量化版（6 MB）—— 实测它在人像上无损，但抠物体时会整片碎掉，用一半体积换「非人像彻底不能用」，不值。
     </div>
 
     <h3>技术细节</h3>
 
     <table>
-      <thead><tr><th>项</th><th>值</th></tr></thead>
+      <thead>
+        <tr><th>项</th><th>MODNet（默认）</th><th>BiRefNet（高清）</th></tr>
+      </thead>
       <tbody>
-        <tr><td>输入尺寸</td><td>固定 512×512，整图一次推理（不做瓦片切分）</td></tr>
-        <tr><td>输入张量名</td><td><code>input_image</code></td></tr>
-        <tr><td>输出张量名</td><td><code>output_image</code></td></tr>
-        <tr><td>输出形式</td><td>未激活的 logits，需过 sigmoid 得到 0–1 的 alpha</td></tr>
-        <tr><td>预处理</td><td>直接 resize 到 512×512（不做 letterbox），ImageNet 均值方差归一化</td></tr>
-        <tr><td>授权</td><td>MIT</td></tr>
+        <tr>
+          <td>输入尺寸</td>
+          <td>等比缩放到短边 512，长宽再对齐到 32 的倍数</td>
+          <td>固定 512×512，整图一次推理（不做瓦片切分）</td>
+        </tr>
+        <tr><td>输入张量名</td><td><code>input</code></td><td><code>input_image</code></td></tr>
+        <tr><td>输出张量名</td><td><code>output</code></td><td><code>output_image</code></td></tr>
+        <tr>
+          <td>输出形式</td>
+          <td>导出里已带 sigmoid，值域直接是 0–1</td>
+          <td>未激活的 logits，需过 sigmoid 得到 0–1 的 alpha</td>
+        </tr>
+        <tr>
+          <td>预处理</td>
+          <td>归一化 (x/255 − 0.5) / 0.5 → [−1, 1]</td>
+          <td>直接 resize 到 512×512（不做 letterbox），ImageNet 均值方差归一化</td>
+        </tr>
+        <tr><td>授权</td><td>Apache-2.0</td><td>MIT</td></tr>
       </tbody>
     </table>
+
+    <p>
+      <strong>MODNet 的长宽必须对齐到 32。</strong>这不是随手定的：模型结构里有多次下采样与拼接，
+      16 的倍数都会在拼接节点报「维度不匹配」。这两个数抄自模型的 <code>preprocessor_config.json</code>，并实测验证过。
+    </p>
 
     <p>
       <strong>遮罩分辨率上限是 512×512。</strong>源图比这大时，边缘精度受遮罩分辨率限制，
@@ -152,6 +188,93 @@
       代码里做了容错：注册表里的名字对不上时会退到「唯一输出」或按形状推断。
     </div>
 
+    <h2>关于 WebGPU：不是所有模型都适合跑在 GPU 上</h2>
+
+    <p>
+      界面底部会显示当前实际使用的后端。这里有一条不那么显然、但非常重要的规则。
+    </p>
+
+    <div class="note warn">
+      <strong>WebGPU 会静默算错。</strong>ONNX Runtime 的 WebGPU 后端在 GPU 上以半精度执行中间激活，
+      对归一化层密集的网络会引入可观误差，而且<strong>不报错</strong> —— 张量形状正常、数值是有限值，
+      只有结果本身是错的。实测（Intel Gen-12LP + ONNX Runtime 1.30.0，同一张 1440×2456 人像）：
+      <ul>
+        <li>MODNet：WebGPU 前景占比 <strong>35.90%</strong>，CPU 端 <strong>47.41%</strong> —— 主体边缘被啃掉一大片</li>
+        <li>BiRefNet：WebGPU <strong>47.08%</strong>，CPU 端 <strong>47.08%</strong> —— 两端完全一致</li>
+        <li>MobileSAM 编码器：两个后端的输出统计逐位一致（WebGPU 快约 4.6 倍）</li>
+      </ul>
+      给 MODNet 换 fp32 权重也救不了 —— WebGPU 上跑 fp32 是 35.90%，跑 fp16 是 35.85%，几乎相同，
+      说明损失来自<strong>执行路径</strong>而不是权重精度。所以代码里给每个模型标了「WebGPU 是否可信」，
+      MODNet 被显式排除在外，永远走 CPU；BiRefNet 与 MobileSAM 则可以放心用 GPU。
+    </div>
+
+    <p>
+      这也是本项目踩出来的一条通用经验：<strong>只验证「没有报错」是不够的，必须验证真实像素</strong>。
+      上面这组数据是靠把两条路径的成品 PNG 逐像素对撞才发现的 —— 有 27.8% 的像素差了 32/255 以上，
+      而整个过程没有任何异常抛出。
+    </p>
+
+    <h2>点选抠图：MobileSAM</h2>
+
+    <p>
+      点选抠图走的是另一条路：<strong>不猜你要什么主体，完全听你的</strong>。
+      用的是 <strong>MobileSAM</strong> —— <a href="https://github.com/ChaoningZhang/MobileSAM">MobileSAM</a>
+      把 Segment Anything（SAM）的图像编码器换成轻量版 TinyViT，整体从 600 MB 压到 40 MB 出头，
+      而分割质量基本持平。
+    </p>
+
+    <p>
+      它被拆成两个模型：一个<strong>图像编码器</strong>把整图编码成特征，一个<strong>遮罩解码器</strong>
+      根据提示点算出遮罩。这个拆分正是点选体验的关键 —— 编码只做一次，之后每点一下都只跑解码器。
+      所以第一下点击慢，后面每一下都快。
+    </p>
+
+    <table>
+      <thead><tr><th>项</th><th>值</th></tr></thead>
+      <tbody>
+        <tr><td>总体积</td><td>42.6 MB（编码器 26.9 MiB + 解码器 15.7 MiB）</td></tr>
+        <tr><td>编码器输入</td><td><code>input_image</code>，固定 1024×1024，HWC 排布（无 batch 维），像素值 0–255</td></tr>
+        <tr><td>非正方形怎么办</td><td>等比缩放后居中补黑边到 1024×1024，取遮罩时再反向映射回原图（不会拉扯主体）</td></tr>
+        <tr><td>解码器输入</td><td>图像特征 + 提示点坐标（乘 1024）+ 点标签 + <code>orig_im_size</code></td></tr>
+        <tr><td>解码器输出</td><td><code>masks</code>（1024×1024 原生遮罩）与 <code>iou_predictions</code>（分数量）</td></tr>
+        <tr><td>归一化</td><td>写在计算图里，调用方不用管</td></tr>
+        <tr><td>授权</td><td>Apache-2.0</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      解码器一次给出三个候选遮罩、配三个分数，程序取分数最高的那个。点得越多，分数越能说明「这一块就是主体」——
+      所以补点比换模型管用。
+    </p>
+
+    <div class="note">
+      <strong>为什么没有直接用现成的 sam-web 组件。</strong>它把 ONNX Runtime 的 wasm 路径硬编码到了
+      jsDelivr CDN，而且自带一份独立的运行时：会和本站自托管的 ONNX Runtime 各编译一份 wasm，
+      还额外请求外网。所以这里按同一套张量规格自己接了一遍，复用本站已有的运行时 —— 请求不出去，体积也不翻倍。
+    </div>
+
+    <h2>裁剪与旋转：不用模型</h2>
+
+    <p>
+      裁剪、任意角度旋转、翻转、切片都是确定性的几何变换，交给 Canvas 就够了，也就不需要任何下载。
+      有一个容易误解的点：<strong>旋转不是「转完把四角涂黑」</strong> —— 画布会跟着旋转后的外接框一起放大，
+      所以四角始终有内容，没有被切掉或填色。裁剪框的坐标因此是「旋转之后」的坐标系，
+      拖动时所见即所得，不用反算角度。
+    </p>
+
+    <p>
+      「自动拉正」也是纯算法，没有模型：把图缩到 480 像素做灰度，算 Sobel 梯度，
+      只保留梯度够强的像素（平坦区域的方向是噪声），再把每条边缘的朝向折到「离最近的横竖轴偏了多少度」，
+      按梯度强度投票成直方图，峰值就是整张图的主导倾斜角。
+    </p>
+
+    <p>
+      把横竖两个方向折到同一区间是这一步的关键：文档、桌面、建筑同时有大量水平边和垂直边，
+      不折的话直方图会出现两个峰，哪个都代表不了整体倾斜。局限也在这里 ——
+      画面里没有明显直线时（风景照、纯色背景的产品图），结果就是噪声。所以检测会返回一个置信度，
+      只有够高时才自动应用；偏角超过 15° 也直接放弃，那更像刻意旋转而不是拍歪。
+    </p>
+
     <h2>权重从哪来</h2>
 
     <table>
@@ -162,12 +285,20 @@
           <td>提交在仓库 <code>public/models/</code> 下，随站点一起部署</td>
         </tr>
         <tr>
+          <td>MODNet</td>
+          <td><a href="https://huggingface.co/Xenova/modnet">Xenova/modnet</a>，HuggingFace</td>
+        </tr>
+        <tr>
           <td>BiRefNet Lite</td>
           <td><a href="https://huggingface.co/studioludens/birefnet-lite-512">studioludens/birefnet-lite-512</a>，HuggingFace</td>
         </tr>
         <tr>
-          <td>BiRefNet Full</td>
+          <td>BiRefNet</td>
           <td><a href="https://huggingface.co/naddy24/birefnet-512-webgpu">naddy24/birefnet-512-webgpu</a>，HuggingFace</td>
+        </tr>
+        <tr>
+          <td>MobileSAM（编码器 + 解码器）</td>
+          <td><a href="https://huggingface.co/Acly/MobileSAM">Acly/MobileSAM</a>，HuggingFace</td>
         </tr>
       </tbody>
     </table>
@@ -175,6 +306,45 @@
     <p>
       HuggingFace 上的地址是可变的，所以代码里<strong>钉死了具体的 commit revision</strong> ——
       保证今天跑通的模型明天还是同一个。升级模型等于改这个 revision 常量。
+      这几份权重体积加起来远超静态托管能接受的范围，因此都不进仓库，改由浏览器在首次使用时拉取并缓存
+      （见「浏览器端推理」）。
+    </p>
+
+    <h2>下载源与网络兜底</h2>
+
+    <p>
+      这些权重都挂在 <code>huggingface.co</code> 上，而它<strong>在国内直连不通</strong>——
+      表现不是报错，而是连接一直挂着，直到超时。对一个所有计算都在本机完成的工具来说，
+      卡在第一步下载上最冤，所以下载有两道保险：
+    </p>
+
+    <ul>
+      <li>
+        <strong>多个源依次尝试。</strong>每个 huggingface 地址都配了镜像（<code>hf-mirror.com</code>），
+        镜像在前、官方在后。镜像站是反向代理，仓库路径与官方一一对应，换域名即可，
+        不会出现「加了新模型忘了配镜像」。镜像挂了就自动落到官方源，反之亦然。
+      </li>
+      <li>
+        <strong>每个源限时 10 秒。</strong>只限到「拿到响应头」为止，不等整个文件下完 ——
+        几十兆的权重在慢网上下几分钟很正常，一刀切会误杀。但不限时也不行：
+        连不通的地址既不报错也不返回，不限时的话备用源永远轮不到。
+      </li>
+      <li>
+        <strong>记住了哪个源能用。</strong>成功的源写进 localStorage，下次打开直接从它开始，
+        不用每个文件都先在连不上的源上白等一轮。隐私模式下读写失败就退回默认顺序，
+        不影响正确性。
+      </li>
+    </ul>
+
+    <div class="note warn">
+      <strong>全部源都失败时会明确告诉你，而不是让进度条一直转。</strong>提示是
+      「模型权重下载失败：官方源和国内镜像都没连上。请检查网络或代理后重试」——
+      此时值得查的只剩自己的网络环境。
+    </div>
+
+    <p>
+      缓存也按工具分开：放大、抠图、点选抠图各占一个桶，清理任何一个都不会牵连另外两个。
+      放大模型（4.9 MB）与 ONNX Runtime 本体（<code>/ort/</code>）随站点一起部署，不走外网。
     </p>
 
     <div class="pager">

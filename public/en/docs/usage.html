@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Usage - Image Tools Docs</title>
-  <meta name="description" content="How to use all three Image Tools: compression and format conversion, AI upscaling, and AI background removal, with settings advice and common questions.">
+  <meta name="description" content="How to use all five Image Tools: compression and format conversion, AI upscaling, AI background removal, click to cut, and crop / rotate / grid slicing, with settings advice and common questions.">
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://img.1day.vip/en/docs/usage.html" />
   <link rel="alternate" hreflang="en" href="https://img.1day.vip/en/docs/usage.html" />
@@ -64,7 +64,7 @@
 
   <main class="main">
     <h1>Usage</h1>
-    <p class="lead">All three tools follow the same shape: drop an image, adjust a couple of settings, download the result.</p>
+    <p class="lead">All five tools follow the same shape: drop an image, adjust a couple of settings, download the result.</p>
 
     <h2>Compression and format conversion</h2>
 
@@ -146,11 +146,38 @@
       white, red or blue backdrop — recolouring is an instant recomposite and does not re-run the model.
     </p>
 
-    <h3>The first run downloads a model</h3>
+    <h3>Choosing between the two models</h3>
+
+    <table>
+      <thead>
+        <tr><th>Tier</th><th>Download</th><th>Best for</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>MODNet (default)</td>
+          <td>~24 MB</td>
+          <td>People and pets. Clean hair edges, a quarter the size of the HD tier. Always runs on CPU.</td>
+        </tr>
+        <tr>
+          <td>BiRefNet Lite (HD)</td>
+          <td>~94 MB</td>
+          <td>Products, logos, and complex objects. Solid on both people and objects.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      <strong>The default tier was picked for speed, not for coverage.</strong> MODNet is trained on
+      people, so switch to the HD tier for products and logos. If the cutout comes out almost empty,
+      the UI will tell you to switch — no need to guess why it broke.
+      <br><br>
+      One more thing: <strong>MODNet always runs on CPU and never touches your GPU</strong>
+      (see <a href="/en/docs/models.html">the model notes</a>). A better graphics card will not make it
+      faster — for GPU acceleration, use the HD tier or Click to Cut.
+    </div>
 
     <p>
-      The model weights (about 94 MB) are downloaded on first use, with a progress bar showing the
-      percentage. <strong>They are cached by the browser afterwards, so later runs start instantly.</strong>
+      Weights are cached by the browser afterwards, <strong>so later runs start instantly</strong>.
       A different browser or a cleared cache means downloading again.
     </p>
 
@@ -172,10 +199,11 @@
 
     <h3>Nothing gets selected</h3>
 
-    <p>BiRefNet looks for the <strong>most salient subject</strong> in the frame. That means:</p>
+    <p>The model looks for the <strong>most salient subject</strong> in the frame. That means:</p>
 
     <ul>
-      <li><strong>Multiple objects</strong> — only the most prominent one is kept.</li>
+      <li><strong>Multiple objects</strong> — only the most prominent one is kept. Use Click to Cut to
+        pick a different one (next section).</li>
       <li><strong>Pure landscapes with no clear foreground</strong> — may be judged "no subject" and reported
         as such, rather than handing you a nearly fully transparent image.</li>
       <li><strong>A very small subject, or one that blends into the background</strong> — results degrade.
@@ -183,6 +211,87 @@
     </ul>
 
     <p>In these cases, picking a different photo usually helps more than adjusting settings.</p>
+
+    <h2>Click to Cut</h2>
+
+    <p>Address: <code>/segment/</code></p>
+
+    <p>
+      Automatic cutout is "let the model decide who the subject is". Click to Cut flips that —
+      <strong>you tell the model where the subject is</strong>. Reach for it when you want the second or
+      third object in the frame, or when the automatic model keeps grabbing the wrong thing.
+    </p>
+
+    <h3>How to use it</h3>
+
+    <ol>
+      <li>Drop an image and <strong>click the object you want to keep</strong>. The outline appears immediately.</li>
+      <li>Not right? Keep clicking — every extra point joins the prompt and refines the result.</li>
+      <li>To drop something that got included, hold <kbd>Alt</kbd> and click (or right-click) to mark it "exclude".</li>
+      <li>Happy with it? The result appears <strong>on the right at the same time</strong>, so you can
+        watch it change as you click — download the transparent PNG when it looks right.</li>
+    </ol>
+
+    <div class="note">
+      <strong>The first click waits ten-odd seconds; every click after that is instant.</strong>
+      The model encodes the whole image once (and downloads 45 MB of weights at the same time), and that
+      encoding has nothing to do with where you clicked — so further points only re-run a very fast decoder.
+      Changing the image means encoding again.
+    </div>
+
+    <h3>Click to Cut vs. automatic cutout</h3>
+
+    <ul>
+      <li><strong>A person, one obvious subject</strong> — automatic is faster, one step.</li>
+      <li><strong>Several objects and you want a specific one</strong> — Click to Cut.</li>
+      <li><strong>Automatic picked the wrong thing or missed part of it</strong> — switch to Click to Cut
+        and click once; no need to change models.</li>
+      <li><strong>A structurally complex product shot</strong> — Click to Cut plus a few extra points is
+        usually easier than reaching for a heavier model.</li>
+    </ul>
+
+    <div class="note warn">
+      <strong>Clicking empty background gives you "nothing was selected".</strong> That is not a bug —
+      SAM can only outline what you point at. Click on the subject itself.
+    </div>
+
+    <h2>Crop, rotate and slice</h2>
+
+    <p>Address: <code>/edit/</code></p>
+
+    <p>This one runs no model at all — plain Canvas maths, so there is nothing to download and nothing to wait for.</p>
+
+    <h3>Crop</h3>
+
+    <p>
+      Drag a corner or an edge to resize the box, drag inside it to move it. The right-hand panel can lock
+      the ratio to 1:1, 4:3, 3:4, 16:9 or 9:16; "Free" leaves it unconstrained. The output size updates live.
+    </p>
+
+    <h3>Rotate and auto-straighten</h3>
+
+    <ul>
+      <li><strong>Any angle</strong> — the slider covers ±180°, with ±1° buttons for fine adjustment.</li>
+      <li><strong>±90° and horizontal / vertical flip</strong> — one click each, for fixing phone orientation.</li>
+      <li><strong>Auto-straighten</strong> — photos of documents and whiteboards are usually a degree or two off.
+        Hit "Auto-straighten" and it infers the tilt from the straight lines in the frame, rotates, and reports
+        the angle so you can nudge it afterwards.</li>
+    </ul>
+
+    <div class="note">
+      <strong>Rotating shrinks the crop box to the largest rectangle that contains no empty space.</strong>
+      Looking at a rectangle from an angle, its corners necessarily fall outside the original. Reduce the angle
+      to keep more of the frame, or pick a different ratio.
+    </div>
+
+    <h3>Grid slicing</h3>
+
+    <p>
+      Set the number of columns and rows (3 × 3, say) and the gap between tiles, then hit
+      "Download slices (ZIP)". The slicing range is <strong>the current crop box</strong>, so crop first if you like.
+      Leftover pixels are spread across the first few tiles rather than dumped into the last one, so you never
+      end up with one conspicuously narrow strip.
+    </p>
 
     <h2>Common questions</h2>
 
@@ -201,6 +310,14 @@
       several times slower is expected. Desktop Chrome and Edge have the best WebGPU support; recent
       Safari versions work too.
     </p>
+
+    <div class="note warn">
+      <strong>But do not measure the default tier against that.</strong> MODNet (the default)
+      <strong>runs on CPU no matter what</strong> — it computes the wrong answer silently on WebGPU, so
+      the code simply does not give it the GPU. In other words: for portraits, a good graphics card buys
+      you nothing; <strong>switch to the HD tier or use Click to Cut to actually get GPU acceleration</strong>.
+      The numbers and the reasoning are in <a href="/en/docs/models.html">the model notes</a>.
+    </div>
 
     <h3>How long does a hundred images take?</h3>
 

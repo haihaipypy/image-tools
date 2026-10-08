@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Docs - Image Tools | Usage, How It Works, Deployment</title>
-  <meta name="description" content="Full documentation for Image Tools: how to use all three tools, how in-browser inference works, deployment steps, licensing, and how to swap models.">
+  <meta name="description" content="Full documentation for Image Tools: how to use all five tools, how in-browser inference works, deployment steps, licensing, and how to swap models.">
   <meta name="keywords" content="image tools docs,image compression,AI upscaling,background removal,browser inference,ONNX Runtime WebGPU,deployment">
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://img.1day.vip/en/docs/" />
@@ -71,10 +71,11 @@
     <h1>Introduction</h1>
     <p class="lead">
       Image Tools is a set of image utilities that run entirely in your browser: compression,
-      format conversion, AI upscaling, and AI background removal. No server, no uploads, no account.
+      format conversion, AI upscaling, AI background removal, click-to-cut, and crop/rotate.
+      No server, no uploads, no account.
     </p>
 
-    <h2>The three tools</h2>
+    <h2>The five tools</h2>
 
     <table>
       <thead>
@@ -94,7 +95,17 @@
         <tr>
           <td><strong>Remove background</strong></td>
           <td><code>/cutout/</code></td>
-          <td>BiRefNet finds the subject and drops the background, producing a transparent PNG or a solid backdrop.</td>
+          <td>MODNet / BiRefNet finds the subject automatically and drops the background, producing a transparent PNG or a solid backdrop.</td>
+        </tr>
+        <tr>
+          <td><strong>Click to cut</strong></td>
+          <td><code>/segment/</code></td>
+          <td>MobileSAM, driven by hand: click the subject to select it, add points to refine, Alt-click to take parts back out.</td>
+        </tr>
+        <tr>
+          <td><strong>Crop &amp; rotate</strong></td>
+          <td><code>/edit/</code></td>
+          <td>Cropping, free rotation, auto-straightening, flipping, and 3×3 grid slicing.</td>
         </tr>
       </tbody>
     </table>
@@ -116,15 +127,16 @@
     </ul>
 
     <p>
-      The trade-off is a first-run download for the model weights (4.9 MB for upscaling, 94 MB for
+      The trade-off is a first-run download for the model weights (4.9 MB for upscaling, from 24 MB for
       background removal) and processing speed that depends on your own hardware. What you get back is
       privacy and unlimited use — a good trade for private photos, ID pictures, or screenshots with
       sensitive information in them.
     </p>
 
     <div class="note">
-      <strong>The only external request</strong> is fetching background-removal weights from HuggingFace
-      on first use (94 MB or 452 MB). They are cached by the browser afterwards. Your images are never uploaded.
+      <strong>The only external request</strong> is fetching AI weights from HuggingFace on first use
+      (background removal 24 / 94 / 452 MB depending on the tier, click-to-cut 42.6 MB). They are cached
+      by the browser afterwards. Your images are never uploaded.
     </div>
 
     <h2>Next steps</h2>

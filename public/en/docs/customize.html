@@ -197,11 +197,14 @@
         </tr>
         <tr>
           <td>A machine without WebGPU has a limited experience</td>
-          <td>It falls back to WASM, and cutout downloads 192 MB instead of 94 MB.</td>
+          <td>The HD tier falls back to WASM: inference is noticeably slower, and it ships fp32 weights instead,
+            doubling the size (94 MB → 183 MB). The default tier is unaffected — it always runs on CPU
+            (see <a href="/en/docs/models.html">the model notes</a>).</td>
         </tr>
         <tr>
           <td>Cutout only finds the most salient subject</td>
-          <td>Multi-object images get only the most prominent one; a pure landscape may be judged "no subject" and error out.</td>
+          <td>Multi-object images get only the most prominent one; a pure landscape may be judged "no subject" and
+            error out. To pick a specific object, use click-to-cut.</td>
         </tr>
       </tbody>
     </table>

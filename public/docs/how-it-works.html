@@ -163,8 +163,10 @@ Cross-Origin-Embedder-Policy: require-corp</code></pre>
         <tr><td>主程序 JS + CSS</td><td>约 470 KB（gzip 132 KB）</td><td>首次进站</td></tr>
         <tr><td>ORT 运行时</td><td>25.5 MB → 传输 6.3 MB</td><td>首次用到推理时</td></tr>
         <tr><td>放大模型</td><td>4.9 MB</td><td>首次放大时</td></tr>
-        <tr><td>抠图模型（轻量）</td><td>94 MB</td><td>首次抠图时</td></tr>
-        <tr><td>抠图模型（无 WebGPU 时的版本）</td><td>192 MB</td><td>无 WebGPU 时首次抠图</td></tr>
+        <tr><td>抠图模型（默认 · MODNet）</td><td>24 MB（固定走 CPU，见<a href="/docs/models.html">模型说明</a>）</td><td>首次抠图时</td></tr>
+        <tr><td>抠图模型（高清 · BiRefNet Lite）</td><td>94 MB（无 WebGPU 时 183 MB）</td><td>手动切到高清档时</td></tr>
+        <tr><td>抠图模型（兼容备用 · BiRefNet）</td><td>452 MB</td><td>手动切到该档时</td></tr>
+        <tr><td>点选抠图（MobileSAM 编码器 + 解码器）</td><td>42.6 MB</td><td>首次点选抠图时</td></tr>
       </tbody>
     </table>
 
@@ -187,7 +189,8 @@ Cross-Origin-Embedder-Policy: require-corp</code></pre>
 
     <ul>
       <li><strong>放大模型</strong>（4.9 MB）随仓库提交到 <code>public/models/</code>。</li>
-      <li><strong>抠图模型</strong>（94–452 MB）不提交，运行时从 HuggingFace 拉取并缓存。</li>
+      <li><strong>抠图模型</strong>（24–452 MB，看选哪一档）与<strong>点选抠图的 MobileSAM</strong>（42.6 MB）
+        不提交，运行时从 HuggingFace 拉取并缓存。</li>
     </ul>
 
     <p>
